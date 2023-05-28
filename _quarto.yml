@@ -1,0 +1,63 @@
+project:
+  type: book
+
+book:
+  title: "Single-cell RNAseq analysis with R/Bioconductor"
+  author: "J. Serizay & O. Ashenberg"
+  page-footer:
+    left: |
+      Single-cell RNAseq analysis with R/Bioconductor |  
+      J. Serizay O. Ashenberg
+    right: |
+      This book was built with <a href="https://quarto.org/">Quarto</a>.
+  site-url: https://js2264.github.io/scRNAseq_Physalia_2023/
+  repo-url: https://github.com/js2264/scRNAseq_Physalia_2023/
+  repo-branch: main
+  repo-actions: [edit, issue]
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - summary.qmd
+    - references.qmd
+    - part: "Day 1"
+      chapters:
+        - principles.qmd
+        - data-representation.qmd
+    - part: "Day 2"
+      chapters:
+        - principles.qmd
+        - data-representation.qmd
+
+format:
+  html:
+    default-image-extension: pdf
+    theme:
+      - yeti
+      - theme.scss
+    code-link: true
+    author-meta: "J. Serizay & O. Ashenberg"
+    highlight-style: atom-one-dark.theme
+    citations-hover: true
+    toc: true
+    toc-float: 
+      collapsed: false
+    toc-depth: 3
+    website: 
+      sidebar: 
+        search: true
+        collapse-level: 5
+  pdf:
+    default-image-extension: pdf
+    theme:
+      - yeti
+      - OHCA.scss
+    code-link: true
+    author-meta: "J. Serizay & O. Ashenberg"
+    documentclass: scrbook
+    papersize: a4
+    toc: true
+    toc-title: Contents
+    number-sections: true
+    colorlinks: true
+
+editor: visual
