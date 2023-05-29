@@ -1,0 +1,288 @@
+# Lab 4 - Single-cell RNA-seq data wrangling
+
+```{r eval = TRUE, echo = FALSE, warning = FALSE, error = FALSE, comment = FALSE, message = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+::: {.callout-tip icon='true'}
+## Aims
+
+- To give you experience with the analysis of single cell RNA sequencing (scRNA-seq) including performing quality control and identifying cell type subsets.
+- To introduce you to scRNA-seq analysis using Bioconductor packages.
+:::
+
+## Introduction
+
+Data produced in a single cell RNA-seq experiment has several interesting characteristics that make it distinct from data produced in a bulk population RNA-seq experiment. Two characteristics that are important to keep in mind when working with scRNA-Seq are drop-out (the excessive amount of zeros due to limiting mRNA) and the potential for quality control (QC) metrics to be confounded with biology. This combined with the ability to measure heterogeniety from cells in samples has shifted the field away from the typical analysis in population-based RNA-Seq. Here we demonstrate some approaches to quality control, followed by identifying and analyzing cell subsets.
+
+### Load necessary packages
+
+When loading libraries, we are asking R to load code for us written by someone else. It is a convenient way to leverage and reproduce methodology developed by others.
+
+```{r, filename = "R"}
+library(tidyverse)
+library(SingleCellExperiment)
+library(scater)
+library(scran)
+```
+
+### Read in Pancreas counts matrix.
+
+For this tutorial, we will be analyzing a human pancreas scRNAseq dataset. It is freely available from [GEO: link](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE114802). 
+We start by downloading the cell, features and counts matrix. 
+
+- **Get the downloadable links for each file**
+
+```{r, filename = "R"}
+download.file('https://ftp.ncbi.nlm.nih.gov/geo/series/GSE114nnn/GSE114802/suppl/GSE114802_org4_barcodes.tsv.gz', 'GSE114802_org4_barcodes.tsv.gz')
+download.file('https://ftp.ncbi.nlm.nih.gov/geo/series/GSE114nnn/GSE114802/suppl/GSE114802_org4_genes.tsv.gz', 'GSE114802_org4_genes.tsv.gz')
+download.file('https://ftp.ncbi.nlm.nih.gov/geo/series/GSE114nnn/GSE114802/suppl/GSE114802_org4_counts.csv.gz', 'GSE114802_org4_counts.csv.gz')
+```
+
+- **Import each table in `R`**
+
+```{r, filename = "R"}
+cells <- read_tsv('~/Share/GSE114802_org4_barcodes.tsv.gz', col_names = FALSE)
+genes <- read_tsv('~/Share/GSE114802_org4_genes.tsv.gz', col_names = FALSE)
+counts <- read_csv('~/Share/GSE114802_org4_counts.csv.gz', col_names = TRUE)
+counts <- counts[, -1]
+counts <- as(counts, 'matrix')
+counts <- as(counts, 'dgCMatrix')
+rownames(counts) <- genes$X1
+```
+
+- **Transform into a `SingleCellExperiment` object**
+
+```{r, filename = "R"}
+sce <- SingleCellExperiment(
+    colData = cells, 
+    rowData = genes, 
+    assays = list('counts' = counts)
+)
+```
+
+- **Examine the `SingleCellExperiment` object you've just created. Get an idea of the size of the dataset, the different data available, etc.**
+
+```{r, filename = "R"}
+colData(sce)
+rowData(sce)
+metadata(sce)
+dim(sce)
+assays(sce)
+counts(sce)[1:10, 1:10]
+reducedDims(sce)
+```
+
+- **How much memory does a sparse matrix take up relative to a dense matrix? (use `object.size()` to get the size of an object...)**
+
+```{r, filename = "R"}
+counts <- counts(sce)
+object.size(counts) # size in bytes
+object.size(as.matrix(counts)) # size in bytes
+```
+
+- **Compare it to the sparsity of the counts (the % of the counts equal to 0)**
+
+```{r, filename = "R"}
+sum(counts > 0) / (nrow(sce)*ncol(sce))
+```
+
+## Basic QCs 
+
+You can learn a lot about your scRNA-seq data's quality with simple plotting.  
+Let's do some plotting to look at the number of reads per cell, reads per genes, expressed genes per cell (often called complexity), and rarity of genes (cells expressing genes).
+
+- **Look at the summary counts for genes and cells**
+
+```{r, filename = "R"}
+counts_per_cell <- Matrix::colSums(counts)
+counts_per_gene <- Matrix::rowSums(counts)
+genes_per_cell <- Matrix::colSums(counts > 0) # count gene only if it has non-zero reads mapped.
+hist(log10(counts_per_cell+1), main = '# of counts per cell', col = 'wheat')
+hist(log10(genes_per_cell+1), main = '# of expressed genes per cell', col = 'wheat')
+plot(counts_per_cell, genes_per_cell, log = 'xy', col = 'wheat')
+title('Counts vs genes per cell')
+```
+
+- **Can you plot a histogram of counts per gene in log10 scale?**
+
+```{r, filename = "R"}
+cells_per_gene <- Matrix::rowSums(counts > 0) # only count cells where the gene is expressed
+hist(log10(cells_per_gene+1), main = '# of cells expressing each gene', col = 'wheat')
+```
+
+- **Plot cells ranked by their number of detected genes**
+
+To do that, first sort cells by their library complexity, ie the number of genes detected per cell.  
+This is a very useful plot as it shows the distribution of library complexity in the sequencing run.  
+One can use this plot to investigate observations (potential cells) that are actually failed libraries (lower end outliers) or observations that are cell doublets (higher end outliers).
+
+```{r, filename = "R"}
+plot(sort(genes_per_cell), xlab = 'cell', log = 'y', main = '# of genes per cell (ordered)')
+```
+
+- Several QCs can be automatically computed using `quickPerCellQC()`. Try it out and check the results. 
+- **What are the `total` and `detected` columns?**
+
+```{r, filename = "R"}
+sce <- scuttle::quickPerCellQC(sce)
+colData(sce)
+```
+
+## Access to stored informations 
+
+### Assay slots
+
+For typical scRNA-seq experiments, a `SingleCellExperiment` can have multiple assays, corresponding to different metrics. The most basic one is `counts`.  
+Different assays store different 'transformations' of the `counts`(e.g. `logcounts).
+
+- **Try to manually compute logcounts from counts and store it in a new slot**
+
+```{r, filename = "R"}
+assay(sce, 'logcounts') <- log10(counts(sce) + 1)
+```
+
+### Embeddings 
+
+Embeddings allow for a representation of large-scale data (N cells x M genes) into smaller dimensions (e.g. 2-50 dimensions). 
+Typical embeddings can be PCA, t-SNE, UMAP, etc... 
+Many embeddings can be computed using `run...()` functions from Bioconductor packages (e.g. `scran`, `scater`, ...).
+
+- **Compute PCA embedding of the dataset using `runPCA()` from `scater` package**
+
+```{r, filename = "R"}
+sce <- scater::runPCA(sce)
+plotReducedDim(sce, "PCA")
+```
+
+- **Compute t-SNE embedding of the dataset using `runTSNE()` from `scater` package**
+
+```{r, filename = "R"}
+sce <- scater::runTSNE(sce)
+plotReducedDim(sce, "TSNE")
+```
+
+- **Compute UMAP embedding of the dataset using `runUMAP()` from `scater` package**
+
+```{r, filename = "R"}
+sce <- scater::runUMAP(sce)
+plotReducedDim(sce, "UMAP", colour_by = 'sum')
+plotReducedDim(sce, "UMAP", colour_by = 'detected')
+```
+
+### Multiple modalities
+
+Alternative 'modalities' can be stored in the same `SingleCellExperiment` object (e.g. if you perform paired single-cell RNA-seq and ATAC-seq). 
+This is done through `altExps` which can store summarized experiments. 
+
+- **Try to add an altExp (using `altExp<-` function)**
+
+```{r, filename = "R"}
+altExp(sce, "ATAC_counts") <- SummarizedExperiment(matrix(rpois(1000, 5), ncol = ncol(sce)))
+swapAltExp(sce, "ATAC_counts", saved = "RNA_counts")
+```
+
+Note that features can be different between different `altExps`.
+
+## Filtering cells and features
+
+### Pre-filtering
+
+- **Filter the SCE to only include (1) cells that have a complexity of 2000 genes or more and (2) genes that are are expressed in 10 or more cells. **
+
+```{r, filename = "R"} 
+sce_filtered <- sce[cells_per_gene > 10, genes_per_cell > 2000]
+```
+
+Almost all our analysis will be on this single object, of class SingleCellExperiment. 
+This object contains various "slots" that will store not only the raw count data, but also the results from various computations below.
+This has the advantage that we do not need to keep track of inidividual variables of interest - they can all be collapsed into a single object as long as these slots are pre-defined.
+
+### Filtering low-quality cells: mitochondrial counts
+
+For each cell, we can calculate the percentage of counts mapping on mitochondrial genes and store it in a column `percent_mito` in our `colData()`.
+
+- **Find mitochondrial genes, compute the % of total counts associated with these genes, and store it in `colData`**
+
+```{r, filename = "R"}
+rowData(sce_filtered)
+mito_genes <- rownames(sce_filtered)[grep(pattern = "^MT-", x = rowData(sce_filtered)$X2)]
+mito_genes_counts <- counts(sce_filtered)[mito_genes, ]
+percent_mito <- colSums(mito_genes_counts) / sce_filtered$total
+hist(percent_mito*100, main = '% of total counts over mitochondrial genes', col = 'wheat')
+colData(sce_filtered)$percent_mito <- percent_mito
+```
+
+- **Remove cells with a % of mitochondrial counts greater than 10%.**
+
+```{r, filename = "R"}
+sce_filtered <- sce_filtered[, sce_filtered$percent_mito <= 0.10]
+```
+
+### Checking housekeeping genes
+
+Another metric we use is the number of house keeping genes expressed in a cell. 
+These genes reflect commomn processes active in a cell and hence are a good global quality measure. 
+They are also abundant and are usually steadliy expressed in cells, thus less sensitive to the high dropout.
+
+```{r, filename = "R"}
+# Load the list of housekeeping genes
+hkgenes <- read.table("Share/tirosh_house_keeping.txt", skip = 2)
+hkgenes <- as.vector(hkgenes$V1)
+hkgenes <- rownames(sce_filtered)[match(hkgenes, rowData(sce_filtered)$X2)]
+hkgenes <- hkgenes[!is.na(hkgenes)]
+```
+
+- **Compute the number of detected HK genes for each cell and store it in `colData`**
+
+```{r, filename = "R"}
+colData(sce_filtered)$n_expressed_hkgenes <- Matrix::colSums(counts(sce_filtered)[hkgenes, ] > 0)
+```
+
+- **Plot (in a boxplot) the relationship between the # of detected housekeeping genes and the total UMI count (or # of detected genes) per cell. Comment**
+
+```{r, filename = "R"}
+colData(sce_filtered)$n_expressed_hkgenes <- Matrix::colSums(counts(sce_filtered)[hkgenes, ] > 0)
+boxplot(colData(sce_filtered)$total ~ colData(sce_filtered)$n_expressed_hkgenes)
+boxplot(colData(sce_filtered)$detected ~ colData(sce_filtered)$n_expressed_hkgenes)
+```
+
+- **Remove cells with a # of expressed housekeeping genes greater than 85**
+
+```{r, filename = "R"}
+sce_filtered <- sce_filtered[, sce_filtered$n_expressed_hkgenes <= 85]
+```
+
+### Checking gene set expression
+
+Sometimes we want to ask what is the expression of a gene / a set of a genes across cells. 
+This set of genes may make up a gene expression program we are interested in. 
+Another benefit at looking at gene sets is it reduces the effects of drop outs.
+
+Let's look at genes involved in the stress signature upon cell dissociation. 
+We calculate these genes average expression levels on the single cell level.
+
+```{r, filename = "R"}
+genes_dissoc <- c("ATF3", "BTG2", "CEBPB", "CEBPD", "CXCL3", "CXCL2", "CXCL1", "DNAJA1", "DNAJB1", "DUSP1", "EGR1", "FOS", "FOSB", "HSP90AA1", "HSP90AB1", "HSPA1A", "HSPA1B", "HSPA1A", "HSPA1B", "HSPA8", "HSPB1", "HSPE1", "HSPH1", "ID3", "IER2", "JUN", "JUNB", "JUND", "MT1X", "NFKBIA", "NR4A1", "PPP1R15A", "SOCS3", "ZFP36")
+genes_dissoc <- rownames(sce_filtered)[match(genes_dissoc, rowData(sce_filtered)$X2)]
+genes_dissoc <- unique(genes_dissoc[!is.na(genes_dissoc)])
+```
+
+- **Calculate the average gene set expression for each cell**
+
+```{r, filename = "R"}
+ave_expr_genes_dissoc <- colMeans(logcounts(sce_filtered[genes_dissoc, ]))
+colData(sce_filtered)$ave_expr_genes_dissoc <- ave_expr_genes_dissoc
+```
+
+- **Plot an embedding of the dataset, using a color scale representing the average expression of genes involved in the stress signature upon cell dissociation. Comment.**
+
+```{r, filename = "R"}
+plotReducedDim(sce_filtered, dimred = 'PCA', colour_by = 'ave_expr_genes_dissoc')
+```
+
+## Session info 
+
+```{r echo = FALSE, eval = TRUE}
+devtools::session_info()
+```

@@ -1,0 +1,62 @@
+# Lab 2: From .bcl to count matrix
+
+## Demultiplexing sequencing data with `cellranger mkfastq`
+
+```{r, echo=FALSE}
+```
+
+Navigate to your terminal in `RStudio` on AWS.
+
+Go to the [cellranger mkfastq page](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/mkfastq) and read the **Overview**.
+
+Go to the Terminal tab in your `RStudio` and take a look at the 10x samplesheet file:
+
+```{sh eval=FALSE, filename="bash"}
+less ~/Share/data_wrangling/cellranger-tiny-bcl-simple-1.2.0.csv
+```
+
+You can type `q` in the terminal to leave this file view.
+
+Next, explore the contents of the sequencing directory:
+
+```{sh eval=FALSE, filename="bash"}
+ls -l Share/data_wrangling/cellranger-tiny-bcl-1.2.0
+```
+
+Now we can demultiplex our bcl files by running the following command in the terminal:
+
+```{sh eval=FALSE, filename="bash"}
+cellranger mkfastq --id tiny-bcl --run ~/Share/data_wrangling/cellranger-tiny-bcl-1.2.0 --csv ~/Share/data_wrangling/cellranger-tiny-bcl-simple-1.2.0.csv
+```
+
+The output folders can be viewed by running the `ls` command:
+
+```{sh eval=FALSE, filename="bash"}
+ls -l tiny-bcl/outs/fastq_path/H35KCBCXY/test_sample
+```
+
+Look at the index read (`I1`), read 1 (`R1`), and read (`R2`) files using the command `less fastq_file_name.gz`. You can type `q` in the terminal to leave this view.
+
+Open the html file `tiny-bcl/outs/fastq_path/Reports/html/index.html` by navigating to the file in RStudio, using the Files Tab. When you click on the file, select the option to View in Web Browser. Take some time to explore the demultiplexed outputs.
+
+## Generating gene count matrices with `cellranger count`
+
+Go to the [cellranger count algorithm overview](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/algorithms/overview) and read the section on **Alignment** (Read Trimming, Genome Alignment, MAPQ adjustment, Transcriptome Alignment, UMI Counting).
+
+In the terminal run the command:
+
+```{sh eval=FALSE, filename="bash"}
+cellranger count --id counts --transcriptome ~/Share/refdata-gex-mm10-2020-A/ --fastqs tiny-bcl/outs/fastq_path/H35KCBCXY/test_sample --sample test_sample
+```
+
+While the count command is running, read about the [format of the feature-barcode matrices](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices).
+
+Once the count command is finished running, the pipeline outputs can be viewed as follows:
+
+```{sh eval=FALSE, filename="bash"}
+ls counts/outs
+```
+
+Can you locate the feature-barcode matrices? What is the difference between the `raw_feature_bc_matrix` and `filtered_feature_bc_matrix` data types?
+
+Now open the html file `counts/outs/web_summary.html` by navigating to the file in RStudio, using the Files Tab. When you click on the file, select the option to View in Web Browser. Take some time to explore the gene expression matrix outputs.

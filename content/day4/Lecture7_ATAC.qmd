@@ -1,0 +1,9 @@
+---
+slides: "Lecture7_ATAC.pdf"
+---
+
+# Lecture 7 - Advances in single-cell genomics: the epigenome
+
+[Slides here]({{< meta slides >}})
+
+<iframe height="800" width="100%" src="{{< meta slides >}}">

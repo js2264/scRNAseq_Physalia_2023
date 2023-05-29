@@ -1,0 +1,320 @@
+# Lab 5: Dimension reduction, clustering and annotation
+
+```{r eval = TRUE, echo = FALSE, warning = FALSE, error = FALSE, comment = FALSE, message = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+require(BiocManager)
+require(Seurat)
+require(scran)
+require(scuttle)
+require(scater)
+require(dynamicTreeCut)
+require(dendextend)
+require(bluster)
+require(cowplot)
+require(clustree)
+require(igraph)
+require(airway)
+require(uwot)
+require(DropletUtils)
+require(scRNAseq)
+require(TENxPBMCData)
+require(AnnotationDbi)
+require(AnnotationHub)
+require(celldex)
+require(SingleR)
+require(pheatmap)
+require(tidyverse)
+```
+
+## Dimensional reduction for clustering
+
+### Preparing dataset 
+
+We will prepare scRNAseq data from a PBMC run, provided by 10X and hosted by `Bioconductor` as a package. 
+
+- **Which package from `Bioconductor` gives streamlined access to PBMC scRNAseq dataset from 10X Genomics?**
+- **What does the object contain (type of data, number of cells, batches, organism, ...)? Can you get the same data from somewhere else?**
+
+```{r eval = FALSE, filename = "R"}
+library(tidyverse)
+library(SingleCellExperiment)
+sce <- TENxPBMCData::TENxPBMCData('pbmc4k')
+rownames(sce) <- scuttle::uniquifyFeatureNames(rowData(sce)$ENSEMBL_ID, rowData(sce)$Symbol_TENx)
+sce
+rowData(sce)
+colData(sce)
+table(sce$Library)
+```
+
+### Normalize counts using `scran`
+
+Just like in bulk high-throughput sequencing experiments, scRNAseq counts have to be normalized to the sequencing depth for each cell. 
+We can define the library size as the total sum of counts across all genes for each cell, the expected value of which is assumed to scale with any cell-specific biases. 
+However, this relies on the assumption that within the entire dataset, most genes are non-differentially expressed and expressed roughly within the same range. 
+Depending on the set up of the scRNAseq experiment, this can be entirely false. To avoid relying on this hypothesis, 
+we can (1) quickly pre-cluster cells, then (2) normalize cells using their library size factor separately in each cluster, then 
+(3) rescaling size factors so that they are comparable across clusters.
+
+All of this can be done very simply using the combo `quickCluster() + computeSumFactors() + logNormCounts()` from `scran/scuttle` packages. 
+
+```{r eval = FALSE, filename = "R"}
+clusters <- scran::quickCluster(sce)
+table(clusters)
+sce <- scran::computeSumFactors(sce, cluster = clusters)
+colData(sce)
+sce <- scuttle::logNormCounts(sce)
+assays(sce)
+```
+
+### Feature selection
+
+We often use scRNAseq data in exploratory analyses to characterize heterogeneity across cells. 
+Procedures like clustering and dimensionality reduction compare cells based on their gene expression profiles. 
+The choice of genes to include in this comparison may have a major impact on the performance of downstream methods. 
+Ideally, one wants to only select genes that contain useful information about the biology of the system while removing genes that contain random noise. 
+This aims to preserve interesting biological structure without the variance that obscures that structure.
+
+The simplest approach to feature selection is to compute the variance of the log-normalized expression values, to select the most variable genes. 
+Modelling of the mean-variance relationship can be achieved by the `modelGeneVar()` function from the `scran` package.
+
+```{r eval = FALSE, filename = "R"}
+sce_filtered_variance <- scran::modelGeneVar(sce)
+HVGs <- scran::getTopHVGs(sce_filtered_variance, prop = 0.1)
+rowData(sce)$isHVG <- rownames(sce) %in% HVGs
+head(rowData(sce))
+table(rowData(sce)$isHVG)
+
+## --- Visualizing the mean-variance fit
+df <- tibble(
+    mean = metadata(sce_filtered_variance)$mean, 
+    var = metadata(sce_filtered_variance)$var, 
+    trend = metadata(sce_filtered_variance)$trend(mean), 
+    HVG = rowData(sce)$isHVG
+)
+ggplot(df) + 
+    geom_point(aes(x = mean, y = var, col = HVG), alpha = 0.4) + 
+    geom_line(aes(x = mean, y = trend), col = 'darkred') +
+    theme_minimal() + 
+    labs(x = 'Gene mean exp. (norm.)', y = 'Gene exp. variance')
+```
+
+### PCA on filtered dataset
+
+We now have normalized counts filtered for the top 500 genes varying with the greatest biological significance.  
+Still, that represents a 500 x nCells (~8,000) dataset (each row being a feature). This is still too big to reliably use in standard clustering approaches. 
+We can further compress the dataset. The most widely used approach is `PCA`: 
+it computes a small number of "components" (typically 5-50) optimally summarizing the variability of the whole dataset, 
+while retaining linearity of the underlying numerical data and being computationallt quite efficient. 
+
+- **Leverage `scater` package to compute a `PCA` embedding of the filtered data by taking into account the technical variability.**
+
+```{r eval = FALSE, filename = "R"}
+sce <- scran::denoisePCA(
+    sce, 
+    technical = sce_filtered_variance, 
+    subset.row = HVGs, 
+    min.rank = 15
+)
+p <- scater::plotReducedDim(sce, 'PCA', colour_by = 'sizeFactor') + ggtitle('denoised PCA')
+p
+```
+
+## Clustering 
+
+Clustering is an unsupervised learning procedure that is used in scRNA-seq data 
+analysis to empirically define groups of cells with similar expression profiles. 
+Its primary purpose is to summarize the data in a digestible format for human interpretation. 
+
+After annotation based on marker genes, the clusters can be treated as proxies for 
+more abstract biological concepts such as cell types or states. Clustering is thus a critical 
+step for extracting biological insights from scRNA-seq data.
+
+### Clustering algorithms
+
+Three main approaches can be used: 
+
+1. Hierarchical clustering
+2. k-means clustering
+3. Graph-based clustering
+
+Today, we will focus on graph-based clustering, as it is becoming the standard for scRNAseq: 
+it is a flexible and scalable technique for clustering even the largest scRNA-seq datasets. 
+We first build a graph where each node is a cell that is connected by edges to its nearest neighbors in the high-dimensional space. 
+Edges are weighted based on the similarity between the cells involved, with higher weight given to cells that are more closely related.
+
+- **Compute graph-based clustering of the PBMC dataset.**
+
+```{r eval = FALSE, filename = "R"}
+graph <- scran::buildSNNGraph(
+    sce, 
+    k = 5, 
+    use.dimred = 'PCA'
+)
+sce_clust <- igraph::cluster_louvain(graph)$membership
+table(sce_clust)
+sce$clusters_graph <- factor(sce_clust)
+```
+
+- **What are the main parameters to choose? How do they impact the clustering?**
+
+```{r eval = FALSE, filename = "R"}
+graph2 <- scran::buildSNNGraph(
+    sce, 
+    k = 50, 
+    use.dimred = 'PCA'
+)
+sce_clust2 <- igraph::cluster_louvain(graph2)$membership
+table(sce_clust, sce_clust2)
+```
+
+### Dimensional reduction for clustering visualization
+
+`PCA` is a powerful linear approach to compress large datasets into smaller dimensional spaces. However, 
+it struggles at emphasizing the existence of clusters in complex datasets, when visualized in 2D. 
+
+`scater` provides a handy way to perform more complex data embeddings: 
+
+    - tSNE
+    - UMAP
+    - Diffusion Map
+    - Multi-Dimensional Scaling (MDS)
+    - Non-negative Matrix Factorization (NMF)
+
+- **Explore the different dimensional reduction algorithms, trying different hyperparameters combinations.**
+
+When you run these commands, pay attention to how long each command takes to run! While this run, check the `Help` page for each function (e.g. `?runTSNE`)
+
+```{r eval = FALSE, filename = "R"}
+reducedDims(sce)
+sce <- scater::runTSNE(sce, subset_row = HVGs)
+sce <- scater::runUMAP(sce, subset_row = HVGs)
+reducedDims(sce)
+reducedDim(sce, 'UMAP')[1:10, ]
+```
+
+- **Use the `scater::plotReducedDim()` function to plot cells in each embedding. Comment.**
+
+```{r eval = FALSE, filename = "R"}
+require(patchwork)
+p<- scater::plotReducedDim(sce, 'PCA', colour_by = 'clusters_graph') + ggtitle('denoised PCA') +
+    scater::plotReducedDim(sce, 'TSNE', colour_by = 'clusters_graph') + ggtitle('tSNE') +
+    scater::plotReducedDim(sce, 'UMAP', colour_by = 'clusters_graph') + ggtitle('UMAP')
+```
+
+### For the pros of clustering... Compare different clustering approaches
+
+Leveraging the `bluster` package, different clustering approaches can be performed using a uniformed syntax, to compare their output. 
+
+- **Using `clusterSweep()`, compare the effect of different `k` neighbor values when performing graph-based clustering.**
+
+```{r eval = FALSE, filename = "R"}
+clusters <- bluster::clusterSweep(
+    reducedDim(sce, 'PCA'), 
+    BLUSPARAM = bluster::SNNGraphParam(),
+    k = c(5L, 15L, 25L, 50L), 
+    cluster.fun = c("louvain")
+)
+colnames(clusters$clusters)
+head(clusters$clusters)
+clusters$parameters
+require(patchwork)
+require(ggraph)
+p <- cowplot::plot_grid(
+    clustree::clustree(
+        clusters$clusters %>% setNames(1:ncol(.)) %>% as.data.frame(),
+        prefix = 'X',
+        edge_arrow=FALSE
+    ), 
+    cowplot::plot_grid(
+        scater::plotReducedDim(sce, 'TSNE', colour_by = I(clusters$clusters[, 'k.5_cluster.fun.louvain'])) + ggtitle('k = 5'),
+        scater::plotReducedDim(sce, 'TSNE', colour_by = I(clusters$clusters[, 'k.15_cluster.fun.louvain'])) + ggtitle('k = 15'),
+        scater::plotReducedDim(sce, 'TSNE', colour_by = I(clusters$clusters[, 'k.25_cluster.fun.louvain'])) + ggtitle('k = 25'),
+        scater::plotReducedDim(sce, 'TSNE', colour_by = I(clusters$clusters[, 'k.50_cluster.fun.louvain'])) + ggtitle('k = 50')
+    ), 
+    nrow = 2, 
+    rel_heights = c(0.3, 0.7)
+)
+table(clusters$clusters[, 'k.5_cluster.fun.louvain'])
+```
+
+## Cell annotation
+
+### Find marker genes 
+
+To interpret clustering results, one needs to identify the genes that drive separation between clusters.
+These marker genes allow to assign biological meaning to each cluster based on their functional annotation. 
+In the most obvious case, the marker genes for each cluster are *a priori* associated with particular cell types, 
+allowing us to treat the clustering as a *proxy* for cell type identity.
+
+A general strategy is to perform DE tests between pairs of clusters and then combine results into a single ranking of marker genes for each cluster.
+
+```{r eval = FALSE, filename = "R"}
+markers <- scran::findMarkers(sce, groups = sce$clusters_graph)
+```
+
+- **Find markers strongly overexpressed in each cluster. Check `?scran::findMarkers` to find the right options to use.**
+
+```{r eval = FALSE, filename = "R"}
+markers <- scran::findMarkers(
+    sce, 
+    groups = sce$clusters_graph, 
+    direction = "up", 
+    lfc = 1
+)
+head(markers[[1]])
+markers <- lapply(markers, function(df) {
+    rownames(df[df$Top <= 5,])
+})
+```
+
+- **Plot average expression of the first marker of the first cluster in UMAP**
+
+```{r eval = FALSE, filename = "R"}
+p <- scater::plotReducedDim(sce, 'TSNE', colour_by = markers[[2]][[1]])
+```
+
+### Automated cell annotation
+
+Many cell type reference databases are available over the Internet. 
+Today, we will use a reference constructed from `Blueprint` and `ENCODE` data (`Martens and Stunnenberg 2013`; `The ENCODE Project Consortium 2012`). 
+This reference is available as a `SummarizedExperiment` containing log-normalized gene expression for manually annotated samples. 
+
+```{r eval = FALSE, filename = "R"}
+ref <- celldex::BlueprintEncodeData()
+prediction_types <- SingleR::SingleR(
+    test = sce, 
+    ref = ref, 
+    labels = ref$label.main
+)
+sce$annotation <- prediction_types$labels
+table(sce$annotation)
+table(sce$annotation, sce$clusters_graph)
+```
+
+- **Using `scater` and `SingleR` utilities, visually compare the annotation scores for cells in each cluster.**
+- **Did the automated annotation work robuslty? How does it compare to our clustering? Is automated annotation as sensitive as graph-based clustering?**
+
+```{r eval = FALSE, filename = "R"}
+p <- SingleR::plotScoreHeatmap(prediction_types)
+p <- scater::plotReducedDim(sce, 'TSNE', colour_by = 'annotation') + ggtitle('Automated annotation')
+p <- pheatmap::pheatmap(
+    log2(table(Annotation = sce$annotation, Cluster = sce$clusters_graph)+10), 
+    color = colorRampPalette(c("white", "darkred"))(101)
+)
+```
+
+## Bonus 
+
+Try to fill in the analysis template in `bin/prepare_Ernst.R` to execute the different 
+processing/analysis steps we covered in the previous exercises and this one. If you prefer 
+using `Seurat`, don't hesitate to modify the base template! 
+
+## Acknowledgements 
+
+This exercise was adapted from Chapts. 7-12 of [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/release/OSCA/). 
+
+## Session info 
+
+```{r eval = TRUE, echo = FALSE}
+devtools::session_info()
+```

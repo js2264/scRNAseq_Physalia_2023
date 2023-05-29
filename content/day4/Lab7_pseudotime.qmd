@@ -1,0 +1,372 @@
+# Lab 7: Pseudotime analyses
+
+```{r eval = TRUE, echo = FALSE, warning = FALSE, error = FALSE, comment = FALSE, message = FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+```{r eval = TRUE, echo = FALSE, warning = FALSE, error = FALSE, comment = FALSE, message = FALSE}
+require(BiocManager)
+require(scran)
+require(scuttle)
+require(scater)
+require(cowplot)
+require(igraph)
+require(AnnotationDbi)
+require(AnnotationHub)
+require(mgcv)
+require(slingshot)
+require(velociraptor)
+require(tradeSeq)
+require(tidyverse)
+```
+
+::: {.callout-tip icon='true'}
+## Aims
+
+- Understand the requirements for RNA velocity computation
+- Process scRNAseq using 'spliced' counts
+- Perform lineage inference 
+- Compute RNA velocity and use it to orientate lineages
+:::
+
+## Process testis data in R
+
+### Import testis data from GSE112013 and pre-process it
+
+The workflow we have covered in the previous days can be reused here. 
+
+- **Import testis dataset in R, remove doublets, filter genes, normalize `counts`, correct for batch effect and cluster cells.**
+
+```{r eval = FALSE, filename = "R"}
+library(SingleCellExperiment)
+library(tidyverse)
+
+# Download raw file
+download.file(
+    'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE112nnn/GSE112013/suppl/GSE112013_Combined_UMI_table.txt.gz', 
+    'Guo_testis/GSE112013_Combined_UMI_table.txt.gz'
+)
+system('gunzip Guo_testis/GSE112013_Combined_UMI_table.txt.gz')
+
+# Create SingleCellExperiment object
+x <- vroom::vroom('Guo_testis/GSE112013_Combined_UMI_table.txt')
+counts <- as.matrix(x[, -1])
+genes <- as.data.frame(x[, 1])
+cells <- data.frame(cellid = colnames(x[, -1]))
+testis <- SingleCellExperiment(
+    assays = list(counts = counts), 
+    colData = cells, 
+    rowData = genes
+)
+testis$Barcode <- str_replace(testis$cellid, 'Donor.-', '') |> str_replace('-.', '')
+testis <- testis[, !duplicated(testis$Barcode)]
+testis$donor <- str_replace(testis$cellid, '-.*', '')
+testis$replicate <- str_replace(testis$cellid, '.*-', '')
+rownames(testis) <- rowData(testis)$Gene
+set.seed(1000)
+
+# Remove doublets
+testis <- scDblFinder::scDblFinder(testis)
+testis <- testis[, testis$scDblFinder.class == 'singlet']
+
+# Recover human genomic, protein-coding gene informations
+library(plyranges)
+ah <- AnnotationHub::AnnotationHub()
+AnnotationHub::query(ah, c('gene annotation', 'ensembl', '102', 'homo_sapiens', 'GRCh38'))
+gtf <- AnnotationHub::query(ah, c('Homo_sapiens.GRCh38.102.chr.gtf'))[[1]]
+genes <- gtf |> 
+    filter(type == 'gene') |> 
+    filter(gene_biotype == 'protein_coding') |> 
+    filter(gene_source == 'ensembl_havana') 
+genes <- genes[!duplicated(genes$gene_name)]
+
+# Annotate genes in testis dataset and filter out non-relevant genes
+testis <- testis[genes$gene_name[genes$gene_name %in% rownames(testis)], ]
+rowRanges(testis) <- genes[match(rownames(testis), genes$gene_name)]
+rowData(testis) <- rowData(testis)[, c('gene_name', 'gene_id')]
+rownames(testis) <- scuttle::uniquifyFeatureNames(rowData(testis)$gene_id, rowData(testis)$gene_name)
+
+# Get preliminary QCs per cell and per gene
+testis <- scuttle::addPerCellQCMetrics(testis)
+testis <- scuttle::addPerFeatureQCMetrics(testis)
+
+# Filter out genes not expressed in at least 10 cells
+testis <- testis[rowSums(assay(testis, 'counts') > 0) >= 10, ]
+
+# Normalize counts using VST
+cnts <- as(assay(testis, 'counts'), 'dgCMatrix')
+colnames(cnts) <- testis$cellid
+rownames(cnts) <- rownames(testis)
+testis_vst <- sctransform::vst(cnts, return_cell_attr = TRUE)
+corrected_cnts <- sctransform::correct(testis_vst)
+assay(testis, 'corrected_counts', withDimnames = FALSE) <- corrected_cnts
+assay(testis, 'logcounts', withDimnames = FALSE) <- log1p(corrected_cnts)
+
+# Computing biological variance of each gene
+testis_variance <- scran::modelGeneVar(testis)
+HVGs <- scran::getTopHVGs(testis_variance, prop = 0.1)
+rowData(testis)$isHVG <- rownames(testis) %in% HVGs
+
+# Embedding dataset in PCA space, correcting for batch effect
+mergedBatches <- batchelor::fastMNN(
+    testis, 
+    batch = testis$donor, 
+    subset.row = HVGs, 
+    BPPARAM = BiocParallel::MulticoreParam(workers = 12)
+)
+reducedDim(testis, 'corrected') <- reducedDim(mergedBatches, 'corrected')
+
+# Embedding dataset in shared k-nearest neighbors graph for clustering 
+graph <- scran::buildSNNGraph(testis, use.dimred = 'corrected')
+
+# Cluster cells using Louvain community finding algorithm
+testis_clust <- igraph::cluster_louvain(graph)$membership
+table(testis_clust)
+testis$cluster <- factor(testis_clust)
+
+# Embedding dataset in TSNE space for visualization
+set.seed(10)
+testis <- scater::runTSNE(testis, dimred = 'corrected')
+
+# Visualize embeddings
+p <- cowplot::plot_grid(
+    scater::plotReducedDim(testis, 'corrected', colour_by = 'donor'),
+    scater::plotReducedDim(testis, 'corrected', colour_by = 'cluster'),
+    scater::plotReducedDim(testis, 'TSNE', colour_by = 'donor'),
+    scater::plotReducedDim(testis, 'TSNE', colour_by = 'cluster')
+)
+```
+
+### Annotate cells using HPA resources
+
+- **Load `HPA` data [from internet](https://www.proteinatlas.org/download/rna_single_cell_type.tsv.zip).**
+- **Try to format it as a `SummarizedExperiment`.**
+- **What celltypes are profiled?**
+
+```{r eval = FALSE, filename = "R"}
+download.file(
+    'https://www.proteinatlas.org/download/rna_single_cell_type.tsv.zip', 
+    'Guo_testis/rna_single_cell_type.tsv.zip'
+)
+system('unzip Guo_testis/rna_single_cell_type.tsv.zip')
+system('mv rna_single_cell_type.tsv Guo_testis/')
+HPA <- vroom::vroom('Guo_testis/rna_single_cell_type.tsv') |> 
+    pivot_wider(names_from = `Cell type`, values_from = 'nTPM') |> 
+    dplyr::select(-Gene) |> 
+    distinct(`Gene name`, .keep_all = TRUE) |> 
+    column_to_rownames('Gene name') |> 
+    SummarizedExperiment::SummarizedExperiment(colData = tibble(cell_type = colnames(.)), assays = list('logcounts' = .))
+```
+
+- **Use these cell type profiles to annotate cell types in the testis dataset.**
+
+```{r eval = FALSE, filename = "R"}
+# Transfer annotations to `testis`
+predictions <- SingleR::SingleR(
+    test = testis, 
+    ref = HPA, 
+    labels = colData(HPA)$cell_type, 
+    clusters = testis$cluster
+)
+testis$annotation <- predictions$labels[testis$cluster]
+p <- cowplot::plot_grid(
+    scater::plotReducedDim(testis, dimred = 'corrected', colour_by = 'cluster', text_by = 'cluster') + ggtitle('Testis data, PCA, graph-based clusters'), 
+    scater::plotReducedDim(testis, dimred = 'corrected', colour_by = 'annotation', text_by = 'annotation') + ggtitle('PCA, Annotations transferred from HPA'),
+    scater::plotReducedDim(testis, dimred = 'TSNE', colour_by = 'cluster', text_by = 'cluster') + ggtitle('Testis data, tSNE, graph-based clusters'), 
+    scater::plotReducedDim(testis, dimred = 'TSNE', colour_by = 'annotation', text_by = 'annotation') + ggtitle('tSNE, Annotations transferred from HPA')
+)
+```
+
+### Filter the testis dataset to only germinal cells.  
+
+```{r eval = FALSE, filename = "R"}
+germcells <- testis[, testis$annotation %in% c("Spermatogonia", "Spermatocytes", "Early spermatids", "Late spermatids")]
+```
+
+## Trajectory inference (TI) in scRNAseq
+
+An important question in scRNAseq field of research is: how to identify a cell trajectory 
+from high-dimensional expression data and map individual cells onto it? 
+A large number of methods have currently emerged, each one with their own specificities, assumptions, and strengths. 
+A nice breakdown (from 2019, so already very outdated!) is available from 
+`Saelens et al., Nat. Biotech. 2018` (doi: 10.1038/s41587-019-0071-9): 
+
+![](.img/2021-06-01-11-29-36.png)
+
+### Trajectory 
+
+`Slingshot` is perhaps one of the most widely used algorithms for users who want to focus on `R`-based approaches. 
+
+- **Read Slingshot documentation to understand how to identify lineages in a scRNAseq dataset in R**
+- **Why is it recommended to infer lineages from PCA space rather than t-SNE or UMAP space, even though these spaces do "reveal" an obvious trajectory in 2D?**
+- **Infer lineages, using cluster annotations as information to build the MST. Note that you will first need to remove the 50th PCA dimension for `slingshot` to work (bug reported).** 
+
+```{r eval = FALSE, filename = "R"}
+reducedDim(germcells, 'corrected_2') <- reducedDim(germcells, 'corrected')[, 1:49]
+germcells_slingshot <- slingshot::slingshot(
+    germcells, 
+    reducedDim = 'corrected_2', 
+    clusterLabels = germcells$annotation
+)
+slingshot::slingLineages(germcells_slingshot)
+```
+
+### Pseudotime
+
+- **Recover pseudotime values and principal curves from `slingshot` output**
+
+```{r eval = FALSE, filename = "R"}
+germcells$pseudotime <- slingshot::slingPseudotime(germcells_slingshot)[, 'Lineage1']
+pca_curve <- slingshot::slingCurves(germcells_slingshot, as.df = TRUE)
+colnames(pca_curve) <- paste0('PC', 1:ncol(pca_curve))
+tsne_curve <- slingshot::embedCurves(germcells_slingshot, 'TSNE', smoother = 'loess', span = 0.1) |> slingshot::slingCurves(as.df = TRUE)
+tsne_curve <- tsne_curve[order(tsne_curve$Order), ]
+colnames(tsne_curve) <- paste0('TSNE', 1:ncol(tsne_curve))
+```
+
+- **Plot PCA and tSNE embeddings, coloring cells by either their annotation or their pseudotime value. Overlay the principal curves to each embedding**
+
+```{r eval = FALSE, filename = "R"}
+df <- tibble(
+    PC1 = reducedDim(germcells, 'corrected')[,1], 
+    PC2 = reducedDim(germcells, 'corrected')[,2], 
+    TSNE1 = reducedDim(germcells, 'TSNE')[,1], 
+    TSNE2 = reducedDim(germcells, 'TSNE')[,2], 
+    annotation = germcells$annotation, 
+    pseudotime = germcells$pseudotime
+)
+p <- cowplot::plot_grid(
+    df |> 
+        ggplot() + 
+        geom_point(aes(PC1, PC2, col = annotation)) + 
+        geom_path(data = pca_curve, aes(x = PC1, y = PC2)) + 
+        theme_bw() + 
+        coord_fixed(),
+    df |> 
+        ggplot() + 
+        geom_point(aes(TSNE1, TSNE2, col = annotation)) + 
+        geom_path(data = tsne_curve, aes(x = TSNE1, y = TSNE2)) + 
+        theme_bw() + 
+        coord_fixed(),
+    df |> 
+        ggplot() + 
+        geom_point(aes(PC1, PC2, col = pseudotime)) + 
+        geom_path(data = pca_curve, aes(x = PC1, y = PC2)) + 
+        theme_bw() + 
+        coord_fixed(),
+    df |> 
+        ggplot() + 
+        geom_point(aes(TSNE1, TSNE2, col = pseudotime)) + 
+        geom_path(data = tsne_curve, aes(x = TSNE1, y = TSNE2)) + 
+        theme_bw() + 
+        coord_fixed()
+)
+```
+
+- **Check the distribution of pseudotime values across the different cell clusters.**
+- **What do you observe? Where you expecting this?**
+
+```{r eval = FALSE, filename = "R"}
+p <- tibble(
+    annotation = factor(germcells$annotation, c("Spermatogonia", "Spermatocytes", "Early spermatids", "Late spermatids")), 
+    pseudotime = germcells$pseudotime
+) |> 
+    ggplot(aes(x = annotation, y = pseudotime, fill = annotation)) + 
+    geom_violin(scale = 'width') + 
+    geom_boxplot(outlier.shape = NULL, width = 0.1, fill = 'white') + 
+    theme_bw() + 
+    theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) 
+```
+
+- **Correct pseudotime values as you would expect it to be.**
+
+```{r eval = FALSE, filename = "R"}
+germcells$pseudotime <- scales::rescale((-1 * slingshot::slingPseudotime(germcells_slingshot)[, 'Lineage1']), c(0, 1))
+```
+
+### BONUS: Daunting snippet but that makes a cool figure for a paper: modeling pseudotime-dependent gene expression
+
+Using pseudotime / cell, one can model gene expression along the differentiation process. 
+This alleviates the need to study gene expression **per cell**, and allows one to focus 
+on process-related effects (e.g. gene expression during a developmental trajectory). 
+
+- **Try to do so for few markers of spermatogonia, spermatocytes and spermatids.**
+
+```{r eval = FALSE, filename = "R"}
+genes <- c('ID4', 'SYCP3', 'DMC1', 'ACR', 'PRM1', 'PGK2')
+fitExprs <- logcounts(germcells[genes, ]) |> # ----------------------------------- Get norm. counts for genes of interest
+    as.matrix() |> 
+    t() |> 
+    as_tibble() |> 
+    mutate(  # ----------------------------------------------------------------- Add information for each cell
+        cellID = colnames(germcells), 
+        annotation = factor(germcells$annotation, c("Spermatogonia", "Spermatocytes", "Early spermatids", "Late spermatids")), 
+        pseudotime = germcells$pseudotime
+    ) |> 
+    pivot_longer(contains(genes), names_to = 'gene', values_to = 'obs_expr') |> # - Pivot in "long" tidy format 
+    mutate(gene = factor(gene, genes)) |> 
+    group_by(gene) |> # ------------------------------------------------------- Group rows by genes
+    nest(.key = 'data') |> # -------------------------------------------------- For each gene, extract the subtable into a column named data
+    mutate(
+        gamModel = map(data, ~mgcv::gam(obs_expr ~ s(pseudotime, bs = "cs"), data = .)), 
+        gamFitted_expr = map(gamModel, predict) # ------------------------------ For each gene, fit the expression values ~ pseudotime with a GAM
+    ) |> 
+    dplyr::select(-ends_with('Model')) |> 
+    unnest(c(data, ends_with('_expr'))) # -------------------------------------- Unnest all the modelled expressions
+p <- ggplot(fitExprs) + 
+    geom_point(aes(x = pseudotime, y = obs_expr, col = annotation), alpha = 0.5) + 
+    geom_line(aes(x = pseudotime, y = gamFitted_expr), col = 'white', size = 2, alpha = 0.5) + 
+    geom_line(aes(x = pseudotime, y = gamFitted_expr), col = '#af2d0c', size = 1) +
+    theme_bw() + 
+    facet_grid(gene~., scales = 'free') + 
+    labs(y = 'logcounts') + 
+    ggtitle('Fitted models of pseudotime-dependent gene expression')
+```
+
+## Ordering trajectory with RNA velocity
+
+As we saw earlier, TI does not necessarily know which direction is right for a given trajectory. 
+This orientation can be sometimes refined using RNA velocity. 
+Let's see whether RNA velocity helps orientating our spermatocyte differentiation lineage trajectory here. 
+
+- **Read `velociraptor` documentation. What do you need to compute RNA velocity scores in R?**
+- **Import `spliced` and `unspliced` counts computed with `velocyto` in R.**
+- **Try and compute RNA velocity.**
+
+```{r eval = FALSE, filename = "R"}
+full_GSE112013_counts <- LoomExperiment::import('Share/Guo_testis/Guo_testis_full-counts.loom')
+germcells <- germcells[rowData(germcells)$gene_id %in% rowData(full_GSE112013_counts)$Accession, ]
+full_GSE112013_counts_germcells <- full_GSE112013_counts[match(rowData(germcells)$gene_id, rowData(full_GSE112013_counts)$Accession), match(germcells$Barcode, full_GSE112013_counts$Barcode)]
+dim(germcells)
+dim(full_GSE112013_counts_germcells)
+assay(germcells, 'spliced', withDimnames=FALSE) <- assay(full_GSE112013_counts_germcells, 'spliced')
+assay(germcells, 'unspliced', withDimnames=FALSE) <- assay(full_GSE112013_counts_germcells, 'unspliced')
+velo_out <- velociraptor::scvelo(
+    germcells, 
+    assay.X = "counts", 
+    subset.row = rowData(germcells)$isHVG, 
+    use.dimred = "corrected"
+)
+velo_out
+```
+
+- **Embed the velocity field in tSNE scRNAseq embedding and plot the RNA velocity field on top of tSNE projection. Conclude.**
+
+```{r eval = FALSE, filename = "R"}
+embedded_velo <- velociraptor::embedVelocity(reducedDim(germcells, "TSNE"), velo_out)
+head(embedded_velo)
+grid_df <- velociraptor::gridVectors(reducedDim(germcells, "TSNE"), embedded_velo, resolution = 30, scale = TRUE)
+head(grid_df)
+p <- scater::plotReducedDim(germcells, 'TSNE', colour_by = "annotation", point_alpha = 0.5) +
+    geom_segment(
+        data = grid_df, 
+        mapping = aes(x = start.1, y = start.2, xend = end.1, yend = end.2), 
+        arrow = arrow(length = unit(0.05, "inches"), type = "closed")
+    )
+```
+
+## Session info 
+
+```{r eval = TRUE, echo = FALSE}
+devtools::session_info()
+```

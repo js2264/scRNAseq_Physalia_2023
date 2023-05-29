@@ -1,0 +1,249 @@
+# Lab 1: Familiarizing yourself with the course AWS instance
+
+## Connect to RStudio Server
+
+Most of single-cell RNA-seq analysis takes place either in `python` or in `R`. Here, we focus on how to leverage `R` to investigate scRNAseq data. 
+`RStudio` is an `IDE` (Integrated Development Environment, in other words: a nice graphical interface to run `R`-related commands). 
+
+For this workshop, we have installed `R` and `RStudio` on AWS. We can directly use `RStudio` (actually, `RStudio-server` since it is installed on an AWS remote server). 
+Simply open a browser and copy-paste [the following address](https://{{< meta IP >}}:8787): 
+
+```{r, echo=FALSE}
+writeLines("https://{{< meta IP >}}:8787")
+```
+
+An `RStudio` log in page will appear; to log in, use your `user` ID for both ID and password. 
+
+Notice how when you log in `Rstudio`, there are multiple panels. Familiarize yourself with the different panels. 
+
+The interactive `R` console is generally found in the bottom left corner of `RStudio`(though it may be in another corner sometimes). 
+All the rest (history panel, environment panel, directory explorer panel, editor panel) are extra features provided by `RStudio`. 
+
+::: {.callout-tip icon='true'}
+## Some useful commands in `R`:
+
+Within the `R` console, you can safely use `R`-dedicated commands.
+Do you know the most common ones? The semantics are a different from the `terminal` commands you may be used to...
+
+```{r eval = FALSE, filename = "R"}
+getwd() # equivalent of `pwd` in terminal
+dir.create('~/data/') # equivalent of `mkdir ~/data/` in terminal
+setwd("~/data/") # equivalent of `cd ~/data/` in terminal
+list.files("~/data/") # equivalent of `ls` in terminal
+download.file("...") # equivalent of `wget ...` in terminal
+```
+:::
+
+## Use a AWS terminal within RStudio
+
+A general issue with bioinformatic analyses stems from the fact that nobody works in the same environment: 
+
+- Are you working on Mac? Linux? Windows? 
+- Do you have a lot of computational power? Perhaps a GPU card? 
+- Are you connected to the Internet? With a fast connection? Are you working behind a proxy? 
+
+To ensure that we are all working in the same environment, we rely on AWS (Amazon Web Services) EC2 (Elastic Cloud 2) instances. 
+EC2 instances are "virtual" computers to which you can connect remotely, from a local computer.   
+
+The instance is common for everybody. We are thus all sharing the same "computer"; this means: 
+
+- **Shared resources**
+- **Same access to shared files**
+- **Same access to system-wide softwares and conda environments**
+
+The easiest way for us to launch **`bash` commands from a terminal** in AWS is to do it through `RStudio`: You can open up a `terminal` directly from within `RStudio` as follow: go to `Tools` > `Terminal` > `New terminal`. 
+This should open up a new tab in the bottom left corner (next to the `R` console). 
+
+::: {.callout-warning icon='true'}
+## `R console` versus `terminal`:
+
+From here onwards, be sure you completely understand the difference between **"`R console`"** and **"`terminal` (or `shell`)"**. 
+They are entirely different things, and can be both accessed within `RStudio`. It is crucial you understand the difference between the two to not get confused for the rest of the course. 
+:::
+
+## Basic terminal commands
+
+The same `bash` commands are available in AWS `terminal`, regardless of whether you access the terminal from `RStudio` or through `ssh`. 
+
+One can list files, download files, check help pages, ..., just like in `R`. 
+
+- Check the your present directory
+
+```{sh eval = FALSE, filename = "bash"}
+pwd
+```
+
+- Check history
+
+```{sh eval = FALSE, filename = "bash"}
+history
+```
+
+- put history into a `history.txt` file
+
+```{sh eval = FALSE, filename = "bash"}
+history > history.txt
+```
+
+- make a new folder called data
+
+```{sh eval = FALSE, filename = "bash"}
+mkdir data
+```
+
+- Go to the new `data` directory
+
+```{sh eval = FALSE, filename = "bash"}
+cd data
+```
+
+- move `history.txt` file into `data` directory
+
+```{sh eval = FALSE, filename = "bash"}
+mv ../history.txt ./
+```
+
+- check manual page of `wget` command (hit `q` to exit)
+
+```{sh eval = FALSE, filename = "bash"}
+man wget
+```
+
+- check specific help for `cellranger` command and subcommands
+
+```{sh eval = FALSE, filename = "bash"}
+cellranger --help
+cellranger count --help
+```
+
+- redirect wget help output into a file called `cellranger-help.txt`
+
+```{sh eval = FALSE, filename = "bash"}
+cellranger count --help > cellranger-help.txt
+```
+
+- Download a file from Internet with `wget`
+
+```{sh eval = FALSE, filename = "bash"}
+wget https://cf.10xgenomics.com/supp/cell-exp/cellranger-tiny-bcl-1.2.0.tar.gz
+```
+
+- List all files in a folder
+
+```{sh eval = FALSE, filename = "bash"}
+ls -l ~/Share/
+```
+
+::: {.callout-tip icon='true'}
+## Tip
+
+Download the `git` repository for this course from `GitHub`: 
+
+```{sh eval = FALSE, filename = "bash"}
+git clone https://github.com/js2264/scRNAseq_Physalia_2023.git
+```
+
+This downloads the repository for this course to your home folder on the AWS machine.  
+To get it on your local computer (to save the lectures and exercises), go to 
+[the GitHub repo page](https://github.com/js2264/scRNAseq_Physalia_2023), click on the 
+green `Code` button, then `Download ZIP`. Beware, the download may take a significant 
+time based on your internet connection (several hundreds MB). 
+:::
+
+## Single-cell RNA-seq datasets
+
+> "This is a course about single-cell RNA-seq analysis, after all, so where is my data?"
+
+Ok, **"your"** data is (most likely) yet to be sequenced! Or maybe you're interested in digging already existing databases! 
+I mean, who isn't interested in [this mind-blowing achievement from 10X Genomics](https://www.10xgenomics.com/blog/our-13-million-single-cell-dataset-is-ready-to-download)??
+
+[Human Cell Atlas](https://data.humancellatlas.org/explore/projects) is probably a good place to start digging, if you are interested in mammal-related studies. 
+For instance, let's say I am interested in epididymis differentiation. Boom: here is an entry from the HCA focusing on epididymis: 
+[link to HCA data portal](https://data.humancellatlas.org/explore/projects/842605c7-375a-47c5-9e2c-a71c2c00fcad).
+
+### Raw fastq reads from GEO 
+
+Here is the link to the actual paper studying epididymis:  
+[An atlas of human proximal epididymis reveals cell-specific functions and distinct roles for CFTR](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7471510/).
+
+- **Find and check out the corresponding `GEO` entries for this study. What type of sequencing data is available?**
+
+::: {.callout-tip icon='true'}
+Here is the link to the `GEO` page: [link](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE148963). 
+:::
+
+- **Can you find links to download the raw data from this paper?**
+
+There are several ways to find this information, e.g. `ffq` command line tool, 
+or using the web-based `sra-explorer` page ([here](https://sra-explorer.info/)). 
+You generally will need the `GEO` corresponding ID or SRA project ID (e.g. `SRPxxxxxx`...).
+
+- **Try to install and use the [`ffq` tool](https://github.com/pachterlab/ffq) from the Patcher lab.**
+
+```{sh eval = FALSE, filename = "bash"}
+ffq --help
+ffq -t GSE GSE148963 > GSE148963_search.txt
+head -n 30 GSE148963_search.txt
+```
+
+- **Can you find the links to raw data associated with the `GSE148963` GEO ID?**
+
+You can use a `grep` command: `grep` returns the lines which match a given pattern (e.g. a link...)!
+
+```{sh eval = FALSE, filename = "bash"}
+grep 'ftp://' GSE148963_search.txt
+```
+
+And with a bit of `sed` magick... 
+
+```{sh eval = FALSE, filename = "bash"}
+grep 'ftp://' GSE148963_search.txt | sed 's,.*ftp:,ftp:,' | sed 's,".*,,' | grep ".fastq" > GSE148963_fastqlist.txt
+## `ffq` looks through GEO repository to fing metadata associated with the `GSE148963` entry (including downloading links)
+## grep 'ftp://' recovers the text lines that contain downloading links
+## the `sed` commands clean up the text lines
+## the `wget` command downloads locally the links listed in the generated file (GSE148963_fastqlist.txt)
+# wget -i GSE148963_fastqlist.txt ## Do not run, it would take too long...
+```
+
+- **Check the content of the reads**
+
+A subset of the reads has been downloaded and put in the `~/Share/` folder. Have a look at it!
+
+```{sh eval = FALSE, filename = "bash"}
+zcat ~/Share/SRR11575369_1.fastq.gz | head -n 12
+```
+
+Try and understand the structure of the `fastq.gz` file. What is the meaning of each line?  
+
+How many reads are there in the `fastq.gz` file? And how long are they? Can you get a summary of what is in this file? All of these questions can be quickly answered using the [`seqkit`](https://bioinf.shenwei.me/seqkit/usage/) tool: 
+
+```{sh eval = FALSE, filename = "bash"}
+seqkit --help
+seqkit stats --help
+seqkit stat ~/Share/SRR11575369_1.fq.gz
+```
+
+### Processed count matrices
+
+Many times, researchers will provide a filtered count matrix when they publish scRNAseq experiments (along with mandatory raw `fastq` data, of course). 
+It's way lighter than `fastq` reads, and you can go ahead with downstream analyses a lot quicker. So how do you get these matrices? Human Cell Atlas Consortium provides many processed datasets. For instance, in our case, the `Leir et al` study is available at the [following link](https://data.humancellatlas.org/explore/projects/842605c7-375a-47c5-9e2c-a71c2c00fcad). GEO also hosts processed files. 
+
+- **Find GEO-hosted processed files for the `Leir et al` study. **
+
+You can download some of the processed files available in GEO from [the following webpage](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE148963).
+Scrolling down to the bottom of the page, there is a box labelled "Supplementary data". By clicking on "(custom)", a list of extra 
+supplementary files will appear. 
+
+- **Download and check the content of the count matrix, the genes and the barcodes files.  **
+- **What type of information does each file contain? How is it formatted? is it easily imported in R?  **
+- **How many cells were sequenced? How many genes were counted?  **
+- **Is it easy to interpret the count matrix? Why is it in such format?  **
+- **Comment on the file sizes between processed count matrix files and raw reads.  **
+
+## Bonus 
+
+For those of you who are already familiar with the basics, you can fast-forward 
+through this lab and start working on scRNAseq data directly. The script in 
+`bin/prepare_Ernst.R` is a template to process a publicly available scRNAseq dataset. 
+You can start exploring it to see if you understsand the different chunks of code and 
+their importance. All the content from this template will eventually be covered in the next labs. 

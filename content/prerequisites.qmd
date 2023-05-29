@@ -1,0 +1,110 @@
+# Prerequisites {-}
+
+The course is intended for those who have basic familiarity with Unix and 
+the R scripting language.
+
+We will also assume that you are familiar with mapping and analysing bulk 
+RNA-seq data as well as with the commonly available computational tools.
+
+* If a refresher is needed for Unix command line (hopefully not), please go over [this tutorial](https://ryanstutorials.net/linuxtutorial/) and its [companion cheatsheet](https://ryanstutorials.net/linuxtutorial/cheatsheet.php).
+* Getting down to basics: an introduction to the fundamentals of R ([courtesy of Mark Ravinet](markravinet.github.io/Introduction.html)).
+* Gentle introduction to `R/Biocondutor`: [here](https://bioconductor.github.io/BiocWorkshops/introduction-to-bioconductor-annotation-resources.html)
+* For a full in-depth guide of `Bioconductor` ecosystem: read the comprehensive `R/Bioconductor` book from Kasper D. Hansen available under the CC BY-NC-SA 4.0 license [[PDF]](/{{<myPackageUrl>}}docs/bioconductor.pdf)
+
+## Local configuration 
+
+* Ideally (though not strictly required), a configured SSH client (it should be already installed on Linux/Mac machines, `PuTTY` can be set up for Windows). 
+* Ideally (though not strictly required), a SSH ftp client (`Forklift` is excellent for Mac, although not free beyond the trial version; `cyberduck` can be used for Windows; `FileZilla` can be used for both Mac, Windows and Linux).
+* Computer with high-speed internet access (no specific configuration required - everything will be performed on a remote AWS machine). 
+* Zoom visioconference software
+
+## Remote configuration 
+
+The AWS machine is running with `Ubuntu` and has been set up as follows:
+
+```sh
+## --- Clean up previous R installs
+sudo apt purge r-base* r-recommended r-cran-*
+sudo apt autoremove
+sudo apt update
+sudo apt upgrade
+
+## --- Libraries
+sudo apt update
+sudo apt install libc6 libicu60 -y 
+sudo apt install -y \
+    gcc g++ perl python3 python3-pip python-dev \
+    automake make cmake less vim nano fort77 \
+    wget git curl bsdtar bzip2 gfortran unzip ftp \
+    libpng-dev libjpeg-dev \
+    texlive-latex-base default-jre build-essential \
+    libbz2-dev liblzma-dev libtool \
+    libxml2 libxml2-dev zlib1g-dev \
+    libdb-dev libglu1-mesa-dev zlib1g-dev  \
+    libncurses5-dev libghc-zlib-dev libncurses-dev \
+    libpcre3-dev libxml2-dev \
+    libblas-dev libzmq3-dev libreadline-dev libssl-dev \
+    libcurl4-openssl-dev libx11-dev libxt-dev \
+    x11-common libcairo2-dev \
+    libreadline6-dev libgsl0-dev \
+    libeigen3-dev libboost-all-dev \
+    libgtk2.0-dev xvfb xauth xfonts-base \
+    apt-transport-https libhdf5-serial-dev \
+    libudunits2-dev libgdal-dev libgeos-dev libproj-dev \
+    libv8-dev \
+    libmagick++-dev \
+    libharfbuzz-dev libfribidi-dev \
+    fftw3
+
+## --- R base install 
+sudo add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/'
+add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu `lsb_release -cs` -cran40/"
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+sudo apt update
+sudo apt install r-base r-recommended r-base-core r-base-dev
+```
+
+The following packages have been installed (along with their many dependencies, of course!): 
+
+```sh
+## --- Install important R packages for single-cell RNA-seq projects
+## pak 
+sudo Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.io/p/pak/stable/%s/%s/%s", .Platform$pkgType, R.Version()$os, R.Version()$arch))'
+
+## CRAN packages
+sudo Rscript -e 'pak::pkg_install(c("tidyverse", "devtools", "umap", "corrplot", "gam", "ggbeeswarm", "ggthemes", "Matrix", "zeallot", "fossil", "rgl", "BiocManager", "Seurat", "rliger", "Signac", "multtest", "metap"))'
+
+## Bioconductor Packages
+sudo Rscript -e 'pak::pkg_install(c("SingleCellExperiment", "scran", "scater", "batchelor", "DropletUtils", "AUCell", "plyranges", "ggraph", "clustree", "celldex", "SingleR", "slingshot", "tradeSeq", "velociraptor", "BUSpaRse", "org.Mm.eg.db", "org.Hs.eg.db", "destiny", "TENxPBMCData", "scRNAseq", "scDblFinder", "chromVAR", "EnsDb.Hsapiens.v75"))'
+
+## --- Install other softwares (fastQC, samtools, cellranger and cellranger indexes, ffq)
+
+# fastqc samtools
+sudo apt install fastqc samtools python3.8
+
+# cellranger
+cd /opt/
+sudo wget -O cellranger-7.1.0.tar.gz "https://cf.10xgenomics.com/releases/cell-exp/cellranger-7.1.0.tar.gz?Expires=1685143014&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9jZi4xMHhnZW5vbWljcy5jb20vcmVsZWFzZXMvY2VsbC1leHAvY2VsbHJhbmdlci03LjEuMC50YXIuZ3oiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkFXUzpFcG9jaFRpbWUiOjE2ODUxNDMwMTR9fX1dfQ__&Signature=aD0ZgbtDMNwI4C62fEuZ0ppBoTm-wAiQ~d9KWtWinvv5G9LdyRzJXED98eMrJg07yCHfnbCd8v7owzUVoZvDW1-pgmpOjpd2qLiaCQuaWsWGKgxJ4MtyPAl0Oi~0zRnGLwsFk1geDPxDBZVH9OBIrQsG3aNlApBxhxw4u6yYUT62PXtu2OjRQ-PieGlvH7TFbr-JjkpUpR-YEcQ6i0ORrdLxNt9HzeZX9s6s0dJ~NybRywBZI89KEoseyN6LZU13vtHl9BtPGIeA1Hwvpb2A1xsO5ueql3palHsT5Lnf7lY9QwXH4FECVAAoMCI8eP2dXHKtliJy0y~xLKVPEnSgGw__&Key-Pair-Id=APKAI7S6A5RYOXBWRPDA"
+sudo tar -xzvf cellranger-7.1.0.tar.gz
+sudo ln -s /opt/cellranger-7.1.0/cellranger /usr/local/bin/cellranger
+sudo wget https://cf.10xgenomics.com/supp/cell-exp/refdata-gex-mm10-2020-A.tar.gz
+sudo tar -xzvf refdata-gex-mm10-2020-A.tar.gz
+
+# ffq
+sudo apt install python3-distutils
+sudo pip install ffq
+
+# seqkit
+cd /opt/
+sudo wget -O seqkit_linux_amd64.tar.gz https://github.com/shenwei356/seqkit/releases/download/v2.4.0/seqkit_linux_amd64.tar.gz
+sudo tar -xzvf seqkit_linux_amd64.tar.gz
+sudo ln -s /opt/seqkit /usr/local/bin/seqkit
+
+# bcl2fastq
+sudo apt install alien
+cd /opt/
+wget http://support.illumina.com/content/dam/illumina-support/documents/downloads/software/bcl2fastq/bcl2fastq2-v2.17.1.14-Linux-x86_64.rpm
+sudo alien bcl2fastq2-v2.17.1.14-Linux-x86_64.rpm
+sudo dpkg -i bcl2fastq2_0v2.17.1.14-2_amd64.deb
+```
+

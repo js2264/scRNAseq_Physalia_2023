@@ -1,0 +1,9 @@
+---
+slides: "Lecture5_batchcorrection.pdf"
+---
+
+# Lecture 5 - Data integration and batch effect correction
+
+[Slides here]({{< meta slides >}})
+
+<iframe height="800" width="100%" src="{{< meta slides >}}">

@@ -1,0 +1,9 @@
+---
+slides: "Lecture3_qualitycontrol.pdf"
+---
+
+# Lecture 3 - Quality control for scRNA-Seq data
+
+[Slides here]({{< meta slides >}})
+
+<iframe height="800" width="100%" src="{{< meta slides >}}">

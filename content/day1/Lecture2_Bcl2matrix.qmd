@@ -1,0 +1,9 @@
+---
+slides: "Lecture2_Bcl2matrix.pdf"
+---
+
+# Lecture 2 - From sequencing reads to expression matrices
+
+[Slides here]({{< meta slides >}})
+
+<iframe height="800" width="100%" src="{{< meta slides >}}">

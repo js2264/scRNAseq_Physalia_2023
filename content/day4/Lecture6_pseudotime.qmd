@@ -1,0 +1,9 @@
+---
+slides: "Lecture6_pseudotime.pdf"
+---
+
+# Lecture 6 - Trajectories and pseudotimes
+
+[Slides here]({{< meta slides >}})
+
+<iframe height="800" width="100%" src="{{< meta slides >}}">
