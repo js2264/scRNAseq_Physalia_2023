@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.189">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="J. Serizay &amp; O. Ashenberg">
+
+<title>Single-cell RNAseq analysis with R/Bioconductor - Program</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../content/Rstudio.html" rel="next">
+<link href="../index.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Program</h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="../">Single-cell RNAseq analysis with R/Bioconductor</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/js2264/scRNAseq_Physalia_2023/" title="Source Code" class="sidebar-tool px-1"><i class="bi bi-github"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../index.html" class="sidebar-item-text sidebar-link">Welcome</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/program.html" class="sidebar-item-text sidebar-link active">Program</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/Rstudio.html" class="sidebar-item-text sidebar-link">RStudio</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/prerequisites.html" class="sidebar-item-text sidebar-link">Prerequisites</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">Day 1</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day1/Lecture1_introduction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Lecture 1 - Introduction to scRNAseq analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day1/Lab1_Intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lab 1: Familiarizing yourself with the course AWS instance</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day1/Lecture2_Bcl2matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Lecture 2 - From sequencing reads to expression matrices</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day1/Lab2_processingreads.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lab 2: From .bcl to count matrix</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Day 2</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day2/Lab3_Rbioc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Lab 3: Introduction to R/Bioconductor</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day2/Lecture3_qualitycontrol.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Lecture 3 - Quality control for scRNA-Seq data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day2/Lab4_data_wrangling_scRNAseq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Lab 4 - Single-cell RNA-seq data wrangling</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Day 3</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day3/Lecture4_clustering.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Lecture 4 - Identifying cell populations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day3/Lab5_clustering.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Lab 5: Dimension reduction, clustering and annotation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day3/Lecture5_batchcorrection.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Lecture 5 - Data integration and batch effect correction</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day3/Lab6_batch_correction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Lab 6 - Batch correction</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Day 4</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day4/Lecture6_pseudotime.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Lecture 6 - Trajectories and pseudotimes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day4/Lab7_pseudotime.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Lab 7: Pseudotime analyses</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day4/Lecture7_ATAC.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Lecture 7 - Advances in single-cell genomics: the epigenome</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day4/Lab8_atac-seq.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Lab 8 - Single-cell ATAC-seq analysis workflow</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Day 5</a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/day5/Lecture8_spatial-transcriptomics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Lecture 8 - Advances in single-cell genomics: spatial transcriptomics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../content/extra.html" class="sidebar-item-text sidebar-link">Extra resources</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#monday-classes-from-1400-to-2000-paris-time" id="toc-monday-classes-from-1400-to-2000-paris-time" class="nav-link active" data-scroll-target="#monday-classes-from-1400-to-2000-paris-time">Monday – Classes from 14:00 to 20:00 (Paris time)</a>
+  <ul class="collapse">
+  <li><a href="#lecture-1-introduction-to-scrna-seq-analysis-orr" id="toc-lecture-1-introduction-to-scrna-seq-analysis-orr" class="nav-link" data-scroll-target="#lecture-1-introduction-to-scrna-seq-analysis-orr">Lecture 1 – Introduction to scRNA-Seq analysis [Orr]</a></li>
+  <li><a href="#lecture-2---from-sequencing-reads-to-expression-matrices-jacques" id="toc-lecture-2---from-sequencing-reads-to-expression-matrices-jacques" class="nav-link" data-scroll-target="#lecture-2---from-sequencing-reads-to-expression-matrices-jacques">Lecture 2 - From sequencing reads to expression matrices [Jacques]</a></li>
+  <li><a href="#lab-1-familiarizing-yourself-with-the-course-aws-instance-jacques" id="toc-lab-1-familiarizing-yourself-with-the-course-aws-instance-jacques" class="nav-link" data-scroll-target="#lab-1-familiarizing-yourself-with-the-course-aws-instance-jacques">Lab 1 – Familiarizing yourself with the course AWS instance [Jacques]</a></li>
+  <li><a href="#lab-2-from-sequencing-reads-to-expression-matrices-orr" id="toc-lab-2-from-sequencing-reads-to-expression-matrices-orr" class="nav-link" data-scroll-target="#lab-2-from-sequencing-reads-to-expression-matrices-orr">Lab 2 – From sequencing reads to expression matrices [Orr]</a></li>
+  </ul></li>
+  <li><a href="#tuesday-classes-from-1400-to-2000-paris-time" id="toc-tuesday-classes-from-1400-to-2000-paris-time" class="nav-link" data-scroll-target="#tuesday-classes-from-1400-to-2000-paris-time">Tuesday – Classes from 14:00 to 20:00 (Paris time)</a>
+  <ul class="collapse">
+  <li><a href="#lecture-3---quality-control-for-scrna-seq-data-orr" id="toc-lecture-3---quality-control-for-scrna-seq-data-orr" class="nav-link" data-scroll-target="#lecture-3---quality-control-for-scrna-seq-data-orr">Lecture 3 - Quality control for scRNA-Seq data [Orr]</a></li>
+  <li><a href="#lab-3---introduction-to-rbioconductor-jacques" id="toc-lab-3---introduction-to-rbioconductor-jacques" class="nav-link" data-scroll-target="#lab-3---introduction-to-rbioconductor-jacques">Lab 3 - Introduction to R/Bioconductor [Jacques]</a></li>
+  <li><a href="#lab-4-scrna-seq-data-wrangling-orr" id="toc-lab-4-scrna-seq-data-wrangling-orr" class="nav-link" data-scroll-target="#lab-4-scrna-seq-data-wrangling-orr">Lab 4 – scRNA-Seq data wrangling [Orr]</a></li>
+  <li><a href="#flash-talks-everybody" id="toc-flash-talks-everybody" class="nav-link" data-scroll-target="#flash-talks-everybody">Flash talks [Everybody]</a></li>
+  </ul></li>
+  <li><a href="#wednesday-classes-from-1400-to-2000-paris-time" id="toc-wednesday-classes-from-1400-to-2000-paris-time" class="nav-link" data-scroll-target="#wednesday-classes-from-1400-to-2000-paris-time">Wednesday – Classes from 14:00 to 20:00 (Paris time)</a>
+  <ul class="collapse">
+  <li><a href="#lecture-4---identifying-cell-populations-jacques" id="toc-lecture-4---identifying-cell-populations-jacques" class="nav-link" data-scroll-target="#lecture-4---identifying-cell-populations-jacques">Lecture 4 - Identifying cell populations [Jacques]</a></li>
+  <li><a href="#lab-5-identifying-cell-populations-dimensionality-reduction-clustering-and-annotation-jacques" id="toc-lab-5-identifying-cell-populations-dimensionality-reduction-clustering-and-annotation-jacques" class="nav-link" data-scroll-target="#lab-5-identifying-cell-populations-dimensionality-reduction-clustering-and-annotation-jacques">Lab 5 – Identifying Cell Populations: dimensionality reduction, clustering and annotation [Jacques]</a></li>
+  <li><a href="#lecture-5---data-integration-and-batch-effect-correction-orr" id="toc-lecture-5---data-integration-and-batch-effect-correction-orr" class="nav-link" data-scroll-target="#lecture-5---data-integration-and-batch-effect-correction-orr">Lecture 5 - Data integration and batch effect correction [Orr]</a></li>
+  <li><a href="#lab-6---data-integration-and-batch-effect-correction-orr" id="toc-lab-6---data-integration-and-batch-effect-correction-orr" class="nav-link" data-scroll-target="#lab-6---data-integration-and-batch-effect-correction-orr">Lab 6 - Data integration and batch effect correction [Orr]</a></li>
+  </ul></li>
+  <li><a href="#thursday-classes-from-1400-to-2000-paris-time" id="toc-thursday-classes-from-1400-to-2000-paris-time" class="nav-link" data-scroll-target="#thursday-classes-from-1400-to-2000-paris-time">Thursday – Classes from 14:00 to 20:00 (Paris time)</a>
+  <ul class="collapse">
+  <li><a href="#lecture-6---trajectories-and-pseudotimes-jacques" id="toc-lecture-6---trajectories-and-pseudotimes-jacques" class="nav-link" data-scroll-target="#lecture-6---trajectories-and-pseudotimes-jacques">Lecture 6 - Trajectories and pseudotimes [Jacques]</a></li>
+  <li><a href="#lab-7---inferring-differentiation-trajectories-and-pseudotime-jacques" id="toc-lab-7---inferring-differentiation-trajectories-and-pseudotime-jacques" class="nav-link" data-scroll-target="#lab-7---inferring-differentiation-trajectories-and-pseudotime-jacques">Lab 7 - Inferring differentiation trajectories and pseudotime [Jacques]</a></li>
+  <li><a href="#lecture-7---advances-in-single-cell-genomics-the-epigenome-orr" id="toc-lecture-7---advances-in-single-cell-genomics-the-epigenome-orr" class="nav-link" data-scroll-target="#lecture-7---advances-in-single-cell-genomics-the-epigenome-orr">Lecture 7 - Advances in single-cell genomics: the epigenome [Orr]</a></li>
+  <li><a href="#lab-8---single-cell-atac-seq-analysis-jacques" id="toc-lab-8---single-cell-atac-seq-analysis-jacques" class="nav-link" data-scroll-target="#lab-8---single-cell-atac-seq-analysis-jacques">Lab 8 - Single-cell ATAC-Seq analysis [Jacques]</a></li>
+  </ul></li>
+  <li><a href="#friday-classes-from-1400-to-2000-paris-time" id="toc-friday-classes-from-1400-to-2000-paris-time" class="nav-link" data-scroll-target="#friday-classes-from-1400-to-2000-paris-time">Friday – Classes from 14:00 to 20:00 (Paris time)</a>
+  <ul class="collapse">
+  <li><a href="#lecture-8---advances-in-single-cell-genomics-spatial-transcriptomics-orr" id="toc-lecture-8---advances-in-single-cell-genomics-spatial-transcriptomics-orr" class="nav-link" data-scroll-target="#lecture-8---advances-in-single-cell-genomics-spatial-transcriptomics-orr">Lecture 8 - Advances in single-cell genomics: spatial transcriptomics [Orr]</a></li>
+  </ul></li>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/edit/main/content/program.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Program</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p>Classes are from:</p>
+<ul>
+<li>2 to 8 pm Paris time.</li>
+<li>1 to 7 pm London time.</li>
+<li>8 am to 2 pm NY time.</li>
+<li>5 am to 11 am SF time.</li>
+</ul>
+<section id="monday-classes-from-1400-to-2000-paris-time" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="monday-classes-from-1400-to-2000-paris-time">Monday – Classes from 14:00 to 20:00 (Paris time)</h2>
+<section id="lecture-1-introduction-to-scrna-seq-analysis-orr" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lecture-1-introduction-to-scrna-seq-analysis-orr">Lecture 1 – Introduction to scRNA-Seq analysis [Orr]</h3>
+<ul>
+<li>General introduction: cell atlas overviews</li>
+<li>Comparison of bulk and single cell RNA-Seq</li>
+<li>Overview of available scRNA-seq technologies (10x) and experimental protocols</li>
+</ul>
+</section>
+<section id="lecture-2---from-sequencing-reads-to-expression-matrices-jacques" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lecture-2---from-sequencing-reads-to-expression-matrices-jacques">Lecture 2 - From sequencing reads to expression matrices [Jacques]</h3>
+<ul>
+<li>scRNA-Seq processing workflow starting with choice of sequencer (NextSeq, HiSeq, MiSeq) / barcode swapping and bcl files</li>
+<li>Overview of Popular tools and algorithms</li>
+<li>Common single-cell analyses and interpretation</li>
+<li>Sequencing data: alignment and quality control</li>
+<li>IGV: Looking at cool things in alignment like where reads are, mutations, splicing</li>
+</ul>
+</section>
+<section id="lab-1-familiarizing-yourself-with-the-course-aws-instance-jacques" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lab-1-familiarizing-yourself-with-the-course-aws-instance-jacques">Lab 1 – Familiarizing yourself with the course AWS instance [Jacques]</h3>
+<ul>
+<li>Using RStudio</li>
+<li>Logging in AWS</li>
+<li>Shell and Unix commands to navigate directories, create folders, open files</li>
+<li>Raw file formats</li>
+<li>Get data from 10x website, single cell portal, from GEO (fastqs, counts)</li>
+</ul>
+</section>
+<section id="lab-2-from-sequencing-reads-to-expression-matrices-orr" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lab-2-from-sequencing-reads-to-expression-matrices-orr">Lab 2 – From sequencing reads to expression matrices [Orr]</h3>
+<ul>
+<li>Mapping sequencing data with Cellranger</li>
+<li>Quality Control reports (CellRanger, dropEst, fastqc)</li>
+</ul>
+</section>
+</section>
+<section id="tuesday-classes-from-1400-to-2000-paris-time" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="tuesday-classes-from-1400-to-2000-paris-time">Tuesday – Classes from 14:00 to 20:00 (Paris time)</h2>
+<section id="lecture-3---quality-control-for-scrna-seq-data-orr" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lecture-3---quality-control-for-scrna-seq-data-orr">Lecture 3 - Quality control for scRNA-Seq data [Orr]</h3>
+<ul>
+<li>What CellRanger does for quality filtering</li>
+<li>Normalisation methods</li>
+<li>Doublets, empty droplets, DropletUtils</li>
+<li>Barcode swapping</li>
+<li>Regression with technical covariates</li>
+</ul>
+</section>
+<section id="lab-3---introduction-to-rbioconductor-jacques" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lab-3---introduction-to-rbioconductor-jacques">Lab 3 - Introduction to R/Bioconductor [Jacques]</h3>
+<ul>
+<li>Installing packages with CRAN and Bioconductor</li>
+<li>Data types, data manipulation, slicing</li>
+<li>I/O for scRNAseq analysis in R</li>
+</ul>
+</section>
+<section id="lab-4-scrna-seq-data-wrangling-orr" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lab-4-scrna-seq-data-wrangling-orr">Lab 4 – scRNA-Seq data wrangling [Orr]</h3>
+<ul>
+<li>Data structure</li>
+<li>Data filtering</li>
+<li>Exploratory data analysis</li>
+</ul>
+</section>
+<section id="flash-talks-everybody" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="flash-talks-everybody">Flash talks [Everybody]</h3>
+</section>
+</section>
+<section id="wednesday-classes-from-1400-to-2000-paris-time" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="wednesday-classes-from-1400-to-2000-paris-time">Wednesday – Classes from 14:00 to 20:00 (Paris time)</h2>
+<section id="lecture-4---identifying-cell-populations-jacques" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lecture-4---identifying-cell-populations-jacques">Lecture 4 - Identifying cell populations [Jacques]</h3>
+<ul>
+<li>Feature selection</li>
+<li>Dimensionality reduction</li>
+<li>Graph-based clustering and other cluster methods</li>
+<li>Assigning cluster identity</li>
+<li>Differential expression tests</li>
+</ul>
+</section>
+<section id="lab-5-identifying-cell-populations-dimensionality-reduction-clustering-and-annotation-jacques" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lab-5-identifying-cell-populations-dimensionality-reduction-clustering-and-annotation-jacques">Lab 5 – Identifying Cell Populations: dimensionality reduction, clustering and annotation [Jacques]</h3>
+<ul>
+<li>Feature selection</li>
+<li>Dimensional reduction</li>
+<li>Graph-based clustering</li>
+<li>Marker gene detection</li>
+<li>Cell type annotation</li>
+<li>Data visualization</li>
+</ul>
+</section>
+<section id="lecture-5---data-integration-and-batch-effect-correction-orr" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lecture-5---data-integration-and-batch-effect-correction-orr">Lecture 5 - Data integration and batch effect correction [Orr]</h3>
+<ul>
+<li>Batch correction methods (regress out batch, scaling within batch, Seurat v3, MNN, Liger, Harmony, scvi, scgen)</li>
+<li>Evaluation methods for batch correction (ARI, average silhouette width, kBET…)</li>
+</ul>
+</section>
+<section id="lab-6---data-integration-and-batch-effect-correction-orr" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lab-6---data-integration-and-batch-effect-correction-orr">Lab 6 - Data integration and batch effect correction [Orr]</h3>
+<ul>
+<li>Comparison of batch correction methods</li>
+<li>Choosing the optimal batch correction approach</li>
+</ul>
+</section>
+</section>
+<section id="thursday-classes-from-1400-to-2000-paris-time" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="thursday-classes-from-1400-to-2000-paris-time">Thursday – Classes from 14:00 to 20:00 (Paris time)</h2>
+<section id="lecture-6---trajectories-and-pseudotimes-jacques" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lecture-6---trajectories-and-pseudotimes-jacques">Lecture 6 - Trajectories and pseudotimes [Jacques]</h3>
+<ul>
+<li>Trajectory inference</li>
+<li>Popular tools and packages for trajectory analysis (https://github.com/dynverse/dynmethods#list-of-included-methods)</li>
+<li>Pseudotime inference</li>
+<li>RNA velocity</li>
+<li>Differential expression through pseudotime</li>
+</ul>
+</section>
+<section id="lab-7---inferring-differentiation-trajectories-and-pseudotime-jacques" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lab-7---inferring-differentiation-trajectories-and-pseudotime-jacques">Lab 7 - Inferring differentiation trajectories and pseudotime [Jacques]</h3>
+<ul>
+<li>Infering trajectory in sperm cell lineage</li>
+<li>Orientating a trajectory with RNA veloctiy</li>
+<li>DE analysis along a trajectory</li>
+</ul>
+</section>
+<section id="lecture-7---advances-in-single-cell-genomics-the-epigenome-orr" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lecture-7---advances-in-single-cell-genomics-the-epigenome-orr">Lecture 7 - Advances in single-cell genomics: the epigenome [Orr]</h3>
+</section>
+<section id="lab-8---single-cell-atac-seq-analysis-jacques" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lab-8---single-cell-atac-seq-analysis-jacques">Lab 8 - Single-cell ATAC-Seq analysis [Jacques]</h3>
+</section>
+</section>
+<section id="friday-classes-from-1400-to-2000-paris-time" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="friday-classes-from-1400-to-2000-paris-time">Friday – Classes from 14:00 to 20:00 (Paris time)</h2>
+<section id="lecture-8---advances-in-single-cell-genomics-spatial-transcriptomics-orr" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lecture-8---advances-in-single-cell-genomics-spatial-transcriptomics-orr">Lecture 8 - Advances in single-cell genomics: spatial transcriptomics [Orr]</h3>
+<p>Friday will then be divided in two parts:</p>
+<ul>
+<li>Morning &amp; afternoon (1h + 1h30): Group projects: analysing scRNA-seq data by yourself, from A to Z</li>
+<li>Afternoon (1h): Group presentations (10’ each group, max 5 slides: what/why/where/when/how, conclusions)</li>
+</ul>
+<p>Happy hour time!!</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../index.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Welcome</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="../content/Rstudio.html" class="pagination-link">
+        <span class="nav-page-text">RStudio</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Single-cell RNAseq analysis with R/Bioconductor |<br>
+J. Serizay O. Ashenberg</div>   
+    <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
+  </div>
+</footer>
+
+
+
+</body></html>
