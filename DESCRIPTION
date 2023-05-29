@@ -1,0 +1,14 @@
+Version: 1.0.0
+Date: 2023-05-28
+Authors@R:
+    c(person(given = "Jacques",
+           family = "Serizay",
+           role = c("aut", "cre"),
+           email = "jacquesserizay@gmail.com",
+           comment = c(ORCID = "0000-0002-4295-0624")), 
+        person(given = "Orr",
+           family = "Ashenberg",
+           role = c("aut", "cre"),
+           email = "orr@broadinstitute.org"))
+Description: Single-cell RNA-seq analysis with R/Bioconductor
+License: MIT + file LICENSE

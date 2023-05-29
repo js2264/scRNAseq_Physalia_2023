@@ -104,10 +104,30 @@ kbd, samp {
 }
 
 // background color of chunks of code *WITH A SPECIFIED LANGUAGE*
+.code-with-filename-file, .code-with-copy {
+  border: 1px solid rgb(0 0 0 / 65%);
+}
+
+.code-with-filename {
+  background-color: #c0c0c080;
+  border-color: #c0c0c080;
+}
+.code-with-filename .code-with-filename-file, .code-with-filename .code-with-filename-file pre {
+  background-color: #00000000;
+}
+
+.code-with-filename div.sourceCode, .reveal .code-with-filename div.sourceCode {
+  margin-top: 0;
+  border-radius: 0%;
+}
+
+.code-with-filename code {
+  background-image: none;
+}
+
 div.sourceCode {
-  // background-color: rgba(0, 170, 227, 0.025);
-  background-color: #f1f1f1;
   border: none;
+  background-color: #f2f2f2;
 }
 
 pre.sourceCode {
@@ -124,9 +144,6 @@ pre code {
   // border: 1px solid rgb(0 0 0 / 65%);
 }
 
-.cell-output-stdout code , .code-with-filename code , .cell-output-stderr code {
-  background-image: linear-gradient(160deg,#f8f8f8 0,#f1f1f1 100%);
-}
 
 /* Printing ------------------------------------------------ */
 
@@ -147,3 +164,10 @@ pre code {
     color: #666;
   }
 }
+
+
+
+
+
+
+.flexbox { flex-grow: 1; border: none; margin: 0; padding: 0; }

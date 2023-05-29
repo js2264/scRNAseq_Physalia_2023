@@ -1,9 +1,11 @@
 project:
   type: book
+  output-dir: docs
+
+IP: 54.187.37.64
 
 book:
   title: "Single-cell RNAseq analysis with R/Bioconductor"
-  author: "J. Serizay & O. Ashenberg"
   page-footer:
     left: |
       Single-cell RNAseq analysis with R/Bioconductor |  
@@ -16,17 +18,36 @@ book:
   repo-actions: [edit, issue]
   chapters:
     - index.qmd
-    - intro.qmd
-    - summary.qmd
-    - references.qmd
+    - content/program.qmd
+    - content/Rstudio.qmd
+    - content/prerequisites.qmd
     - part: "Day 1"
       chapters:
-        - principles.qmd
-        - data-representation.qmd
+        - content/day1/Lecture1_introduction.qmd
+        - content/day1/Lab1_Intro.qmd
+        - content/day1/Lecture2_Bcl2matrix.qmd
+        - content/day1/Lab2_processingreads.qmd
     - part: "Day 2"
       chapters:
-        - principles.qmd
-        - data-representation.qmd
+        - content/day2/Lab3_Rbioc.qmd
+        - content/day2/Lecture3_qualitycontrol.qmd
+        - content/day2/Lab4_data_wrangling_scRNAseq.qmd
+    - part: "Day 3"
+      chapters:
+        - content/day3/Lecture4_clustering.qmd
+        - content/day3/Lab5_clustering.qmd
+        - content/day3/Lecture5_batchcorrection.qmd
+        - content/day3/Lab6_batch_correction.qmd
+    - part: "Day 4"
+      chapters:
+        - content/day4/Lecture6_pseudotime.qmd
+        - content/day4/Lab7_pseudotime.qmd
+        - content/day4/Lecture7_ATAC.qmd
+        - content/day4/Lab8_atac-seq.qmd
+    - part: "Day 5"
+      chapters:
+        - content/day5/Lecture8_spatial-transcriptomics.qmd
+    - content/extra.qmd
 
 format:
   html:
