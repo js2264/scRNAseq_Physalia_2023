@@ -586,16 +586,35 @@ Tip
 </ul>
 <p>There are several ways to find this information, e.g.&nbsp;<code>ffq</code> command line tool, or using the web-based <code>sra-explorer</code> page (<a href="https://sra-explorer.info/">here</a>). You generally will need the <code>GEO</code> corresponding ID or SRA project ID (e.g.&nbsp;<code>SRPxxxxxx</code>…).</p>
 <ul>
-<li><strong>Try to install and use the <a href="https://github.com/pachterlab/ffq"><code>ffq</code> tool</a> from the Patcher lab.</strong></li>
+<li><strong>Try to install the <a href="https://github.com/pachterlab/ffq"><code>ffq</code> tool</a> from the Patcher lab.</strong></li>
+</ul>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Installing <code>conda</code> packages
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>conda</code>-based environments allow easy installs of packages such as <code>ffq</code>. Your <code>(base)</code> conda environment should be active by default, and you will only have to type:</p>
+<div class="cell">
+<pre class="shell cell-code"><code>pip install ffq</code></pre>
+</div>
+</div>
+</div>
+<ul>
+<li><strong>Check <code>ffq</code> help and try fetching metadata for the GSE ID <code>GSE148963</code>.</strong></li>
 </ul>
 <div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>bash</strong></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffq</span> <span class="at">--help</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ffq</span> <span class="at">-t</span> GSE GSE148963 <span class="op">&gt;</span> GSE148963_search.txt</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 30 GSE148963_search.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ffq</span> <span class="at">--help</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ffq</span> <span class="at">-t</span> GSE GSE148963 <span class="op">&gt;</span> GSE148963_search.txt</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 30 GSE148963_search.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -607,7 +626,7 @@ Tip
 <div class="code-with-filename-file">
 <pre><strong>bash</strong></pre>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'ftp://'</span> GSE148963_search.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'ftp://'</span> GSE148963_search.txt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>And with a bit of <code>sed</code> magick…</p>
@@ -616,12 +635,12 @@ Tip
 <div class="code-with-filename-file">
 <pre><strong>bash</strong></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'ftp://'</span> GSE148963_search.txt <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s,.*ftp:,ftp:,'</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s,".*,,'</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="st">".fastq"</span> <span class="op">&gt;</span> GSE148963_fastqlist.txt</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">## `ffq` looks through GEO repository to fing metadata associated with the `GSE148963` entry (including downloading links)</span></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="co">## grep 'ftp://' recovers the text lines that contain downloading links</span></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co">## the `sed` commands clean up the text lines</span></span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="co">## the `wget` command downloads locally the links listed in the generated file (GSE148963_fastqlist.txt)</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="co"># wget -i GSE148963_fastqlist.txt ## Do not run, it would take too long...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">'ftp://'</span> GSE148963_search.txt <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s,.*ftp:,ftp:,'</span> <span class="kw">|</span> <span class="fu">sed</span> <span class="st">'s,".*,,'</span> <span class="kw">|</span> <span class="fu">grep</span> <span class="st">".fastq"</span> <span class="op">&gt;</span> GSE148963_fastqlist.txt</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co">## `ffq` looks through GEO repository to fing metadata associated with the `GSE148963` entry (including downloading links)</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">## grep 'ftp://' recovers the text lines that contain downloading links</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">## the `sed` commands clean up the text lines</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">## the `wget` command downloads locally the links listed in the generated file (GSE148963_fastqlist.txt)</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># wget -i GSE148963_fastqlist.txt ## Do not run, it would take too long...</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -633,7 +652,7 @@ Tip
 <div class="code-with-filename-file">
 <pre><strong>bash</strong></pre>
 </div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">zcat</span> ~/Share/SRR11575369_1.fastq.gz <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> 12</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">zcat</span> ~/Share/SRR11575369_1.fastq.gz <span class="kw">|</span> <span class="fu">head</span> <span class="at">-n</span> 12</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>Try and understand the structure of the <code>fastq.gz</code> file. What is the meaning of each line?</p>
@@ -643,9 +662,9 @@ Tip
 <div class="code-with-filename-file">
 <pre><strong>bash</strong></pre>
 </div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">seqkit</span> <span class="at">--help</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="ex">seqkit</span> stats <span class="at">--help</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ex">seqkit</span> stat ~/Share/SRR11575369_1.fq.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode sh code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="ex">seqkit</span> <span class="at">--help</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="ex">seqkit</span> stats <span class="at">--help</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="ex">seqkit</span> stat ~/Share/SRR11575369_1.fq.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section><section id="processed-count-matrices" class="level3" data-number="2.4.2"><h3 data-number="2.4.2" class="anchored" data-anchor-id="processed-count-matrices">

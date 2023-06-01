@@ -623,7 +623,10 @@ Different assays store different ‘transformations’ of the <code>counts</code
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sce_filtered</span> <span class="op">&lt;-</span> <span class="va">sce</span><span class="op">[</span><span class="va">cells_per_gene</span> <span class="op">&gt;</span> <span class="fl">10</span>, <span class="va">genes_per_cell</span> <span class="op">&gt;</span> <span class="fl">2000</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sce_filtered</span> <span class="op">&lt;-</span> <span class="va">sce</span><span class="op">[</span></span>
+<span>    <span class="fu">Matrix</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html">counts</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">10</span>, </span>
+<span>    <span class="fu">Matrix</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html">colSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/dge.html">counts</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">2000</span></span>
+<span> <span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>Almost all our analysis will be on this single object, of class SingleCellExperiment. This object contains various “slots” that will store not only the raw count data, but also the results from various computations below. This has the advantage that we do not need to keep track of inidividual variables of interest - they can all be collapsed into a single object as long as these slots are pre-defined.</p>
@@ -654,7 +657,10 @@ Different assays store different ‘transformations’ of the <code>counts</code
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sce_filtered</span> <span class="op">&lt;-</span> <span class="va">sce_filtered</span><span class="op">[</span>, <span class="va">sce_filtered</span><span class="op">$</span><span class="va">percent_mito</span> <span class="op">&lt;=</span> <span class="fl">0.10</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sce_filtered</span> <span class="op">&lt;-</span> <span class="va">sce_filtered</span><span class="op">[</span></span>
+<span>    , </span>
+<span>    <span class="va">sce_filtered</span><span class="op">$</span><span class="va">percent_mito</span> <span class="op">&lt;=</span> <span class="fl">0.10</span></span>
+<span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </section><section id="checking-housekeeping-genes" class="level3" data-number="7.4.3"><h3 data-number="7.4.3" class="anchored" data-anchor-id="checking-housekeeping-genes">
@@ -758,7 +764,7 @@ Different assays store different ‘transformations’ of the <code>counts</code
  collate  en_US.UTF-8
  ctype    en_US.UTF-8
  tz       Europe/Paris
- date     2023-05-30
+ date     2023-06-01
  pandoc   2.19.2 @ /opt/homebrew/bin/ (via rmarkdown)
 
 ─ Packages ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

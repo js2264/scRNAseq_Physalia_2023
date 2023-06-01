@@ -470,7 +470,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="summarizedexperiment-class" class="level4" data-number="5.2.2.1"><h4 data-number="5.2.2.1" class="anchored" data-anchor-id="summarizedexperiment-class">
 <span class="header-section-number">5.2.2.1</span> <code>SummarizedExperiment</code> class:</h4>
 <p>The most fundamental class used to hold the content of large-scale quantitative analyses, such as counts of RNA-seq experiments, or high-throughput cytometry experiments or proteomics experiments.</p>
-<p><img src=".img/2021-05-31-08-50-45.png" class="img-fluid"></p>
+<p><img src="https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day2/.img/2021-05-31-08-50-45.png?raw=true" class="img-fluid"></p>
 <p>Make sure you understand the structure of objects from this class. A dedicated workshop that I would recommend quickly going over is available <a href="https://www.bioconductor.org/help/course-materials/2019/BSS2019/04_Practical_CoreApproachesInBioconductor.html">here</a>. Generally speaking, a <code>SummarizedExperiment</code> object contains matrix-like objects (the <code>assays</code>), with rows representing features (e.g.&nbsp;genes, transcripts, …) and each column representing a sample. Information specific to genes and samples are stored in “parallel” data frames, for example to store gene locations, tissue of expression, biotypes (for genes) or batch, generation date, or machine ID (for samples). On top of that, metadata are also stored in the object (to store description of a project, …).</p>
 <p>An important difference with S3 <code>list</code>-like objects usually used in <code>R</code> is that most of the underlying data (organized in precisely structured <code>"slots"</code>) is accessed using <code>getter</code> functions, rather than the familiar <code>$</code> or <code>[</code>. Here are some important <code>getters</code>:</p>
 <pre><code>- `assay()`, `assays()`: Extrant matrix-like or list of matrix-like objects of identical dimensions. Since the objects are `matrix`-like, `dim()`, `dimnames()`, and 2-dimensional `[`, `[&lt;-` methods are available. 
@@ -598,7 +598,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>…</li>
 </ul>
 <p><strong><code>SingleCellExperiment</code></strong> is the fundamental class designed to contain single-cell (RNA-seq) data in <code>Bioconductor</code> ecosystem. It is a modified version of the <code>SummarizedExperiment</code> object, so most of the getters/setters are shared with this class.</p>
-<p><img src=".img/2021-05-31-09-38-24.png" class="img-fluid"></p>
+<p><img src="https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day2/.img/2021-05-31-09-38-24.png?raw=true" class="img-fluid"></p>
 <div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
@@ -739,8 +739,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section></section><section id="reading-scrnaseq-data" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="reading-scrnaseq-data">
 <span class="header-section-number">5.4</span> Reading scRNAseq data</h2>
 <ul>
-<li>
-<strong>Try to load the raw <code>10X</code> single-cell RNA-seq data downloaded yesterday (from <code>Lier et al.</code>) into a </strong>SingleCellExperiment** object using <code>DropletUtils</code> package.**</li>
+<li><strong>Try to load the raw <code>10X</code> single-cell RNA-seq data downloaded yesterday (from <code>Lier et al.</code>) into a <code>SingleCellExperiment</code> object using <code>DropletUtils</code> package.</strong></li>
 </ul>
 <div class="cell">
 <div class="code-with-filename">

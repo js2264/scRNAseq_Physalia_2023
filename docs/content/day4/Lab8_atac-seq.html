@@ -377,19 +377,31 @@ Overarching goals
 <span class="header-section-number">15.1</span> Process human hematopoiesis dataset</h2>
 <section id="download-data" class="level3" data-number="15.1.1"><h3 data-number="15.1.1" class="anchored" data-anchor-id="download-data">
 <span class="header-section-number">15.1.1</span> Download data</h3>
-<p>The data comes from Satpathy et al., Nat. Biotechnol. 2019 (<a href="https://doi.org/10.1038/s41587-019-0206-z">DOI: 10.1038/s41587-019-0206-z</a>). Counts data is available from GEO (GSE: <code>GSE129785</code>).</p>
 <ul>
 <li><strong>Download the files related to scATACseq of all human hematopoiesis cells.</strong></li>
 </ul>
+<div class="callout-warning callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Data have already been downloaded!
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Data comes from Satpathy et al., Nat. Biotechnol. 2019 (<a href="https://doi.org/10.1038/s41587-019-0206-z">DOI: 10.1038/s41587-019-0206-z</a>). Counts data is available from GEO (GSE: <code>GSE129785</code>).</p>
+<p>Data was recovered using this chunk of code. Since the raw data is &gt;6Gb, the data files were pre-downloaded and are available in <code>~/Share</code></p>
 <div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="st">'scATAC'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="st">'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.cell_barcodes.txt.gz'</span>, <span class="st">'scATAC/barcodes.tsv.gz'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="st">'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.mtx.gz'</span>, <span class="st">'scATAC/matrix.mtx.gz'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="st">'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.peaks.txt.gz'</span>, <span class="st">'scATAC/features.tsv.gz'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="st">'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.cell_barcodes.txt.gz'</span>, <span class="st">'~/Share/scATAC/barcodes.tsv.gz'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="st">'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.mtx.gz'</span>, <span class="st">'~/Share/scATAC/matrix.mtx.gz'</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="st">'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.peaks.txt.gz'</span>, <span class="st">'~/Share/scATAC/features.tsv.gz'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
 </div>
 </div>
 </section><section id="process-data-with-signac" class="level3" data-number="15.1.2"><h3 data-number="15.1.2" class="anchored" data-anchor-id="process-data-with-signac">
@@ -402,54 +414,56 @@ Overarching goals
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cnts</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu">Read10X</span><span class="op">(</span><span class="st">'scATAC/'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">cnts</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu">Read10X</span><span class="op">(</span><span class="st">'~/Share/scATAC/'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>Does it work? Why? The most likely reason is that the count matrix is not structured exactly like the one which comes straight out of a <code>cellranger count</code> pipeline. It is a very frequent issue occurring when one attempts to analyse public data.</p>
 <p>The alternative, longer route is to import each file separately, make sure they are compatible with each other, and merge them manually into a <code>SeuratChromatinAssay</code>.</p>
+<p>::: {.callout-warning icon=‘true’} ## Data have already been imported!</p>
 <div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## - Load required libraries </span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plyranges)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Seurat)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Signac)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="do">## - Import counts, barcodes and features separately</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>barcode <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">'scATAC/'</span>, <span class="st">"barcodes.tsv.gz"</span>)</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>features <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">'scATAC/'</span>, <span class="st">"features.tsv.gz"</span>)</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>matrix <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">'scATAC/'</span>, <span class="st">"matrix.mtx.gz"</span>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>cnts <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">readMM</span>(<span class="st">'scATAC/matrix.mtx.gz'</span>)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>barcodes <span class="ot">&lt;-</span> vroom<span class="sc">::</span><span class="fu">vroom</span>(<span class="st">'scATAC/barcodes.tsv.gz'</span>) <span class="sc">|&gt;</span> <span class="fu">as.data.frame</span>()</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>features <span class="ot">&lt;-</span> <span class="fu">readLines</span>(<span class="st">'scATAC/features.tsv.gz'</span>)[<span class="sc">-</span><span class="dv">1</span>] <span class="sc">|&gt;</span> </span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_replace</span>(<span class="st">'_'</span>, <span class="st">':'</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_replace</span>(<span class="st">'_'</span>, <span class="st">'-'</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">GRanges</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">peak =</span> <span class="fu">as.character</span>(<span class="at">x =</span> _) <span class="sc">|&gt;</span> <span class="fu">str_replace</span>(<span class="st">':'</span>, <span class="st">'-'</span>))</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="do">## - Make sure that the row/colnames for the count matrix match those of </span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#       barcodes and features</span></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(cnts) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(barcodes) <span class="ot">&lt;-</span> barcodes<span class="sc">$</span>Group_Barcode</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cnts) <span class="ot">&lt;-</span> <span class="fu">names</span>(features) <span class="ot">&lt;-</span> features<span class="sc">$</span>peak</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="do">## - Get human gene annotations (hg19/GRCh37) to feed it into the future `SeuratChromatinAssay`</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>annotations <span class="ot">&lt;-</span> <span class="fu">GetGRangesFromEnsDb</span>(<span class="at">ensdb =</span> EnsDb.Hsapiens.v75<span class="sc">::</span>EnsDb.Hsapiens.v75)</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu">seqlevelsStyle</span>(annotations) <span class="ot">&lt;-</span> <span class="st">'UCSC'</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="fu">genome</span>(annotations) <span class="ot">&lt;-</span> <span class="st">"hg19"</span></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="do">## - Create Chromatin Assay</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>assay <span class="ot">&lt;-</span> Signac<span class="sc">::</span><span class="fu">CreateChromatinAssay</span>(</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> cnts,</span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">ranges =</span> features,</span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">genome =</span> <span class="st">"hg19"</span>,</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.cells =</span> <span class="dv">10</span>, </span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">min.features =</span> <span class="dv">10</span>, </span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">annotation =</span> annotations</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>hemato <span class="ot">&lt;-</span> Seurat<span class="sc">::</span><span class="fu">CreateSeuratObject</span>(</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">counts =</span> assay,</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">assay =</span> <span class="st">'ATAC'</span>,</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">meta.data =</span> barcodes</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Load required libraries </span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">plyranges</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat">Seurat</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/stuart-lab/signac">Signac</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## - Import counts, barcodes and features separately</span></span>
+<span><span class="va">cnts</span> <span class="op">&lt;-</span> <span class="fu">Matrix</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/externalFormats.html">readMM</a></span><span class="op">(</span><span class="st">'scATAC/matrix.mtx.gz'</span><span class="op">)</span></span>
+<span><span class="va">barcodes</span> <span class="op">&lt;-</span> <span class="fu">vroom</span><span class="fu">::</span><span class="fu"><a href="https://vroom.r-lib.org/reference/vroom.html">vroom</a></span><span class="op">(</span><span class="st">'scATAC/barcodes.tsv.gz'</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">features</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span><span class="op">(</span><span class="st">'scATAC/features.tsv.gz'</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="st">'_'</span>, <span class="st">':'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="st">'_'</span>, <span class="st">'-'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu">GRanges</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">features</span><span class="op">$</span><span class="va">peak</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">features</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="st">':'</span>, <span class="st">'-'</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## - Make sure that the row/colnames for the count matrix match those of </span></span>
+<span><span class="co">#       barcodes and features</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">cnts</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">barcodes</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">barcodes</span><span class="op">$</span><span class="va">Group_Barcode</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">cnts</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">features</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">features</span><span class="op">$</span><span class="va">peak</span></span>
+<span></span>
+<span><span class="co">## - Get human gene annotations (hg19/GRCh37) to feed it into the future `SeuratChromatinAssay`</span></span>
+<span><span class="va">annotations</span> <span class="op">&lt;-</span> <span class="fu">GetGRangesFromEnsDb</span><span class="op">(</span>ensdb <span class="op">=</span> <span class="fu">EnsDb.Hsapiens.v75</span><span class="fu">::</span><span class="va">EnsDb.Hsapiens.v75</span><span class="op">)</span></span>
+<span><span class="fu">seqlevelsStyle</span><span class="op">(</span><span class="va">annotations</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'UCSC'</span></span>
+<span><span class="fu">genome</span><span class="op">(</span><span class="va">annotations</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"hg19"</span></span>
+<span></span>
+<span><span class="co">## - Create Chromatin Assay</span></span>
+<span><span class="va">assay</span> <span class="op">&lt;-</span> <span class="fu">Signac</span><span class="fu">::</span><span class="fu">CreateChromatinAssay</span><span class="op">(</span></span>
+<span>    counts <span class="op">=</span> <span class="va">cnts</span>,</span>
+<span>    ranges <span class="op">=</span> <span class="va">features</span>,</span>
+<span>    genome <span class="op">=</span> <span class="st">"hg19"</span>,</span>
+<span>    min.cells <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>    min.features <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>    annotation <span class="op">=</span> <span class="va">annotations</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">hemato</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu">CreateSeuratObject</span><span class="op">(</span></span>
+<span>    counts <span class="op">=</span> <span class="va">assay</span>,</span>
+<span>    assay <span class="op">=</span> <span class="st">'ATAC'</span>,</span>
+<span>    meta.data <span class="op">=</span> <span class="va">barcodes</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>You will find that <code>CreateChromatinAssay()</code> function takes a long time to run. This is because it internally computes metrics from the count matrix. You can check the cell metadata to see which ones were calculated (on top of the ones which come from the <code>barcodes</code> data frame).</p>
@@ -556,7 +570,7 @@ Note
 <span><span class="va">hemato</span><span class="op">$</span><span class="va">renamed_clusters</span> <span class="op">&lt;-</span> <span class="va">clusters</span><span class="op">[</span><span class="va">hemato</span><span class="op">$</span><span class="va">Clusters</span><span class="op">]</span></span>
 <span><span class="co">## - Visualize data </span></span>
 <span><span class="va">hemato</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu">RunUMAP</span><span class="op">(</span><span class="va">hemato</span>, reduction <span class="op">=</span> <span class="st">'lsi'</span>, dims <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">30</span><span class="op">)</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">DimPlot</span><span class="op">(</span><span class="va">hemato</span>, group.by <span class="op">=</span> <span class="st">'renamed_clusters'</span><span class="op">)</span> <span class="op">+</span> <span class="fu">coord_fixed</span><span class="op">(</span>ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">DimPlot</span><span class="op">(</span><span class="va">hemato</span>, group.by <span class="op">=</span> <span class="st">'renamed_clusters'</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_fixed</a></span><span class="op">(</span>ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -673,13 +687,13 @@ Note
 <span><span class="fu">DefaultAssay</span><span class="op">(</span><span class="va">hemato</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'MOTIF'</span></span>
 <span><span class="va">list_p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">hemato</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">motif</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="fu">FeaturePlot</span><span class="op">(</span><span class="va">hemato</span>, features <span class="op">=</span> <span class="va">motif</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu">scale_colour_gradientn</span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_colour_gradientn</a></span><span class="op">(</span></span>
 <span>            colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'#190886'</span>, <span class="st">'#6F07F8'</span>, <span class="st">'#F954A5'</span>, <span class="st">'#FF9D66'</span>, <span class="st">'#edf118'</span><span class="op">)</span>,</span>
 <span>            limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span>, oob <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/oob.html">squish</a></span></span>
 <span>        <span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu">theme</span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="va">list_p</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">list_p</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">DimPlot</span><span class="op">(</span><span class="va">hemato</span>, group.by <span class="op">=</span> <span class="st">'renamed_clusters'</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">theme</span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">list_p</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">list_p</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">DimPlot</span><span class="op">(</span><span class="va">hemato</span>, group.by <span class="op">=</span> <span class="st">'renamed_clusters'</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">list_p</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
@@ -731,10 +745,10 @@ Note
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Find overlaps between all the scATAC peaks and the extended genes</span></span>
 <span><span class="va">ov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/IRanges/man/findOverlaps-methods.html">findOverlaps</a></span><span class="op">(</span>query <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/genomic-range-squeezers.html">granges</a></span><span class="op">(</span><span class="va">hemato</span><span class="op">)</span>, subject <span class="op">=</span> <span class="va">hg_genes_extended</span><span class="op">)</span></span>
 <span><span class="co">## - For each peak-gene pair, add peak name and gene name</span></span>
-<span><span class="va">ov</span> <span class="op">&lt;-</span> <span class="fu">as_tibble</span><span class="op">(</span><span class="va">ov</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span><span class="va">ov</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="va">ov</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>peaknb <span class="op">=</span> <span class="va">queryHits</span>, genenb <span class="op">=</span> <span class="va">subjectHits</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu">mutate</span><span class="op">(</span>gene_name <span class="op">=</span> <span class="va">hg_genes_extended</span><span class="op">$</span><span class="va">gene_name</span><span class="op">[</span><span class="va">genenb</span><span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu">mutate</span><span class="op">(</span>row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/genomic-range-squeezers.html">granges</a></span><span class="op">(</span><span class="va">hemato</span><span class="op">)</span><span class="op">$</span><span class="va">peak</span><span class="op">[</span><span class="va">peaknb</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>gene_name <span class="op">=</span> <span class="va">hg_genes_extended</span><span class="op">$</span><span class="va">gene_name</span><span class="op">[</span><span class="va">genenb</span><span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/GenomicRanges/man/genomic-range-squeezers.html">granges</a></span><span class="op">(</span><span class="va">hemato</span><span class="op">)</span><span class="op">$</span><span class="va">peak</span><span class="op">[</span><span class="va">peaknb</span><span class="op">]</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -753,7 +767,7 @@ Note
 <span><span class="co">## - Transform the dense long data.frame into a data.table for faster computation</span></span>
 <span><span class="va">tidy_cnts</span> <span class="op">&lt;-</span> <span class="fu">dtplyr</span><span class="fu">::</span><span class="fu"><a href="https://dtplyr.tidyverse.org/reference/lazy_dt.html">lazy_dt</a></span><span class="op">(</span><span class="va">tidy_cnts</span><span class="op">)</span></span>
 <span><span class="co">## - For each peak/cell count value, associate the corresponding gene</span></span>
-<span><span class="va">joint_data</span> <span class="op">&lt;-</span> <span class="fu">left_join</span><span class="op">(</span><span class="va">tidy_cnts</span>, <span class="va">ov</span>, by <span class="op">=</span> <span class="st">'row'</span><span class="op">)</span></span>
+<span><span class="va">joint_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">tidy_cnts</span>, <span class="va">ov</span>, by <span class="op">=</span> <span class="st">'row'</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">joint_data</span><span class="op">)</span></span>
 <span><span class="co">## WATCH OUT: You cannot see what is stored into `joint_data` as it </span></span>
 <span><span class="co">## is a deferred data.table, i.e. it will only execute once you pipe it to </span></span>
@@ -769,9 +783,9 @@ Note
 <pre><strong>R</strong></pre>
 </div>
 <div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Group the joint_table by gene + cell and sum up all the counts</span></span>
-<span><span class="va">gene_averaged_cnts</span> <span class="op">&lt;-</span> <span class="fu">group_by</span><span class="op">(</span><span class="va">joint_data</span>, <span class="va">column</span>, <span class="va">gene_name</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu">summarize</span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu">as_tibble</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">gene_averaged_cnts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">joint_data</span>, <span class="va">column</span>, <span class="va">gene_name</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">value</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -858,21 +872,21 @@ Note
 <span>    <span class="st">'Plasma'</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">hemato</span><span class="op">$</span><span class="va">b_cells_annots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">hemato</span><span class="op">$</span><span class="va">renamed_clusters</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">labels</span>, <span class="va">hemato</span><span class="op">$</span><span class="va">renamed_clusters</span>, <span class="cn">NA</span><span class="op">)</span></span>
-<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">DimPlot</span><span class="op">(</span><span class="va">hemato</span>, group.by <span class="op">=</span> <span class="st">'b_cells_annots'</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">theme</span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu">scale_colour_discrete</span><span class="op">(</span>na.value <span class="op">=</span> <span class="st">'#aaaaaa'</span><span class="op">)</span></span>
+<span><span class="va">p1</span> <span class="op">&lt;-</span> <span class="fu">DimPlot</span><span class="op">(</span><span class="va">hemato</span>, group.by <span class="op">=</span> <span class="st">'b_cells_annots'</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_colour_discrete.html">scale_colour_discrete</a></span><span class="op">(</span>na.value <span class="op">=</span> <span class="st">'#aaaaaa'</span><span class="op">)</span></span>
 <span><span class="fu">DefaultAssay</span><span class="op">(</span><span class="va">hemato</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'SCT'</span></span>
 <span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu">FeaturePlot</span><span class="op">(</span><span class="va">hemato</span>, features <span class="op">=</span> <span class="st">'EBF1'</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu">scale_colour_gradientn</span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_colour_gradientn</a></span><span class="op">(</span></span>
 <span>            colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'#dadad8'</span>, <span class="st">'#f1eca3'</span>, <span class="st">'#e0c067'</span>, <span class="st">'#db8035'</span>, <span class="st">'#a3160c'</span><span class="op">)</span>,</span>
 <span>            limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span>, oob <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/oob.html">squish</a></span></span>
 <span>        <span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu">theme</span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu">DefaultAssay</span><span class="op">(</span><span class="va">hemato</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'MOTIF'</span></span>
 <span><span class="va">p3</span> <span class="op">&lt;-</span> <span class="fu">FeaturePlot</span><span class="op">(</span><span class="va">hemato</span>, features <span class="op">=</span> <span class="st">'EBF1'</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu">scale_colour_gradientn</span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_colour_gradientn</a></span><span class="op">(</span></span>
 <span>            colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'#190886'</span>, <span class="st">'#6F07F8'</span>, <span class="st">'#F954A5'</span>, <span class="st">'#FF9D66'</span>, <span class="st">'#edf118'</span><span class="op">)</span>,</span>
 <span>            limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span>, oob <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/oob.html">squish</a></span></span>
 <span>        <span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu">theme</span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, <span class="va">p3</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
