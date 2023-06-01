@@ -191,7 +191,10 @@ Note that features can be different between different `altExps`.
 - **Filter the SCE to only include (1) cells that have a complexity of 2000 genes or more and (2) genes that are are expressed in 10 or more cells. **
 
 ```{r, filename = "R"} 
-sce_filtered <- sce[cells_per_gene > 10, genes_per_cell > 2000]
+sce_filtered <- sce[
+    Matrix::rowSums(counts(sce) > 0) > 10, 
+    Matrix::colSums(counts(sce) > 0) > 2000
+ ]
 ```
 
 Almost all our analysis will be on this single object, of class SingleCellExperiment. 
@@ -216,7 +219,10 @@ colData(sce_filtered)$percent_mito <- percent_mito
 - **Remove cells with a % of mitochondrial counts greater than 10%.**
 
 ```{r, filename = "R"}
-sce_filtered <- sce_filtered[, sce_filtered$percent_mito <= 0.10]
+sce_filtered <- sce_filtered[
+    , 
+    sce_filtered$percent_mito <= 0.10
+]
 ```
 
 ### Checking housekeeping genes

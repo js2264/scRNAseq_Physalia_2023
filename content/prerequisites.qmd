@@ -75,7 +75,7 @@ sudo Rscript -e 'install.packages("pak", repos = sprintf("https://r-lib.github.i
 sudo Rscript -e 'pak::pkg_install(c("tidyverse", "devtools", "umap", "corrplot", "gam", "ggbeeswarm", "ggthemes", "Matrix", "zeallot", "fossil", "rgl", "BiocManager", "Seurat", "rliger", "Signac", "multtest", "metap"))'
 
 ## Bioconductor Packages
-sudo Rscript -e 'pak::pkg_install(c("SingleCellExperiment", "scran", "scater", "batchelor", "DropletUtils", "AUCell", "plyranges", "ggraph", "clustree", "celldex", "SingleR", "slingshot", "tradeSeq", "velociraptor", "BUSpaRse", "org.Mm.eg.db", "org.Hs.eg.db", "destiny", "TENxPBMCData", "scRNAseq", "scDblFinder", "chromVAR", "EnsDb.Hsapiens.v75"))'
+sudo Rscript -e 'pak::pkg_install(c("SingleCellExperiment", "scran", "scater", "batchelor", "DropletUtils", "AUCell", "plyranges", "ggraph", "clustree", "celldex", "SingleR", "slingshot", "tradeSeq", "velociraptor", "BUSpaRse", "org.Mm.eg.db", "org.Hs.eg.db", "destiny", "TENxPBMCData", "scRNAseq", "scDblFinder", "chromVAR", "EnsDb.Hsapiens.v75", "LoomExperiment", "biovizBase"))'
 
 ## --- Install other softwares (fastQC, samtools, cellranger and cellranger indexes, ffq)
 

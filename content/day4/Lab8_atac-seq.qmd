@@ -22,17 +22,22 @@ Several packages are currently avaialble to process scATAC-seq data in R. These 
 
 ### Download data 
 
-The data comes from Satpathy et al., Nat. Biotechnol. 2019 ([DOI: 10.1038/s41587-019-0206-z](https://doi.org/10.1038/s41587-019-0206-z)). 
-Counts data is available from GEO (GSE: `GSE129785`). 
-
 - **Download the files related to scATACseq of all human hematopoiesis cells.**
 
+::: {.callout-warning icon='true'}
+## Data have already been downloaded!
+
+Data comes from Satpathy et al., Nat. Biotechnol. 2019 ([DOI: 10.1038/s41587-019-0206-z](https://doi.org/10.1038/s41587-019-0206-z)). Counts data is available from GEO (GSE: `GSE129785`). 
+
+Data was recovered using this chunk of code. Since the raw data is >6Gb, 
+the data files were pre-downloaded and are available in `~/Share`
+
 ```{r, filename = "R"}
-dir.create('scATAC')
-download.file('https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.cell_barcodes.txt.gz', 'scATAC/barcodes.tsv.gz')
-download.file('https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.mtx.gz', 'scATAC/matrix.mtx.gz')
-download.file('https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.peaks.txt.gz', 'scATAC/features.tsv.gz')
+download.file('https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.cell_barcodes.txt.gz', '~/Share/scATAC/barcodes.tsv.gz')
+download.file('https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.mtx.gz', '~/Share/scATAC/matrix.mtx.gz')
+download.file('https://ftp.ncbi.nlm.nih.gov/geo/series/GSE129nnn/GSE129785/suppl/GSE129785_scATAC-Hematopoiesis-All.peaks.txt.gz', '~/Share/scATAC/features.tsv.gz')
 ```
+:::
 
 ### Process data with Signac
 
@@ -44,7 +49,7 @@ import functions for the different input formats. Check `Seurat` documentation i
 to identify which function can be used to import a `mtx` format. 
 
 ```{r, filename = "R"}
-cnts <- Seurat::Read10X('scATAC/')
+cnts <- Seurat::Read10X('~/Share/scATAC/')
 ```
 
 Does it work? Why? The most likely reason is that the count matrix is not 
@@ -56,31 +61,35 @@ The alternative, longer route is to import each file separately,
 make sure they are compatible with each other, and merge them 
 manually into a `SeuratChromatinAssay`. 
 
+::: {.callout-warning icon='true'}
+## Data have already been imported!
+
 ```{r, filename = "R"}
 ## - Load required libraries 
 library(tidyverse)
 library(plyranges)
 library(Seurat)
 library(Signac)
+
 ## - Import counts, barcodes and features separately
-barcode <- file.path('scATAC/', "barcodes.tsv.gz")
-features <- file.path('scATAC/', "features.tsv.gz")
-matrix <- file.path('scATAC/', "matrix.mtx.gz")
 cnts <- Matrix::readMM('scATAC/matrix.mtx.gz')
 barcodes <- vroom::vroom('scATAC/barcodes.tsv.gz') |> as.data.frame()
 features <- readLines('scATAC/features.tsv.gz')[-1] |> 
     str_replace('_', ':') |> 
     str_replace('_', '-') |> 
-    GRanges() |> 
-    mutate(peak = as.character(x = _) |> str_replace(':', '-'))
+    GRanges()
+features$peak <- as.character(features) |> str_replace(':', '-')
+
 ## - Make sure that the row/colnames for the count matrix match those of 
 #       barcodes and features
 colnames(cnts) <- rownames(barcodes) <- barcodes$Group_Barcode
 rownames(cnts) <- names(features) <- features$peak
+
 ## - Get human gene annotations (hg19/GRCh37) to feed it into the future `SeuratChromatinAssay`
 annotations <- GetGRangesFromEnsDb(ensdb = EnsDb.Hsapiens.v75::EnsDb.Hsapiens.v75)
 seqlevelsStyle(annotations) <- 'UCSC'
 genome(annotations) <- "hg19"
+
 ## - Create Chromatin Assay
 assay <- Signac::CreateChromatinAssay(
     counts = cnts,

@@ -125,7 +125,7 @@ read_tsv('~/Share/GSM4486714_AXH009_genes.tsv', col_names = c('ID', 'Symbol')) |
 
 The most fundamental class used to hold the content of large-scale quantitative analyses, such as counts of RNA-seq experiments, or high-throughput cytometry experiments or proteomics experiments. 
 
-![](.img/2021-05-31-08-50-45.png)
+![](https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day2/.img/2021-05-31-08-50-45.png?raw=true)
 
 Make sure you understand the structure of objects from this class. A dedicated workshop that I would recommend quickly going over is available [here](https://www.bioconductor.org/help/course-materials/2019/BSS2019/04_Practical_CoreApproachesInBioconductor.html).
 Generally speaking, a `SummarizedExperiment` object contains matrix-like objects (the `assays`), with rows representing features (e.g. genes, transcripts, ...) and each column representing a sample. 
@@ -237,7 +237,7 @@ Notably, several packages are increasingly becoming central for single-cell anal
 **`SingleCellExperiment`** is the fundamental class designed to contain single-cell (RNA-seq) data in `Bioconductor` ecosystem. It is a modified version of the 
 `SummarizedExperiment` object, so most of the getters/setters are shared with this class. 
 
-![](.img/2021-05-31-09-38-24.png)
+![](https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day2/.img/2021-05-31-09-38-24.png?raw=true)
 
 ```{r eval = FALSE, filename = "R"}
 source('~/Share/bin/prepare_Nestorowa.R') # Adapted from Nestorowa et al., Blood 2016 (doi: 10.1182/blood-2016-05-716480)
@@ -354,7 +354,7 @@ head(Seurat::Embeddings(object = sce_seurat, reduction = "diffusion"))
 
 ## Reading scRNAseq data 
 
-- **Try to load the raw `10X` single-cell RNA-seq data downloaded yesterday (from `Lier et al.`) into a **SingleCellExperiment** object using `DropletUtils` package.**
+- **Try to load the raw `10X` single-cell RNA-seq data downloaded yesterday (from `Lier et al.`) into a `SingleCellExperiment` object using `DropletUtils` package.**
 
 ```{r eval = FALSE, filename = "R"}
 library(SingleCellExperiment)

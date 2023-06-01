@@ -12,10 +12,8 @@ Go to the [cellranger mkfastq page](https://support.10xgenomics.com/single-cell-
 Go to the Terminal tab in your `RStudio` and take a look at the 10x samplesheet file:
 
 ```{sh eval=FALSE, filename="bash"}
-less ~/Share/data_wrangling/cellranger-tiny-bcl-simple-1.2.0.csv
+cat ~/Share/data_wrangling/cellranger-tiny-bcl-simple-1.2.0.csv
 ```
-
-You can type `q` in the terminal to leave this file view.
 
 Next, explore the contents of the sequencing directory:
 

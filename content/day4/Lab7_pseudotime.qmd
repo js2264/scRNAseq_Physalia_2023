@@ -42,6 +42,7 @@ library(SingleCellExperiment)
 library(tidyverse)
 
 # Download raw file
+dir.create('Guo_testis')
 download.file(
     'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE112nnn/GSE112013/suppl/GSE112013_Combined_UMI_table.txt.gz', 
     'Guo_testis/GSE112013_Combined_UMI_table.txt.gz'
@@ -51,6 +52,7 @@ system('gunzip Guo_testis/GSE112013_Combined_UMI_table.txt.gz')
 # Create SingleCellExperiment object
 x <- vroom::vroom('Guo_testis/GSE112013_Combined_UMI_table.txt')
 counts <- as.matrix(x[, -1])
+counts <- as(counts, 'dgCMatrix')
 genes <- as.data.frame(x[, 1])
 cells <- data.frame(cellid = colnames(x[, -1]))
 testis <- SingleCellExperiment(
@@ -154,8 +156,8 @@ HPA <- vroom::vroom('Guo_testis/rna_single_cell_type.tsv') |>
     pivot_wider(names_from = `Cell type`, values_from = 'nTPM') |> 
     dplyr::select(-Gene) |> 
     distinct(`Gene name`, .keep_all = TRUE) |> 
-    column_to_rownames('Gene name') |> 
-    SummarizedExperiment::SummarizedExperiment(colData = tibble(cell_type = colnames(.)), assays = list('logcounts' = .))
+    column_to_rownames('Gene name')
+HPA_se <- SummarizedExperiment::SummarizedExperiment(HPA, colData = tibble(cell_type = colnames(HPA)), assays = list('logcounts' = HPA))
 ```
 
 - **Use these cell type profiles to annotate cell types in the testis dataset.**
@@ -164,8 +166,8 @@ HPA <- vroom::vroom('Guo_testis/rna_single_cell_type.tsv') |>
 # Transfer annotations to `testis`
 predictions <- SingleR::SingleR(
     test = testis, 
-    ref = HPA, 
-    labels = colData(HPA)$cell_type, 
+    ref = HPA_se, 
+    labels = colData(HPA_se)$cell_type, 
     clusters = testis$cluster
 )
 testis$annotation <- predictions$labels[testis$cluster]
@@ -180,7 +182,10 @@ p <- cowplot::plot_grid(
 ### Filter the testis dataset to only germinal cells.  
 
 ```{r eval = FALSE, filename = "R"}
-germcells <- testis[, testis$annotation %in% c("Spermatogonia", "Spermatocytes", "Early spermatids", "Late spermatids")]
+germcells <- testis[
+    , 
+    testis$annotation %in% c("Spermatogonia", "Spermatocytes", "Early spermatids", "Late spermatids")
+]
 ```
 
 ## Trajectory inference (TI) in scRNAseq
@@ -191,7 +196,7 @@ A large number of methods have currently emerged, each one with their own specif
 A nice breakdown (from 2019, so already very outdated!) is available from 
 `Saelens et al., Nat. Biotech. 2018` (doi: 10.1038/s41587-019-0071-9): 
 
-![](.img/2021-06-01-11-29-36.png)
+![](https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day4/.img/2021-06-01-11-29-36.png?raw=true)
 
 ### Trajectory 
 
@@ -334,13 +339,21 @@ Let's see whether RNA velocity helps orientating our spermatocyte differentiatio
 - **Try and compute RNA velocity.**
 
 ```{r eval = FALSE, filename = "R"}
+## - Import entire GSE112013 dataset with spliced/unspliced counts 
 full_GSE112013_counts <- LoomExperiment::import('Share/Guo_testis/Guo_testis_full-counts.loom')
-germcells <- germcells[rowData(germcells)$gene_id %in% rowData(full_GSE112013_counts)$Accession, ]
+## - Filter `germcells` genes and cells to only retain those present in `full_GSE112013_counts`
+germcells <- germcells[
+    rowData(germcells)$gene_id %in% rowData(full_GSE112013_counts)$Accession, 
+    germcells$Barcode %in% full_GSE112013_counts$Barcode
+]
+## - Reorder rows of `full_GSE112013_counts_germcells` to match those of `germcells`
 full_GSE112013_counts_germcells <- full_GSE112013_counts[match(rowData(germcells)$gene_id, rowData(full_GSE112013_counts)$Accession), match(germcells$Barcode, full_GSE112013_counts$Barcode)]
 dim(germcells)
 dim(full_GSE112013_counts_germcells)
+## - Add spliced/unspliced counts to germcells
 assay(germcells, 'spliced', withDimnames=FALSE) <- assay(full_GSE112013_counts_germcells, 'spliced')
 assay(germcells, 'unspliced', withDimnames=FALSE) <- assay(full_GSE112013_counts_germcells, 'unspliced')
+## - Run velociraptor
 velo_out <- velociraptor::scvelo(
     germcells, 
     assay.X = "counts", 

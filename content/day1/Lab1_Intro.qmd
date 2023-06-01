@@ -178,7 +178,21 @@ There are several ways to find this information, e.g. `ffq` command line tool,
 or using the web-based `sra-explorer` page ([here](https://sra-explorer.info/)). 
 You generally will need the `GEO` corresponding ID or SRA project ID (e.g. `SRPxxxxxx`...).
 
-- **Try to install and use the [`ffq` tool](https://github.com/pachterlab/ffq) from the Patcher lab.**
+- **Try to install the [`ffq` tool](https://github.com/pachterlab/ffq) from the Patcher lab.**
+
+::: {.callout-tip icon='true'}
+## Installing `conda` packages 
+
+`conda`-based environments allow easy installs of packages such as `ffq`. 
+Your `(base)` conda environment should be active by default, and you will only have 
+to type: 
+
+```{shell}
+pip install ffq
+```
+:::
+
+- **Check `ffq` help and try fetching metadata for the GSE ID `GSE148963`.**
 
 ```{sh eval = FALSE, filename = "bash"}
 ffq --help
