@@ -9,10 +9,10 @@ always able to connect to services such as AWS.
 
 Since most of the preliminary analysis we do is on AWS, 
 we'd like to be able to use Rtudio directly from there. To do 
-that, simply go to [the following address](https://{{< meta IP >}}:8787): 
+that, simply go to [the following address](http://{{< meta IP >}}:8787): 
 
 ```{r, echo=FALSE}
-writeLines("https://{{< meta IP >}}:8787")
+writeLines("http://{{< meta IP >}}:8787")
 ```
 
 Don't forget, you can run a `bash` terminal from within RStudio! 

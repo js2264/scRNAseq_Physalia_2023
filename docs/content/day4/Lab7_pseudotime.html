@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.1.189">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
 <meta name="author" content="J. Serizay &amp; O. Ashenberg">
+
 <title>Single-cell RNAseq analysis with R/Bioconductor - 13&nbsp; Lab 7: Pseudotime analyses</title>
 <style>
 code{white-space: pre-wrap;}
@@ -83,6 +86,7 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
@@ -100,7 +104,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light"><script id="quarto-search-options" type="application/json">{
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
   "collapse-after": 3,
@@ -119,21 +124,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     "search-submit-button-title": "Submit"
   }
 }</script>
+
+
 </head>
+
 <body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Lab 7: Pseudotime analyses</span>
-</h1>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Lab 7: Pseudotime analyses</span></h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
       </button>
     </div>
-  </nav></header><!-- content --><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto"><div class="pt-lg-2 mt-2 text-left sidebar-header">
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="../../">Single-cell RNAseq analysis with R/Bioconductor</a> 
         <div class="sidebar-tools-main">
@@ -148,7 +160,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       </div>
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
-<li class="sidebar-item">
+        <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../index.html" class="sidebar-item-text sidebar-link">Welcome</a>
   </div>
@@ -175,8 +187,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
-<li class="sidebar-item">
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../content/day1/Lecture1_introduction.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Lecture 1 - Introduction to scRNAseq analysis</span></a>
   </div>
@@ -197,7 +209,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
 </li>
       </ul>
-</li>
+  </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">Day 2</a>
@@ -205,8 +217,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
-<li class="sidebar-item">
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../content/day2/Lab3_Rbioc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Lab 3: Introduction to R/Bioconductor</span></a>
   </div>
@@ -222,7 +234,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
 </li>
       </ul>
-</li>
+  </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">Day 3</a>
@@ -230,8 +242,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
-<li class="sidebar-item">
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../content/day3/Lecture4_clustering.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Lecture 4 - Identifying cell populations</span></a>
   </div>
@@ -252,7 +264,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
 </li>
       </ul>
-</li>
+  </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-expanded="true">Day 4</a>
@@ -260,8 +272,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">
-<li class="sidebar-item">
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../content/day4/Lecture6_pseudotime.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Lecture 6 - Trajectories and pseudotimes</span></a>
   </div>
@@ -282,7 +294,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
 </li>
       </ul>
-</li>
+  </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" aria-expanded="true">Day 5</a>
@@ -290,50 +302,51 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">
-<li class="sidebar-item">
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../content/day5/Lecture8_spatial-transcriptomics.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Lecture 8 - Advances in single-cell genomics: spatial transcriptomics</span></a>
   </div>
 </li>
       </ul>
-</li>
+  </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../../content/extra.html" class="sidebar-item-text sidebar-link">Extra resources</a>
   </div>
 </li>
     </ul>
-</div>
-</nav><!-- margin-sidebar --><div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li>
-<a href="#process-testis-data-in-r" id="toc-process-testis-data-in-r" class="nav-link active" data-scroll-target="#process-testis-data-in-r"><span class="toc-section-number">13.1</span>  Process testis data in R</a>
+  <li><a href="#process-testis-data-in-r" id="toc-process-testis-data-in-r" class="nav-link active" data-scroll-target="#process-testis-data-in-r"><span class="toc-section-number">13.1</span>  Process testis data in R</a>
   <ul class="collapse">
-<li><a href="#import-testis-data-from-gse112013-and-pre-process-it" id="toc-import-testis-data-from-gse112013-and-pre-process-it" class="nav-link" data-scroll-target="#import-testis-data-from-gse112013-and-pre-process-it"><span class="toc-section-number">13.1.1</span>  Import testis data from GSE112013 and pre-process it</a></li>
+  <li><a href="#import-testis-data-from-gse112013-and-pre-process-it" id="toc-import-testis-data-from-gse112013-and-pre-process-it" class="nav-link" data-scroll-target="#import-testis-data-from-gse112013-and-pre-process-it"><span class="toc-section-number">13.1.1</span>  Import testis data from GSE112013 and pre-process it</a></li>
   <li><a href="#annotate-cells-using-hpa-resources" id="toc-annotate-cells-using-hpa-resources" class="nav-link" data-scroll-target="#annotate-cells-using-hpa-resources"><span class="toc-section-number">13.1.2</span>  Annotate cells using HPA resources</a></li>
   <li><a href="#filter-the-testis-dataset-to-only-germinal-cells." id="toc-filter-the-testis-dataset-to-only-germinal-cells." class="nav-link" data-scroll-target="#filter-the-testis-dataset-to-only-germinal-cells."><span class="toc-section-number">13.1.3</span>  Filter the testis dataset to only germinal cells.</a></li>
-  </ul>
-</li>
-  <li>
-<a href="#trajectory-inference-ti-in-scrnaseq" id="toc-trajectory-inference-ti-in-scrnaseq" class="nav-link" data-scroll-target="#trajectory-inference-ti-in-scrnaseq"><span class="toc-section-number">13.2</span>  Trajectory inference (TI) in scRNAseq</a>
+  </ul></li>
+  <li><a href="#trajectory-inference-ti-in-scrnaseq" id="toc-trajectory-inference-ti-in-scrnaseq" class="nav-link" data-scroll-target="#trajectory-inference-ti-in-scrnaseq"><span class="toc-section-number">13.2</span>  Trajectory inference (TI) in scRNAseq</a>
   <ul class="collapse">
-<li><a href="#trajectory" id="toc-trajectory" class="nav-link" data-scroll-target="#trajectory"><span class="toc-section-number">13.2.1</span>  Trajectory</a></li>
+  <li><a href="#trajectory" id="toc-trajectory" class="nav-link" data-scroll-target="#trajectory"><span class="toc-section-number">13.2.1</span>  Trajectory</a></li>
   <li><a href="#pseudotime" id="toc-pseudotime" class="nav-link" data-scroll-target="#pseudotime"><span class="toc-section-number">13.2.2</span>  Pseudotime</a></li>
   <li><a href="#bonus-daunting-snippet-but-that-makes-a-cool-figure-for-a-paper-modeling-pseudotime-dependent-gene-expression" id="toc-bonus-daunting-snippet-but-that-makes-a-cool-figure-for-a-paper-modeling-pseudotime-dependent-gene-expression" class="nav-link" data-scroll-target="#bonus-daunting-snippet-but-that-makes-a-cool-figure-for-a-paper-modeling-pseudotime-dependent-gene-expression"><span class="toc-section-number">13.2.3</span>  BONUS: Daunting snippet but that makes a cool figure for a paper: modeling pseudotime-dependent gene expression</a></li>
-  </ul>
-</li>
+  </ul></li>
   <li><a href="#ordering-trajectory-with-rna-velocity" id="toc-ordering-trajectory-with-rna-velocity" class="nav-link" data-scroll-target="#ordering-trajectory-with-rna-velocity"><span class="toc-section-number">13.3</span>  Ordering trajectory with RNA velocity</a></li>
   <li><a href="#session-info" id="toc-session-info" class="nav-link" data-scroll-target="#session-info"><span class="toc-section-number">13.4</span>  Session info</a></li>
-  </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/edit/main/content/day4/Lab7_pseudotime.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
+  </ul>
+<div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/edit/main/content/day4/Lab7_pseudotime.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
-<h1 class="title d-none d-lg-block">
-<span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Lab 7: Pseudotime analyses</span>
-</h1>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Lab 7: Pseudotime analyses</span></h1>
 </div>
 
 
@@ -345,7 +358,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
   
 
-</header><div class="cell">
+</header>
+
+<div class="cell">
 
 </div>
 <div class="cell">
@@ -369,10 +384,10 @@ Aims
 </ul>
 </div>
 </div>
-<section id="process-testis-data-in-r" class="level2" data-number="13.1"><h2 data-number="13.1" class="anchored" data-anchor-id="process-testis-data-in-r">
-<span class="header-section-number">13.1</span> Process testis data in R</h2>
-<section id="import-testis-data-from-gse112013-and-pre-process-it" class="level3" data-number="13.1.1"><h3 data-number="13.1.1" class="anchored" data-anchor-id="import-testis-data-from-gse112013-and-pre-process-it">
-<span class="header-section-number">13.1.1</span> Import testis data from GSE112013 and pre-process it</h3>
+<section id="process-testis-data-in-r" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="process-testis-data-in-r"><span class="header-section-number">13.1</span> Process testis data in R</h2>
+<section id="import-testis-data-from-gse112013-and-pre-process-it" class="level3" data-number="13.1.1">
+<h3 data-number="13.1.1" class="anchored" data-anchor-id="import-testis-data-from-gse112013-and-pre-process-it"><span class="header-section-number">13.1.1</span> Import testis data from GSE112013 and pre-process it</h3>
 <p>The workflow we have covered in the previous days can be reused here.</p>
 <ul>
 <li><strong>Import testis dataset in R, remove doublets, filter genes, normalize <code>counts</code>, correct for batch effect and cluster cells.</strong></li>
@@ -382,109 +397,110 @@ Aims
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">SingleCellExperiment</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Download raw file</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/files2.html">dir.create</a></span><span class="op">(</span><span class="st">'Guo_testis'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span></span>
-<span>    <span class="st">'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE112nnn/GSE112013/suppl/GSE112013_Combined_UMI_table.txt.gz'</span>, </span>
-<span>    <span class="st">'Guo_testis/GSE112013_Combined_UMI_table.txt.gz'</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="st">'gunzip Guo_testis/GSE112013_Combined_UMI_table.txt.gz'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Create SingleCellExperiment object</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">vroom</span><span class="fu">::</span><span class="fu"><a href="https://vroom.r-lib.org/reference/vroom.html">vroom</a></span><span class="op">(</span><span class="st">'Guo_testis/GSE112013_Combined_UMI_table.txt'</span><span class="op">)</span></span>
-<span><span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/as.html">as</a></span><span class="op">(</span><span class="va">counts</span>, <span class="st">'dgCMatrix'</span><span class="op">)</span></span>
-<span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
-<span><span class="va">cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>cellid <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="op">-</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">testis</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html">SingleCellExperiment</a></span><span class="op">(</span></span>
-<span>    assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>counts <span class="op">=</span> <span class="va">counts</span><span class="op">)</span>, </span>
-<span>    colData <span class="op">=</span> <span class="va">cells</span>, </span>
-<span>    rowData <span class="op">=</span> <span class="va">genes</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">testis</span><span class="op">$</span><span class="va">Barcode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">testis</span><span class="op">$</span><span class="va">cellid</span>, <span class="st">'Donor.-'</span>, <span class="st">''</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="st">'-.'</span>, <span class="st">''</span><span class="op">)</span></span>
-<span><span class="va">testis</span> <span class="op">&lt;-</span> <span class="va">testis</span><span class="op">[</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="va">testis</span><span class="op">$</span><span class="va">Barcode</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="va">testis</span><span class="op">$</span><span class="va">donor</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">testis</span><span class="op">$</span><span class="va">cellid</span>, <span class="st">'-.*'</span>, <span class="st">''</span><span class="op">)</span></span>
-<span><span class="va">testis</span><span class="op">$</span><span class="va">replicate</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_replace.html">str_replace</a></span><span class="op">(</span><span class="va">testis</span><span class="op">$</span><span class="va">cellid</span>, <span class="st">'.*-'</span>, <span class="st">''</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span><span class="op">$</span><span class="va">Gene</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">1000</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Remove doublets</span></span>
-<span><span class="va">testis</span> <span class="op">&lt;-</span> <span class="fu">scDblFinder</span><span class="fu">::</span><span class="fu">scDblFinder</span><span class="op">(</span><span class="va">testis</span><span class="op">)</span></span>
-<span><span class="va">testis</span> <span class="op">&lt;-</span> <span class="va">testis</span><span class="op">[</span>, <span class="va">testis</span><span class="op">$</span><span class="va">scDblFinder.class</span> <span class="op">==</span> <span class="st">'singlet'</span><span class="op">]</span></span>
-<span></span>
-<span><span class="co"># Recover human genomic, protein-coding gene informations</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">plyranges</span><span class="op">)</span></span>
-<span><span class="va">ah</span> <span class="op">&lt;-</span> <span class="fu">AnnotationHub</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">AnnotationHub</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="fu">AnnotationHub</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">query</a></span><span class="op">(</span><span class="va">ah</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'gene annotation'</span>, <span class="st">'ensembl'</span>, <span class="st">'102'</span>, <span class="st">'homo_sapiens'</span>, <span class="st">'GRCh38'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">gtf</span> <span class="op">&lt;-</span> <span class="fu">AnnotationHub</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">query</a></span><span class="op">(</span><span class="va">ah</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Homo_sapiens.GRCh38.102.chr.gtf'</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="va">gtf</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">type</span> <span class="op">==</span> <span class="st">'gene'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">gene_biotype</span> <span class="op">==</span> <span class="st">'protein_coding'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">gene_source</span> <span class="op">==</span> <span class="st">'ensembl_havana'</span><span class="op">)</span> </span>
-<span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="va">genes</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="va">genes</span><span class="op">$</span><span class="va">gene_name</span><span class="op">)</span><span class="op">]</span></span>
-<span></span>
-<span><span class="co"># Annotate genes in testis dataset and filter out non-relevant genes</span></span>
-<span><span class="va">testis</span> <span class="op">&lt;-</span> <span class="va">testis</span><span class="op">[</span><span class="va">genes</span><span class="op">$</span><span class="va">gene_name</span><span class="op">[</span><span class="va">genes</span><span class="op">$</span><span class="va">gene_name</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span><span class="op">]</span>, <span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/MatrixGenerics/man/rowRanges.html">rowRanges</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">genes</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span>, <span class="va">genes</span><span class="op">$</span><span class="va">gene_name</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'gene_name'</span>, <span class="st">'gene_id'</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">scuttle</span><span class="fu">::</span><span class="fu">uniquifyFeatureNames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span><span class="op">$</span><span class="va">gene_id</span>, <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span><span class="op">$</span><span class="va">gene_name</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Get preliminary QCs per cell and per gene</span></span>
-<span><span class="va">testis</span> <span class="op">&lt;-</span> <span class="fu">scuttle</span><span class="fu">::</span><span class="fu">addPerCellQCMetrics</span><span class="op">(</span><span class="va">testis</span><span class="op">)</span></span>
-<span><span class="va">testis</span> <span class="op">&lt;-</span> <span class="fu">scuttle</span><span class="fu">::</span><span class="fu">addPerFeatureQCMetrics</span><span class="op">(</span><span class="va">testis</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Filter out genes not expressed in at least 10 cells</span></span>
-<span><span class="va">testis</span> <span class="op">&lt;-</span> <span class="va">testis</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">testis</span>, <span class="st">'counts'</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="fl">10</span>, <span class="op">]</span></span>
-<span></span>
-<span><span class="co"># Normalize counts using VST</span></span>
-<span><span class="va">cnts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/methods/as.html">as</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">testis</span>, <span class="st">'counts'</span><span class="op">)</span>, <span class="st">'dgCMatrix'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">cnts</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">testis</span><span class="op">$</span><span class="va">cellid</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">cnts</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span></span>
-<span><span class="va">testis_vst</span> <span class="op">&lt;-</span> <span class="fu">sctransform</span><span class="fu">::</span><span class="fu">vst</span><span class="op">(</span><span class="va">cnts</span>, return_cell_attr <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">corrected_cnts</span> <span class="op">&lt;-</span> <span class="fu">sctransform</span><span class="fu">::</span><span class="fu">correct</span><span class="op">(</span><span class="va">testis_vst</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">testis</span>, <span class="st">'corrected_counts'</span>, withDimnames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">corrected_cnts</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">testis</span>, <span class="st">'logcounts'</span>, withDimnames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log1p</a></span><span class="op">(</span><span class="va">corrected_cnts</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Computing biological variance of each gene</span></span>
-<span><span class="va">testis_variance</span> <span class="op">&lt;-</span> <span class="fu">scran</span><span class="fu">::</span><span class="fu">modelGeneVar</span><span class="op">(</span><span class="va">testis</span><span class="op">)</span></span>
-<span><span class="va">HVGs</span> <span class="op">&lt;-</span> <span class="fu">scran</span><span class="fu">::</span><span class="fu">getTopHVGs</span><span class="op">(</span><span class="va">testis_variance</span>, prop <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span><span class="op">$</span><span class="va">isHVG</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">testis</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">HVGs</span></span>
-<span></span>
-<span><span class="co"># Embedding dataset in PCA space, correcting for batch effect</span></span>
-<span><span class="va">mergedBatches</span> <span class="op">&lt;-</span> <span class="fu">batchelor</span><span class="fu">::</span><span class="fu">fastMNN</span><span class="op">(</span></span>
-<span>    <span class="va">testis</span>, </span>
-<span>    batch <span class="op">=</span> <span class="va">testis</span><span class="op">$</span><span class="va">donor</span>, </span>
-<span>    subset.row <span class="op">=</span> <span class="va">HVGs</span>, </span>
-<span>    BPPARAM <span class="op">=</span> <span class="fu">BiocParallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html">MulticoreParam</a></span><span class="op">(</span>workers <span class="op">=</span> <span class="fl">12</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html">reducedDim</a></span><span class="op">(</span><span class="va">testis</span>, <span class="st">'corrected'</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html">reducedDim</a></span><span class="op">(</span><span class="va">mergedBatches</span>, <span class="st">'corrected'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Embedding dataset in shared k-nearest neighbors graph for clustering </span></span>
-<span><span class="va">graph</span> <span class="op">&lt;-</span> <span class="fu">scran</span><span class="fu">::</span><span class="fu">buildSNNGraph</span><span class="op">(</span><span class="va">testis</span>, use.dimred <span class="op">=</span> <span class="st">'corrected'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Cluster cells using Louvain community finding algorithm</span></span>
-<span><span class="va">testis_clust</span> <span class="op">&lt;-</span> <span class="fu">igraph</span><span class="fu">::</span><span class="fu">cluster_louvain</span><span class="op">(</span><span class="va">graph</span><span class="op">)</span><span class="op">$</span><span class="va">membership</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="va">testis_clust</span><span class="op">)</span></span>
-<span><span class="va">testis</span><span class="op">$</span><span class="va">cluster</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">testis_clust</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Embedding dataset in TSNE space for visualization</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
-<span><span class="va">testis</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu">runTSNE</span><span class="op">(</span><span class="va">testis</span>, dimred <span class="op">=</span> <span class="st">'corrected'</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Visualize embeddings</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span></span>
-<span>    <span class="fu">scater</span><span class="fu">::</span><span class="fu">plotReducedDim</span><span class="op">(</span><span class="va">testis</span>, <span class="st">'corrected'</span>, colour_by <span class="op">=</span> <span class="st">'donor'</span><span class="op">)</span>,</span>
-<span>    <span class="fu">scater</span><span class="fu">::</span><span class="fu">plotReducedDim</span><span class="op">(</span><span class="va">testis</span>, <span class="st">'corrected'</span>, colour_by <span class="op">=</span> <span class="st">'cluster'</span><span class="op">)</span>,</span>
-<span>    <span class="fu">scater</span><span class="fu">::</span><span class="fu">plotReducedDim</span><span class="op">(</span><span class="va">testis</span>, <span class="st">'TSNE'</span>, colour_by <span class="op">=</span> <span class="st">'donor'</span><span class="op">)</span>,</span>
-<span>    <span class="fu">scater</span><span class="fu">::</span><span class="fu">plotReducedDim</span><span class="op">(</span><span class="va">testis</span>, <span class="st">'TSNE'</span>, colour_by <span class="op">=</span> <span class="st">'cluster'</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SingleCellExperiment)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Download raw file</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">'Guo_testis'</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://ftp.ncbi.nlm.nih.gov/geo/series/GSE112nnn/GSE112013/suppl/GSE112013_Combined_UMI_table.txt.gz'</span>, </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Guo_testis/GSE112013_Combined_UMI_table.txt.gz'</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="st">'gunzip Guo_testis/GSE112013_Combined_UMI_table.txt.gz'</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create SingleCellExperiment object</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> vroom<span class="sc">::</span><span class="fu">vroom</span>(<span class="st">'Guo_testis/GSE112013_Combined_UMI_table.txt'</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(x[, <span class="sc">-</span><span class="dv">1</span>])</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> <span class="fu">as</span>(counts, <span class="st">'dgCMatrix'</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(x[, <span class="dv">1</span>])</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>cells <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">cellid =</span> <span class="fu">colnames</span>(x[, <span class="sc">-</span><span class="dv">1</span>]))</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>testis <span class="ot">&lt;-</span> <span class="fu">SingleCellExperiment</span>(</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">assays =</span> <span class="fu">list</span>(<span class="at">counts =</span> counts), </span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">colData =</span> cells, </span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">rowData =</span> genes</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>testis<span class="sc">$</span>Barcode <span class="ot">&lt;-</span> <span class="fu">str_replace</span>(testis<span class="sc">$</span>cellid, <span class="st">'Donor.-'</span>, <span class="st">''</span>) <span class="sc">|&gt;</span> <span class="fu">str_replace</span>(<span class="st">'-.'</span>, <span class="st">''</span>)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>testis <span class="ot">&lt;-</span> testis[, <span class="sc">!</span><span class="fu">duplicated</span>(testis<span class="sc">$</span>Barcode)]</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>testis<span class="sc">$</span>donor <span class="ot">&lt;-</span> <span class="fu">str_replace</span>(testis<span class="sc">$</span>cellid, <span class="st">'-.*'</span>, <span class="st">''</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>testis<span class="sc">$</span>replicate <span class="ot">&lt;-</span> <span class="fu">str_replace</span>(testis<span class="sc">$</span>cellid, <span class="st">'.*-'</span>, <span class="st">''</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(testis) <span class="ot">&lt;-</span> <span class="fu">rowData</span>(testis)<span class="sc">$</span>Gene</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1000</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove doublets</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>testis <span class="ot">&lt;-</span> scDblFinder<span class="sc">::</span><span class="fu">scDblFinder</span>(testis)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>testis <span class="ot">&lt;-</span> testis[, testis<span class="sc">$</span>scDblFinder.class <span class="sc">==</span> <span class="st">'singlet'</span>]</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Recover human genomic, protein-coding gene informations</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plyranges)</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>ah <span class="ot">&lt;-</span> AnnotationHub<span class="sc">::</span><span class="fu">AnnotationHub</span>()</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>AnnotationHub<span class="sc">::</span><span class="fu">query</span>(ah, <span class="fu">c</span>(<span class="st">'gene annotation'</span>, <span class="st">'ensembl'</span>, <span class="st">'102'</span>, <span class="st">'homo_sapiens'</span>, <span class="st">'GRCh38'</span>))</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>gtf <span class="ot">&lt;-</span> AnnotationHub<span class="sc">::</span><span class="fu">query</span>(ah, <span class="fu">c</span>(<span class="st">'Homo_sapiens.GRCh38.102.chr.gtf'</span>))[[<span class="dv">1</span>]]</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> gtf <span class="sc">|&gt;</span> </span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(type <span class="sc">==</span> <span class="st">'gene'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(gene_biotype <span class="sc">==</span> <span class="st">'protein_coding'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(gene_source <span class="sc">==</span> <span class="st">'ensembl_havana'</span>) </span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> genes[<span class="sc">!</span><span class="fu">duplicated</span>(genes<span class="sc">$</span>gene_name)]</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Annotate genes in testis dataset and filter out non-relevant genes</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>testis <span class="ot">&lt;-</span> testis[genes<span class="sc">$</span>gene_name[genes<span class="sc">$</span>gene_name <span class="sc">%in%</span> <span class="fu">rownames</span>(testis)], ]</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a><span class="fu">rowRanges</span>(testis) <span class="ot">&lt;-</span> genes[<span class="fu">match</span>(<span class="fu">rownames</span>(testis), genes<span class="sc">$</span>gene_name)]</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a><span class="fu">rowData</span>(testis) <span class="ot">&lt;-</span> <span class="fu">rowData</span>(testis)[, <span class="fu">c</span>(<span class="st">'gene_name'</span>, <span class="st">'gene_id'</span>)]</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(testis) <span class="ot">&lt;-</span> scuttle<span class="sc">::</span><span class="fu">uniquifyFeatureNames</span>(<span class="fu">rowData</span>(testis)<span class="sc">$</span>gene_id, <span class="fu">rowData</span>(testis)<span class="sc">$</span>gene_name)</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Get preliminary QCs per cell and per gene</span></span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>testis <span class="ot">&lt;-</span> scuttle<span class="sc">::</span><span class="fu">addPerCellQCMetrics</span>(testis)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>testis <span class="ot">&lt;-</span> scuttle<span class="sc">::</span><span class="fu">addPerFeatureQCMetrics</span>(testis)</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out genes not expressed in at least 10 cells</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a>testis <span class="ot">&lt;-</span> testis[<span class="fu">rowSums</span>(<span class="fu">assay</span>(testis, <span class="st">'counts'</span>) <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">&gt;=</span> <span class="dv">10</span>, ]</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize counts using VST</span></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a>cnts <span class="ot">&lt;-</span> <span class="fu">as</span>(<span class="fu">assay</span>(testis, <span class="st">'counts'</span>), <span class="st">'dgCMatrix'</span>)</span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(cnts) <span class="ot">&lt;-</span> testis<span class="sc">$</span>cellid</span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cnts) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(testis)</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a>testis_vst <span class="ot">&lt;-</span> sctransform<span class="sc">::</span><span class="fu">vst</span>(cnts, <span class="at">return_cell_attr =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a>corrected_cnts <span class="ot">&lt;-</span> sctransform<span class="sc">::</span><span class="fu">correct</span>(testis_vst)</span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a><span class="fu">assay</span>(testis, <span class="st">'corrected_counts'</span>, <span class="at">withDimnames =</span> <span class="cn">FALSE</span>) <span class="ot">&lt;-</span> corrected_cnts</span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a><span class="fu">assay</span>(testis, <span class="st">'logcounts'</span>, <span class="at">withDimnames =</span> <span class="cn">FALSE</span>) <span class="ot">&lt;-</span> <span class="fu">log1p</span>(corrected_cnts)</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="co"># Computing biological variance of each gene</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a>testis_variance <span class="ot">&lt;-</span> scran<span class="sc">::</span><span class="fu">modelGeneVar</span>(testis)</span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a>HVGs <span class="ot">&lt;-</span> scran<span class="sc">::</span><span class="fu">getTopHVGs</span>(testis_variance, <span class="at">prop =</span> <span class="fl">0.1</span>)</span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a><span class="fu">rowData</span>(testis)<span class="sc">$</span>isHVG <span class="ot">&lt;-</span> <span class="fu">rownames</span>(testis) <span class="sc">%in%</span> HVGs</span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a><span class="co"># Embedding dataset in PCA space, correcting for batch effect</span></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>mergedBatches <span class="ot">&lt;-</span> batchelor<span class="sc">::</span><span class="fu">fastMNN</span>(</span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>    testis, </span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>    <span class="at">batch =</span> testis<span class="sc">$</span>donor, </span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>    <span class="at">subset.row =</span> HVGs, </span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>    <span class="at">BPPARAM =</span> BiocParallel<span class="sc">::</span><span class="fu">MulticoreParam</span>(<span class="at">workers =</span> <span class="dv">12</span>)</span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a><span class="fu">reducedDim</span>(testis, <span class="st">'corrected'</span>) <span class="ot">&lt;-</span> <span class="fu">reducedDim</span>(mergedBatches, <span class="st">'corrected'</span>)</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="co"># Embedding dataset in shared k-nearest neighbors graph for clustering </span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a>graph <span class="ot">&lt;-</span> scran<span class="sc">::</span><span class="fu">buildSNNGraph</span>(testis, <span class="at">use.dimred =</span> <span class="st">'corrected'</span>)</span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a><span class="co"># Cluster cells using Louvain community finding algorithm</span></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a>testis_clust <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">cluster_louvain</span>(graph)<span class="sc">$</span>membership</span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(testis_clust)</span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>testis<span class="sc">$</span>cluster <span class="ot">&lt;-</span> <span class="fu">factor</span>(testis_clust)</span>
+<span id="cb1-88"><a href="#cb1-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-89"><a href="#cb1-89" aria-hidden="true" tabindex="-1"></a><span class="co"># Embedding dataset in TSNE space for visualization</span></span>
+<span id="cb1-90"><a href="#cb1-90" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">10</span>)</span>
+<span id="cb1-91"><a href="#cb1-91" aria-hidden="true" tabindex="-1"></a>testis <span class="ot">&lt;-</span> scater<span class="sc">::</span><span class="fu">runTSNE</span>(testis, <span class="at">dimred =</span> <span class="st">'corrected'</span>)</span>
+<span id="cb1-92"><a href="#cb1-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-93"><a href="#cb1-93" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize embeddings</span></span>
+<span id="cb1-94"><a href="#cb1-94" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> cowplot<span class="sc">::</span><span class="fu">plot_grid</span>(</span>
+<span id="cb1-95"><a href="#cb1-95" aria-hidden="true" tabindex="-1"></a>    scater<span class="sc">::</span><span class="fu">plotReducedDim</span>(testis, <span class="st">'corrected'</span>, <span class="at">colour_by =</span> <span class="st">'donor'</span>),</span>
+<span id="cb1-96"><a href="#cb1-96" aria-hidden="true" tabindex="-1"></a>    scater<span class="sc">::</span><span class="fu">plotReducedDim</span>(testis, <span class="st">'corrected'</span>, <span class="at">colour_by =</span> <span class="st">'cluster'</span>),</span>
+<span id="cb1-97"><a href="#cb1-97" aria-hidden="true" tabindex="-1"></a>    scater<span class="sc">::</span><span class="fu">plotReducedDim</span>(testis, <span class="st">'TSNE'</span>, <span class="at">colour_by =</span> <span class="st">'donor'</span>),</span>
+<span id="cb1-98"><a href="#cb1-98" aria-hidden="true" tabindex="-1"></a>    scater<span class="sc">::</span><span class="fu">plotReducedDim</span>(testis, <span class="st">'TSNE'</span>, <span class="at">colour_by =</span> <span class="st">'cluster'</span>)</span>
+<span id="cb1-99"><a href="#cb1-99" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="annotate-cells-using-hpa-resources" class="level3" data-number="13.1.2"><h3 data-number="13.1.2" class="anchored" data-anchor-id="annotate-cells-using-hpa-resources">
-<span class="header-section-number">13.1.2</span> Annotate cells using HPA resources</h3>
+</section>
+<section id="annotate-cells-using-hpa-resources" class="level3" data-number="13.1.2">
+<h3 data-number="13.1.2" class="anchored" data-anchor-id="annotate-cells-using-hpa-resources"><span class="header-section-number">13.1.2</span> Annotate cells using HPA resources</h3>
 <ul>
 <li><strong>Load <code>HPA</code> data <a href="https://www.proteinatlas.org/download/rna_single_cell_type.tsv.zip">from internet</a>.</strong></li>
 <li><strong>Try to format it as a <code>SummarizedExperiment</code>.</strong></li>
@@ -495,18 +511,18 @@ Aims
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span></span>
-<span>    <span class="st">'https://www.proteinatlas.org/download/rna_single_cell_type.tsv.zip'</span>, </span>
-<span>    <span class="st">'Guo_testis/rna_single_cell_type.tsv.zip'</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="st">'unzip Guo_testis/rna_single_cell_type.tsv.zip'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="st">'mv rna_single_cell_type.tsv Guo_testis/'</span><span class="op">)</span></span>
-<span><span class="va">HPA</span> <span class="op">&lt;-</span> <span class="fu">vroom</span><span class="fu">::</span><span class="fu"><a href="https://vroom.r-lib.org/reference/vroom.html">vroom</a></span><span class="op">(</span><span class="st">'Guo_testis/rna_single_cell_type.tsv'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">`Cell type`</span>, values_from <span class="op">=</span> <span class="st">'nTPM'</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Gene</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html">distinct</a></span><span class="op">(</span><span class="va">`Gene name`</span>, .keep_all <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/rownames.html">column_to_rownames</a></span><span class="op">(</span><span class="st">'Gene name'</span><span class="op">)</span></span>
-<span><span class="va">HPA_se</span> <span class="op">&lt;-</span> <span class="fu">SummarizedExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html">SummarizedExperiment</a></span><span class="op">(</span><span class="va">HPA</span>, colData <span class="op">=</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>cell_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">HPA</span><span class="op">)</span><span class="op">)</span>, assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">'logcounts'</span> <span class="op">=</span> <span class="va">HPA</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">download.file</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'https://www.proteinatlas.org/download/rna_single_cell_type.tsv.zip'</span>, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'Guo_testis/rna_single_cell_type.tsv.zip'</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="st">'unzip Guo_testis/rna_single_cell_type.tsv.zip'</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">system</span>(<span class="st">'mv rna_single_cell_type.tsv Guo_testis/'</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>HPA <span class="ot">&lt;-</span> vroom<span class="sc">::</span><span class="fu">vroom</span>(<span class="st">'Guo_testis/rna_single_cell_type.tsv'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> <span class="st">`</span><span class="at">Cell type</span><span class="st">`</span>, <span class="at">values_from =</span> <span class="st">'nTPM'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>Gene) <span class="sc">|&gt;</span> </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(<span class="st">`</span><span class="at">Gene name</span><span class="st">`</span>, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">column_to_rownames</span>(<span class="st">'Gene name'</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>HPA_se <span class="ot">&lt;-</span> SummarizedExperiment<span class="sc">::</span><span class="fu">SummarizedExperiment</span>(HPA, <span class="at">colData =</span> <span class="fu">tibble</span>(<span class="at">cell_type =</span> <span class="fu">colnames</span>(HPA)), <span class="at">assays =</span> <span class="fu">list</span>(<span class="st">'logcounts'</span> <span class="ot">=</span> HPA))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -517,41 +533,44 @@ Aims
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Transfer annotations to `testis`</span></span>
-<span><span class="va">predictions</span> <span class="op">&lt;-</span> <span class="fu">SingleR</span><span class="fu">::</span><span class="fu">SingleR</span><span class="op">(</span></span>
-<span>    test <span class="op">=</span> <span class="va">testis</span>, </span>
-<span>    ref <span class="op">=</span> <span class="va">HPA_se</span>, </span>
-<span>    labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">colData</a></span><span class="op">(</span><span class="va">HPA_se</span><span class="op">)</span><span class="op">$</span><span class="va">cell_type</span>, </span>
-<span>    clusters <span class="op">=</span> <span class="va">testis</span><span class="op">$</span><span class="va">cluster</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">testis</span><span class="op">$</span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="va">predictions</span><span class="op">$</span><span class="va">labels</span><span class="op">[</span><span class="va">testis</span><span class="op">$</span><span class="va">cluster</span><span class="op">]</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span></span>
-<span>    <span class="fu">scater</span><span class="fu">::</span><span class="fu">plotReducedDim</span><span class="op">(</span><span class="va">testis</span>, dimred <span class="op">=</span> <span class="st">'corrected'</span>, colour_by <span class="op">=</span> <span class="st">'cluster'</span>, text_by <span class="op">=</span> <span class="st">'cluster'</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">'Testis data, PCA, graph-based clusters'</span><span class="op">)</span>, </span>
-<span>    <span class="fu">scater</span><span class="fu">::</span><span class="fu">plotReducedDim</span><span class="op">(</span><span class="va">testis</span>, dimred <span class="op">=</span> <span class="st">'corrected'</span>, colour_by <span class="op">=</span> <span class="st">'annotation'</span>, text_by <span class="op">=</span> <span class="st">'annotation'</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">'PCA, Annotations transferred from HPA'</span><span class="op">)</span>,</span>
-<span>    <span class="fu">scater</span><span class="fu">::</span><span class="fu">plotReducedDim</span><span class="op">(</span><span class="va">testis</span>, dimred <span class="op">=</span> <span class="st">'TSNE'</span>, colour_by <span class="op">=</span> <span class="st">'cluster'</span>, text_by <span class="op">=</span> <span class="st">'cluster'</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">'Testis data, tSNE, graph-based clusters'</span><span class="op">)</span>, </span>
-<span>    <span class="fu">scater</span><span class="fu">::</span><span class="fu">plotReducedDim</span><span class="op">(</span><span class="va">testis</span>, dimred <span class="op">=</span> <span class="st">'TSNE'</span>, colour_by <span class="op">=</span> <span class="st">'annotation'</span>, text_by <span class="op">=</span> <span class="st">'annotation'</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">'tSNE, Annotations transferred from HPA'</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Transfer annotations to `testis`</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>predictions <span class="ot">&lt;-</span> SingleR<span class="sc">::</span><span class="fu">SingleR</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">test =</span> testis, </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">ref =</span> HPA_se, </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">colData</span>(HPA_se)<span class="sc">$</span>cell_type, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">clusters =</span> testis<span class="sc">$</span>cluster</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>testis<span class="sc">$</span>annotation <span class="ot">&lt;-</span> predictions<span class="sc">$</span>labels[testis<span class="sc">$</span>cluster]</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> cowplot<span class="sc">::</span><span class="fu">plot_grid</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    scater<span class="sc">::</span><span class="fu">plotReducedDim</span>(testis, <span class="at">dimred =</span> <span class="st">'corrected'</span>, <span class="at">colour_by =</span> <span class="st">'cluster'</span>, <span class="at">text_by =</span> <span class="st">'cluster'</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">'Testis data, PCA, graph-based clusters'</span>), </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    scater<span class="sc">::</span><span class="fu">plotReducedDim</span>(testis, <span class="at">dimred =</span> <span class="st">'corrected'</span>, <span class="at">colour_by =</span> <span class="st">'annotation'</span>, <span class="at">text_by =</span> <span class="st">'annotation'</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">'PCA, Annotations transferred from HPA'</span>),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    scater<span class="sc">::</span><span class="fu">plotReducedDim</span>(testis, <span class="at">dimred =</span> <span class="st">'TSNE'</span>, <span class="at">colour_by =</span> <span class="st">'cluster'</span>, <span class="at">text_by =</span> <span class="st">'cluster'</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">'Testis data, tSNE, graph-based clusters'</span>), </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    scater<span class="sc">::</span><span class="fu">plotReducedDim</span>(testis, <span class="at">dimred =</span> <span class="st">'TSNE'</span>, <span class="at">colour_by =</span> <span class="st">'annotation'</span>, <span class="at">text_by =</span> <span class="st">'annotation'</span>) <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">'tSNE, Annotations transferred from HPA'</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="filter-the-testis-dataset-to-only-germinal-cells." class="level3" data-number="13.1.3"><h3 data-number="13.1.3" class="anchored" data-anchor-id="filter-the-testis-dataset-to-only-germinal-cells.">
-<span class="header-section-number">13.1.3</span> Filter the testis dataset to only germinal cells.</h3>
+</section>
+<section id="filter-the-testis-dataset-to-only-germinal-cells." class="level3" data-number="13.1.3">
+<h3 data-number="13.1.3" class="anchored" data-anchor-id="filter-the-testis-dataset-to-only-germinal-cells."><span class="header-section-number">13.1.3</span> Filter the testis dataset to only germinal cells.</h3>
 <div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">germcells</span> <span class="op">&lt;-</span> <span class="va">testis</span><span class="op">[</span></span>
-<span>    , </span>
-<span>    <span class="va">testis</span><span class="op">$</span><span class="va">annotation</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Spermatogonia"</span>, <span class="st">"Spermatocytes"</span>, <span class="st">"Early spermatids"</span>, <span class="st">"Late spermatids"</span><span class="op">)</span></span>
-<span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>germcells <span class="ot">&lt;-</span> testis[</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    , </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    testis<span class="sc">$</span>annotation <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Spermatogonia"</span>, <span class="st">"Spermatocytes"</span>, <span class="st">"Early spermatids"</span>, <span class="st">"Late spermatids"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section></section><section id="trajectory-inference-ti-in-scrnaseq" class="level2" data-number="13.2"><h2 data-number="13.2" class="anchored" data-anchor-id="trajectory-inference-ti-in-scrnaseq">
-<span class="header-section-number">13.2</span> Trajectory inference (TI) in scRNAseq</h2>
+</section>
+</section>
+<section id="trajectory-inference-ti-in-scrnaseq" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="trajectory-inference-ti-in-scrnaseq"><span class="header-section-number">13.2</span> Trajectory inference (TI) in scRNAseq</h2>
 <p>An important question in scRNAseq field of research is: how to identify a cell trajectory from high-dimensional expression data and map individual cells onto it? A large number of methods have currently emerged, each one with their own specificities, assumptions, and strengths. A nice breakdown (from 2019, so already very outdated!) is available from <code>Saelens et al., Nat. Biotech. 2018</code> (doi: 10.1038/s41587-019-0071-9):</p>
 <p><img src="https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day4/.img/2021-06-01-11-29-36.png?raw=true"></p>
-<section id="trajectory" class="level3" data-number="13.2.1"><h3 data-number="13.2.1" class="anchored" data-anchor-id="trajectory">
-<span class="header-section-number">13.2.1</span> Trajectory</h3>
+<section id="trajectory" class="level3" data-number="13.2.1">
+<h3 data-number="13.2.1" class="anchored" data-anchor-id="trajectory"><span class="header-section-number">13.2.1</span> Trajectory</h3>
 <p><code>Slingshot</code> is perhaps one of the most widely used algorithms for users who want to focus on <code>R</code>-based approaches.</p>
 <ul>
 <li><strong>Read Slingshot documentation to understand how to identify lineages in a scRNAseq dataset in R</strong></li>
@@ -563,17 +582,18 @@ Aims
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html">reducedDim</a></span><span class="op">(</span><span class="va">germcells</span>, <span class="st">'corrected_2'</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html">reducedDim</a></span><span class="op">(</span><span class="va">germcells</span>, <span class="st">'corrected'</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">49</span><span class="op">]</span></span>
-<span><span class="va">germcells_slingshot</span> <span class="op">&lt;-</span> <span class="fu">slingshot</span><span class="fu">::</span><span class="fu">slingshot</span><span class="op">(</span></span>
-<span>    <span class="va">germcells</span>, </span>
-<span>    reducedDim <span class="op">=</span> <span class="st">'corrected_2'</span>, </span>
-<span>    clusterLabels <span class="op">=</span> <span class="va">germcells</span><span class="op">$</span><span class="va">annotation</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu">slingshot</span><span class="fu">::</span><span class="fu">slingLineages</span><span class="op">(</span><span class="va">germcells_slingshot</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">reducedDim</span>(germcells, <span class="st">'corrected_2'</span>) <span class="ot">&lt;-</span> <span class="fu">reducedDim</span>(germcells, <span class="st">'corrected'</span>)[, <span class="dv">1</span><span class="sc">:</span><span class="dv">49</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>germcells_slingshot <span class="ot">&lt;-</span> slingshot<span class="sc">::</span><span class="fu">slingshot</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    germcells, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">reducedDim =</span> <span class="st">'corrected_2'</span>, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">clusterLabels =</span> germcells<span class="sc">$</span>annotation</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>slingshot<span class="sc">::</span><span class="fu">slingLineages</span>(germcells_slingshot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="pseudotime" class="level3" data-number="13.2.2"><h3 data-number="13.2.2" class="anchored" data-anchor-id="pseudotime">
-<span class="header-section-number">13.2.2</span> Pseudotime</h3>
+</section>
+<section id="pseudotime" class="level3" data-number="13.2.2">
+<h3 data-number="13.2.2" class="anchored" data-anchor-id="pseudotime"><span class="header-section-number">13.2.2</span> Pseudotime</h3>
 <ul>
 <li><strong>Recover pseudotime values and principal curves from <code>slingshot</code> output</strong></li>
 </ul>
@@ -582,12 +602,12 @@ Aims
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">germcells</span><span class="op">$</span><span class="va">pseudotime</span> <span class="op">&lt;-</span> <span class="fu">slingshot</span><span class="fu">::</span><span class="fu">slingPseudotime</span><span class="op">(</span><span class="va">germcells_slingshot</span><span class="op">)</span><span class="op">[</span>, <span class="st">'Lineage1'</span><span class="op">]</span></span>
-<span><span class="va">pca_curve</span> <span class="op">&lt;-</span> <span class="fu">slingshot</span><span class="fu">::</span><span class="fu">slingCurves</span><span class="op">(</span><span class="va">germcells_slingshot</span>, as.df <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">pca_curve</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">'PC'</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">pca_curve</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">tsne_curve</span> <span class="op">&lt;-</span> <span class="fu">slingshot</span><span class="fu">::</span><span class="fu">embedCurves</span><span class="op">(</span><span class="va">germcells_slingshot</span>, <span class="st">'TSNE'</span>, smoother <span class="op">=</span> <span class="st">'loess'</span>, span <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">slingshot</span><span class="fu">::</span><span class="fu">slingCurves</span><span class="op">(</span>as.df <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="va">tsne_curve</span> <span class="op">&lt;-</span> <span class="va">tsne_curve</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span><span class="op">(</span><span class="va">tsne_curve</span><span class="op">$</span><span class="va">Order</span><span class="op">)</span>, <span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">tsne_curve</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">'TSNE'</span>, <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span><span class="op">(</span><span class="va">tsne_curve</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>germcells<span class="sc">$</span>pseudotime <span class="ot">&lt;-</span> slingshot<span class="sc">::</span><span class="fu">slingPseudotime</span>(germcells_slingshot)[, <span class="st">'Lineage1'</span>]</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>pca_curve <span class="ot">&lt;-</span> slingshot<span class="sc">::</span><span class="fu">slingCurves</span>(germcells_slingshot, <span class="at">as.df =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(pca_curve) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">'PC'</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(pca_curve))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>tsne_curve <span class="ot">&lt;-</span> slingshot<span class="sc">::</span><span class="fu">embedCurves</span>(germcells_slingshot, <span class="st">'TSNE'</span>, <span class="at">smoother =</span> <span class="st">'loess'</span>, <span class="at">span =</span> <span class="fl">0.1</span>) <span class="sc">|&gt;</span> slingshot<span class="sc">::</span><span class="fu">slingCurves</span>(<span class="at">as.df =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>tsne_curve <span class="ot">&lt;-</span> tsne_curve[<span class="fu">order</span>(tsne_curve<span class="sc">$</span>Order), ]</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(tsne_curve) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">'TSNE'</span>, <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(tsne_curve))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -598,40 +618,40 @@ Aims
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
-<span>    PC1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html">reducedDim</a></span><span class="op">(</span><span class="va">germcells</span>, <span class="st">'corrected'</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, </span>
-<span>    PC2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html">reducedDim</a></span><span class="op">(</span><span class="va">germcells</span>, <span class="st">'corrected'</span><span class="op">)</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>, </span>
-<span>    TSNE1 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html">reducedDim</a></span><span class="op">(</span><span class="va">germcells</span>, <span class="st">'TSNE'</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">]</span>, </span>
-<span>    TSNE2 <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html">reducedDim</a></span><span class="op">(</span><span class="va">germcells</span>, <span class="st">'TSNE'</span><span class="op">)</span><span class="op">[</span>,<span class="fl">2</span><span class="op">]</span>, </span>
-<span>    annotation <span class="op">=</span> <span class="va">germcells</span><span class="op">$</span><span class="va">annotation</span>, </span>
-<span>    pseudotime <span class="op">=</span> <span class="va">germcells</span><span class="op">$</span><span class="va">pseudotime</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span></span>
-<span>    <span class="va">df</span> <span class="op">|&gt;</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">PC1</span>, <span class="va">PC2</span>, col <span class="op">=</span> <span class="va">annotation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">pca_curve</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">PC1</span>, y <span class="op">=</span> <span class="va">PC2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_fixed</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    <span class="va">df</span> <span class="op">|&gt;</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">TSNE1</span>, <span class="va">TSNE2</span>, col <span class="op">=</span> <span class="va">annotation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">tsne_curve</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">TSNE1</span>, y <span class="op">=</span> <span class="va">TSNE2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_fixed</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    <span class="va">df</span> <span class="op">|&gt;</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">PC1</span>, <span class="va">PC2</span>, col <span class="op">=</span> <span class="va">pseudotime</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">pca_curve</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">PC1</span>, y <span class="op">=</span> <span class="va">PC2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_fixed</a></span><span class="op">(</span><span class="op">)</span>,</span>
-<span>    <span class="va">df</span> <span class="op">|&gt;</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">TSNE1</span>, <span class="va">TSNE2</span>, col <span class="op">=</span> <span class="va">pseudotime</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_path</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">tsne_curve</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">TSNE1</span>, y <span class="op">=</span> <span class="va">TSNE2</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html">coord_fixed</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">PC1 =</span> <span class="fu">reducedDim</span>(germcells, <span class="st">'corrected'</span>)[,<span class="dv">1</span>], </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">PC2 =</span> <span class="fu">reducedDim</span>(germcells, <span class="st">'corrected'</span>)[,<span class="dv">2</span>], </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">TSNE1 =</span> <span class="fu">reducedDim</span>(germcells, <span class="st">'TSNE'</span>)[,<span class="dv">1</span>], </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">TSNE2 =</span> <span class="fu">reducedDim</span>(germcells, <span class="st">'TSNE'</span>)[,<span class="dv">2</span>], </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">annotation =</span> germcells<span class="sc">$</span>annotation, </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">pseudotime =</span> germcells<span class="sc">$</span>pseudotime</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> cowplot<span class="sc">::</span><span class="fu">plot_grid</span>(</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> </span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="fu">aes</span>(PC1, PC2, <span class="at">col =</span> annotation)) <span class="sc">+</span> </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_path</span>(<span class="at">data =</span> pca_curve, <span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2)) <span class="sc">+</span> </span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">coord_fixed</span>(),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> </span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="fu">aes</span>(TSNE1, TSNE2, <span class="at">col =</span> annotation)) <span class="sc">+</span> </span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_path</span>(<span class="at">data =</span> tsne_curve, <span class="fu">aes</span>(<span class="at">x =</span> TSNE1, <span class="at">y =</span> TSNE2)) <span class="sc">+</span> </span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>        <span class="fu">coord_fixed</span>(),</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> </span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="fu">aes</span>(PC1, PC2, <span class="at">col =</span> pseudotime)) <span class="sc">+</span> </span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_path</span>(<span class="at">data =</span> pca_curve, <span class="fu">aes</span>(<span class="at">x =</span> PC1, <span class="at">y =</span> PC2)) <span class="sc">+</span> </span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>        <span class="fu">coord_fixed</span>(),</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>    df <span class="sc">|&gt;</span> </span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_point</span>(<span class="fu">aes</span>(TSNE1, TSNE2, <span class="at">col =</span> pseudotime)) <span class="sc">+</span> </span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_path</span>(<span class="at">data =</span> tsne_curve, <span class="fu">aes</span>(<span class="at">x =</span> TSNE1, <span class="at">y =</span> TSNE2)) <span class="sc">+</span> </span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">coord_fixed</span>()</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -643,15 +663,15 @@ Aims
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span></span>
-<span>    annotation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">germcells</span><span class="op">$</span><span class="va">annotation</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Spermatogonia"</span>, <span class="st">"Spermatocytes"</span>, <span class="st">"Early spermatids"</span>, <span class="st">"Late spermatids"</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>    pseudotime <span class="op">=</span> <span class="va">germcells</span><span class="op">$</span><span class="va">pseudotime</span></span>
-<span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">annotation</span>, y <span class="op">=</span> <span class="va">pseudotime</span>, fill <span class="op">=</span> <span class="va">annotation</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_violin.html">geom_violin</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="st">'width'</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_boxplot.html">geom_boxplot</a></span><span class="op">(</span>outlier.shape <span class="op">=</span> <span class="cn">NULL</span>, width <span class="op">=</span> <span class="fl">0.1</span>, fill <span class="op">=</span> <span class="st">'white'</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">45</span>, hjust <span class="op">=</span> <span class="fl">1</span>, vjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">annotation =</span> <span class="fu">factor</span>(germcells<span class="sc">$</span>annotation, <span class="fu">c</span>(<span class="st">"Spermatogonia"</span>, <span class="st">"Spermatocytes"</span>, <span class="st">"Early spermatids"</span>, <span class="st">"Late spermatids"</span>)), </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">pseudotime =</span> germcells<span class="sc">$</span>pseudotime</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> annotation, <span class="at">y =</span> pseudotime, <span class="at">fill =</span> annotation)) <span class="sc">+</span> </span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_violin</span>(<span class="at">scale =</span> <span class="st">'width'</span>) <span class="sc">+</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_boxplot</span>(<span class="at">outlier.shape =</span> <span class="cn">NULL</span>, <span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">fill =</span> <span class="st">'white'</span>) <span class="sc">+</span> </span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">vjust =</span> <span class="dv">1</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -662,11 +682,12 @@ Aims
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">germcells</span><span class="op">$</span><span class="va">pseudotime</span> <span class="op">&lt;-</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/rescale.html">rescale</a></span><span class="op">(</span><span class="op">(</span><span class="op">-</span><span class="fl">1</span> <span class="op">*</span> <span class="fu">slingshot</span><span class="fu">::</span><span class="fu">slingPseudotime</span><span class="op">(</span><span class="va">germcells_slingshot</span><span class="op">)</span><span class="op">[</span>, <span class="st">'Lineage1'</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>germcells<span class="sc">$</span>pseudotime <span class="ot">&lt;-</span> scales<span class="sc">::</span><span class="fu">rescale</span>((<span class="sc">-</span><span class="dv">1</span> <span class="sc">*</span> slingshot<span class="sc">::</span><span class="fu">slingPseudotime</span>(germcells_slingshot)[, <span class="st">'Lineage1'</span>]), <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="bonus-daunting-snippet-but-that-makes-a-cool-figure-for-a-paper-modeling-pseudotime-dependent-gene-expression" class="level3" data-number="13.2.3"><h3 data-number="13.2.3" class="anchored" data-anchor-id="bonus-daunting-snippet-but-that-makes-a-cool-figure-for-a-paper-modeling-pseudotime-dependent-gene-expression">
-<span class="header-section-number">13.2.3</span> BONUS: Daunting snippet but that makes a cool figure for a paper: modeling pseudotime-dependent gene expression</h3>
+</section>
+<section id="bonus-daunting-snippet-but-that-makes-a-cool-figure-for-a-paper-modeling-pseudotime-dependent-gene-expression" class="level3" data-number="13.2.3">
+<h3 data-number="13.2.3" class="anchored" data-anchor-id="bonus-daunting-snippet-but-that-makes-a-cool-figure-for-a-paper-modeling-pseudotime-dependent-gene-expression"><span class="header-section-number">13.2.3</span> BONUS: Daunting snippet but that makes a cool figure for a paper: modeling pseudotime-dependent gene expression</h3>
 <p>Using pseudotime / cell, one can model gene expression along the differentiation process. This alleviates the need to study gene expression <strong>per cell</strong>, and allows one to focus on process-related effects (e.g.&nbsp;gene expression during a developmental trajectory).</p>
 <ul>
 <li><strong>Try to do so for few markers of spermatogonia, spermatocytes and spermatids.</strong></li>
@@ -676,38 +697,40 @@ Aims
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">genes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'ID4'</span>, <span class="st">'SYCP3'</span>, <span class="st">'DMC1'</span>, <span class="st">'ACR'</span>, <span class="st">'PRM1'</span>, <span class="st">'PGK2'</span><span class="op">)</span></span>
-<span><span class="va">fitExprs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html">logcounts</a></span><span class="op">(</span><span class="va">germcells</span><span class="op">[</span><span class="va">genes</span>, <span class="op">]</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># ----------------------------------- Get norm. counts for genes of interest</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://tibble.tidyverse.org/reference/as_tibble.html">as_tibble</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>  <span class="co"># ----------------------------------------------------------------- Add information for each cell</span></span>
-<span>        cellID <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">germcells</span><span class="op">)</span>, </span>
-<span>        annotation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">germcells</span><span class="op">$</span><span class="va">annotation</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Spermatogonia"</span>, <span class="st">"Spermatocytes"</span>, <span class="st">"Early spermatids"</span>, <span class="st">"Late spermatids"</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        pseudotime <span class="op">=</span> <span class="va">germcells</span><span class="op">$</span><span class="va">pseudotime</span></span>
-<span>    <span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">contains</a></span><span class="op">(</span><span class="va">genes</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">'gene'</span>, values_to <span class="op">=</span> <span class="st">'obs_expr'</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># - Pivot in "long" tidy format </span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">gene</span>, <span class="va">genes</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">gene</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># ------------------------------------------------------- Group rows by genes</span></span>
-<span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">nest</a></span><span class="op">(</span>.key <span class="op">=</span> <span class="st">'data'</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># -------------------------------------------------- For each gene, extract the subtable into a column named data</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span></span>
-<span>        gamModel <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">data</span>, <span class="op">~</span><span class="fu">mgcv</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span><span class="va">obs_expr</span> <span class="op">~</span> <span class="fu">s</span><span class="op">(</span><span class="va">pseudotime</span>, bs <span class="op">=</span> <span class="st">"cs"</span><span class="op">)</span>, data <span class="op">=</span> <span class="va">.</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>        gamFitted_expr <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">gamModel</span>, <span class="va">predict</span><span class="op">)</span> <span class="co"># ------------------------------ For each gene, fit the expression values ~ pseudotime with a GAM</span></span>
-<span>    <span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">ends_with</a></span><span class="op">(</span><span class="st">'Model'</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>    <span class="fu"><a href="https://tidyr.tidyverse.org/reference/unnest.html">unnest</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">data</span>, <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html">ends_with</a></span><span class="op">(</span><span class="st">'_expr'</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># -------------------------------------- Unnest all the modelled expressions</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">fitExprs</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pseudotime</span>, y <span class="op">=</span> <span class="va">obs_expr</span>, col <span class="op">=</span> <span class="va">annotation</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pseudotime</span>, y <span class="op">=</span> <span class="va">gamFitted_expr</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">'white'</span>, size <span class="op">=</span> <span class="fl">2</span>, alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">pseudotime</span>, y <span class="op">=</span> <span class="va">gamFitted_expr</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">'#af2d0c'</span>, size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html">facet_grid</a></span><span class="op">(</span><span class="va">gene</span><span class="op">~</span><span class="va">.</span>, scales <span class="op">=</span> <span class="st">'free'</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">'logcounts'</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">ggtitle</a></span><span class="op">(</span><span class="st">'Fitted models of pseudotime-dependent gene expression'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>genes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'ID4'</span>, <span class="st">'SYCP3'</span>, <span class="st">'DMC1'</span>, <span class="st">'ACR'</span>, <span class="st">'PRM1'</span>, <span class="st">'PGK2'</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fitExprs <span class="ot">&lt;-</span> <span class="fu">logcounts</span>(germcells[genes, ]) <span class="sc">|&gt;</span> <span class="co"># ----------------------------------- Get norm. counts for genes of interest</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.matrix</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">t</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(  <span class="co"># ----------------------------------------------------------------- Add information for each cell</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">cellID =</span> <span class="fu">colnames</span>(germcells), </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">annotation =</span> <span class="fu">factor</span>(germcells<span class="sc">$</span>annotation, <span class="fu">c</span>(<span class="st">"Spermatogonia"</span>, <span class="st">"Spermatocytes"</span>, <span class="st">"Early spermatids"</span>, <span class="st">"Late spermatids"</span>)), </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">pseudotime =</span> germcells<span class="sc">$</span>pseudotime</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">pivot_longer</span>(<span class="fu">contains</span>(genes), <span class="at">names_to =</span> <span class="st">'gene'</span>, <span class="at">values_to =</span> <span class="st">'obs_expr'</span>) <span class="sc">|&gt;</span> <span class="co"># - Pivot in "long" tidy format </span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">gene =</span> <span class="fu">factor</span>(gene, genes)) <span class="sc">|&gt;</span> </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(gene) <span class="sc">|&gt;</span> <span class="co"># ------------------------------------------------------- Group rows by genes</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nest</span>(<span class="at">.key =</span> <span class="st">'data'</span>) <span class="sc">|&gt;</span> <span class="co"># -------------------------------------------------- For each gene, extract the subtable into a column named data</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">gamModel =</span> <span class="fu">map</span>(data, <span class="sc">~</span>mgcv<span class="sc">::</span><span class="fu">gam</span>(obs_expr <span class="sc">~</span> <span class="fu">s</span>(pseudotime, <span class="at">bs =</span> <span class="st">"cs"</span>), <span class="at">data =</span> .)), </span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">gamFitted_expr =</span> <span class="fu">map</span>(gamModel, predict) <span class="co"># ------------------------------ For each gene, fit the expression values ~ pseudotime with a GAM</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> </span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span><span class="fu">ends_with</span>(<span class="st">'Model'</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">unnest</span>(<span class="fu">c</span>(data, <span class="fu">ends_with</span>(<span class="st">'_expr'</span>))) <span class="co"># -------------------------------------- Unnest all the modelled expressions</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(fitExprs) <span class="sc">+</span> </span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> pseudotime, <span class="at">y =</span> obs_expr, <span class="at">col =</span> annotation), <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> pseudotime, <span class="at">y =</span> gamFitted_expr), <span class="at">col =</span> <span class="st">'white'</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span> </span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">x =</span> pseudotime, <span class="at">y =</span> gamFitted_expr), <span class="at">col =</span> <span class="st">'#af2d0c'</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_bw</span>() <span class="sc">+</span> </span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="fu">facet_grid</span>(gene<span class="sc">~</span>., <span class="at">scales =</span> <span class="st">'free'</span>) <span class="sc">+</span> </span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">'logcounts'</span>) <span class="sc">+</span> </span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">'Fitted models of pseudotime-dependent gene expression'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section></section><section id="ordering-trajectory-with-rna-velocity" class="level2" data-number="13.3"><h2 data-number="13.3" class="anchored" data-anchor-id="ordering-trajectory-with-rna-velocity">
-<span class="header-section-number">13.3</span> Ordering trajectory with RNA velocity</h2>
+</section>
+</section>
+<section id="ordering-trajectory-with-rna-velocity" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="ordering-trajectory-with-rna-velocity"><span class="header-section-number">13.3</span> Ordering trajectory with RNA velocity</h2>
 <p>As we saw earlier, TI does not necessarily know which direction is right for a given trajectory. This orientation can be sometimes refined using RNA velocity. Let’s see whether RNA velocity helps orientating our spermatocyte differentiation lineage trajectory here.</p>
 <ul>
 <li><strong>Read <code>velociraptor</code> documentation. What do you need to compute RNA velocity scores in R?</strong></li>
@@ -719,28 +742,28 @@ Aims
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Import entire GSE112013 dataset with spliced/unspliced counts </span></span>
-<span><span class="va">full_GSE112013_counts</span> <span class="op">&lt;-</span> <span class="fu">LoomExperiment</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocIO/man/IO.html">import</a></span><span class="op">(</span><span class="st">'Share/Guo_testis/Guo_testis_full-counts.loom'</span><span class="op">)</span></span>
-<span><span class="co">## - Filter `germcells` genes and cells to only retain those present in `full_GSE112013_counts`</span></span>
-<span><span class="va">germcells</span> <span class="op">&lt;-</span> <span class="va">germcells</span><span class="op">[</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">germcells</span><span class="op">)</span><span class="op">$</span><span class="va">gene_id</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">full_GSE112013_counts</span><span class="op">)</span><span class="op">$</span><span class="va">Accession</span>, </span>
-<span>    <span class="va">germcells</span><span class="op">$</span><span class="va">Barcode</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="va">full_GSE112013_counts</span><span class="op">$</span><span class="va">Barcode</span></span>
-<span><span class="op">]</span></span>
-<span><span class="co">## - Reorder rows of `full_GSE112013_counts_germcells` to match those of `germcells`</span></span>
-<span><span class="va">full_GSE112013_counts_germcells</span> <span class="op">&lt;-</span> <span class="va">full_GSE112013_counts</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">germcells</span><span class="op">)</span><span class="op">$</span><span class="va">gene_id</span>, <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">full_GSE112013_counts</span><span class="op">)</span><span class="op">$</span><span class="va">Accession</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/match.html">match</a></span><span class="op">(</span><span class="va">germcells</span><span class="op">$</span><span class="va">Barcode</span>, <span class="va">full_GSE112013_counts</span><span class="op">$</span><span class="va">Barcode</span><span class="op">)</span><span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">germcells</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">full_GSE112013_counts_germcells</span><span class="op">)</span></span>
-<span><span class="co">## - Add spliced/unspliced counts to germcells</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">germcells</span>, <span class="st">'spliced'</span>, withDimnames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">full_GSE112013_counts_germcells</span>, <span class="st">'spliced'</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">germcells</span>, <span class="st">'unspliced'</span>, withDimnames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">assay</a></span><span class="op">(</span><span class="va">full_GSE112013_counts_germcells</span>, <span class="st">'unspliced'</span><span class="op">)</span></span>
-<span><span class="co">## - Run velociraptor</span></span>
-<span><span class="va">velo_out</span> <span class="op">&lt;-</span> <span class="fu">velociraptor</span><span class="fu">::</span><span class="fu">scvelo</span><span class="op">(</span></span>
-<span>    <span class="va">germcells</span>, </span>
-<span>    assay.X <span class="op">=</span> <span class="st">"counts"</span>, </span>
-<span>    subset.row <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html">rowData</a></span><span class="op">(</span><span class="va">germcells</span><span class="op">)</span><span class="op">$</span><span class="va">isHVG</span>, </span>
-<span>    use.dimred <span class="op">=</span> <span class="st">"corrected"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">velo_out</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">## - Import entire GSE112013 dataset with spliced/unspliced counts </span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>full_GSE112013_counts <span class="ot">&lt;-</span> LoomExperiment<span class="sc">::</span><span class="fu">import</span>(<span class="st">'Share/Guo_testis/Guo_testis_full-counts.loom'</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="do">## - Filter `germcells` genes and cells to only retain those present in `full_GSE112013_counts`</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>germcells <span class="ot">&lt;-</span> germcells[</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rowData</span>(germcells)<span class="sc">$</span>gene_id <span class="sc">%in%</span> <span class="fu">rowData</span>(full_GSE112013_counts)<span class="sc">$</span>Accession, </span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    germcells<span class="sc">$</span>Barcode <span class="sc">%in%</span> full_GSE112013_counts<span class="sc">$</span>Barcode</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="do">## - Reorder rows of `full_GSE112013_counts_germcells` to match those of `germcells`</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>full_GSE112013_counts_germcells <span class="ot">&lt;-</span> full_GSE112013_counts[<span class="fu">match</span>(<span class="fu">rowData</span>(germcells)<span class="sc">$</span>gene_id, <span class="fu">rowData</span>(full_GSE112013_counts)<span class="sc">$</span>Accession), <span class="fu">match</span>(germcells<span class="sc">$</span>Barcode, full_GSE112013_counts<span class="sc">$</span>Barcode)]</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(germcells)</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(full_GSE112013_counts_germcells)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="do">## - Add spliced/unspliced counts to germcells</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="fu">assay</span>(germcells, <span class="st">'spliced'</span>, <span class="at">withDimnames=</span><span class="cn">FALSE</span>) <span class="ot">&lt;-</span> <span class="fu">assay</span>(full_GSE112013_counts_germcells, <span class="st">'spliced'</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="fu">assay</span>(germcells, <span class="st">'unspliced'</span>, <span class="at">withDimnames=</span><span class="cn">FALSE</span>) <span class="ot">&lt;-</span> <span class="fu">assay</span>(full_GSE112013_counts_germcells, <span class="st">'unspliced'</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="do">## - Run velociraptor</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>velo_out <span class="ot">&lt;-</span> velociraptor<span class="sc">::</span><span class="fu">scvelo</span>(</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>    germcells, </span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">assay.X =</span> <span class="st">"counts"</span>, </span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">subset.row =</span> <span class="fu">rowData</span>(germcells)<span class="sc">$</span>isHVG, </span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">use.dimred =</span> <span class="st">"corrected"</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>velo_out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <ul>
@@ -751,20 +774,21 @@ Aims
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">embedded_velo</span> <span class="op">&lt;-</span> <span class="fu">velociraptor</span><span class="fu">::</span><span class="fu">embedVelocity</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html">reducedDim</a></span><span class="op">(</span><span class="va">germcells</span>, <span class="st">"TSNE"</span><span class="op">)</span>, <span class="va">velo_out</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">embedded_velo</span><span class="op">)</span></span>
-<span><span class="va">grid_df</span> <span class="op">&lt;-</span> <span class="fu">velociraptor</span><span class="fu">::</span><span class="fu">gridVectors</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html">reducedDim</a></span><span class="op">(</span><span class="va">germcells</span>, <span class="st">"TSNE"</span><span class="op">)</span>, <span class="va">embedded_velo</span>, resolution <span class="op">=</span> <span class="fl">30</span>, scale <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">grid_df</span><span class="op">)</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">scater</span><span class="fu">::</span><span class="fu">plotReducedDim</span><span class="op">(</span><span class="va">germcells</span>, <span class="st">'TSNE'</span>, colour_by <span class="op">=</span> <span class="st">"annotation"</span>, point_alpha <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op">(</span></span>
-<span>        data <span class="op">=</span> <span class="va">grid_df</span>, </span>
-<span>        mapping <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">start.1</span>, y <span class="op">=</span> <span class="va">start.2</span>, xend <span class="op">=</span> <span class="va">end.1</span>, yend <span class="op">=</span> <span class="va">end.2</span><span class="op">)</span>, </span>
-<span>        arrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/arrow.html">arrow</a></span><span class="op">(</span>length <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.05</span>, <span class="st">"inches"</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">"closed"</span><span class="op">)</span></span>
-<span>    <span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>embedded_velo <span class="ot">&lt;-</span> velociraptor<span class="sc">::</span><span class="fu">embedVelocity</span>(<span class="fu">reducedDim</span>(germcells, <span class="st">"TSNE"</span>), velo_out)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(embedded_velo)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>grid_df <span class="ot">&lt;-</span> velociraptor<span class="sc">::</span><span class="fu">gridVectors</span>(<span class="fu">reducedDim</span>(germcells, <span class="st">"TSNE"</span>), embedded_velo, <span class="at">resolution =</span> <span class="dv">30</span>, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(grid_df)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> scater<span class="sc">::</span><span class="fu">plotReducedDim</span>(germcells, <span class="st">'TSNE'</span>, <span class="at">colour_by =</span> <span class="st">"annotation"</span>, <span class="at">point_alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_segment</span>(</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">data =</span> grid_df, </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> start<span class="fl">.1</span>, <span class="at">y =</span> start<span class="fl">.2</span>, <span class="at">xend =</span> end<span class="fl">.1</span>, <span class="at">yend =</span> end<span class="fl">.2</span>), </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.05</span>, <span class="st">"inches"</span>), <span class="at">type =</span> <span class="st">"closed"</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="session-info" class="level2" data-number="13.4"><h2 data-number="13.4" class="anchored" data-anchor-id="session-info">
-<span class="header-section-number">13.4</span> Session info</h2>
+</section>
+<section id="session-info" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="session-info"><span class="header-section-number">13.4</span> Session info</h2>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>─ Session info ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -892,7 +916,10 @@ Aims
 </div>
 
 
-</section></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -989,7 +1016,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     });
   }
 });
-</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
       <a href="../../content/day4/Lecture6_pseudotime.html" class="pagination-link">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Lecture 6 - Trajectories and pseudotimes</span></span>
       </a>          
@@ -1001,12 +1030,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
 </nav>
 </div> <!-- /content -->
-<footer class="footer"><div class="nav-footer">
+<footer class="footer">
+  <div class="nav-footer">
     <div class="nav-footer-left">Single-cell RNAseq analysis with R/Bioconductor |<br>
 J. Serizay O. Ashenberg</div>   
     <div class="nav-footer-right">This book was built with <a href="https://quarto.org/">Quarto</a>.</div>
   </div>
 </footer>
+
 
 
 </body></html>
