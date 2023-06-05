@@ -196,7 +196,7 @@ A large number of methods have currently emerged, each one with their own specif
 A nice breakdown (from 2019, so already very outdated!) is available from 
 `Saelens et al., Nat. Biotech. 2018` (doi: 10.1038/s41587-019-0071-9): 
 
-![](https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day4/.img/2021-06-01-11-29-36.png?raw=true)
+<img src="https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day4/.img/2021-06-01-11-29-36.png?raw=true">
 
 ### Trajectory 
 

@@ -125,7 +125,7 @@ read_tsv('~/Share/GSM4486714_AXH009_genes.tsv', col_names = c('ID', 'Symbol')) |
 
 The most fundamental class used to hold the content of large-scale quantitative analyses, such as counts of RNA-seq experiments, or high-throughput cytometry experiments or proteomics experiments. 
 
-![](https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day2/.img/2021-05-31-08-50-45.png?raw=true)
+<img src="https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day2/.img/2021-05-31-08-50-45.png">
 
 Make sure you understand the structure of objects from this class. A dedicated workshop that I would recommend quickly going over is available [here](https://www.bioconductor.org/help/course-materials/2019/BSS2019/04_Practical_CoreApproachesInBioconductor.html).
 Generally speaking, a `SummarizedExperiment` object contains matrix-like objects (the `assays`), with rows representing features (e.g. genes, transcripts, ...) and each column representing a sample. 
@@ -135,10 +135,10 @@ On top of that, metadata are also stored in the object (to store description of 
 An important difference with S3 `list`-like objects usually used in `R` is that most of the underlying data (organized in precisely structured `"slots"`) 
 is accessed using `getter` functions, rather than the familiar `$` or `[`. Here are some important `getters`: 
 
-    - `assay()`, `assays()`: Extrant matrix-like or list of matrix-like objects of identical dimensions. Since the objects are `matrix`-like, `dim()`, `dimnames()`, and 2-dimensional `[`, `[<-` methods are available. 
-    - colData(): Annotations on each column (as a DataFrame): usually, description of each sample
-    - rowData(): Annotations on each row (as a DataFrame): usually, description of each gene
-    - metadata(): List of unstructured metadata describing the overall content of the object.
+- `assay()`, `assays()`: Extrant matrix-like or list of matrix-like objects of identical dimensions. Since the objects are `matrix`-like, `dim()`, `dimnames()`, and 2-dimensional `[`, `[<-` methods are available. 
+- `colData()`: Annotations on each column (as a DataFrame): usually, description of each sample
+- `rowData()`: Annotations on each row (as a DataFrame): usually, description of each gene
+- `metadata()`: List of unstructured metadata describing the overall content of the object.
 
 Let's dig into an example (you may need to install the `airway` package from `Bioconductor`...)
 
@@ -237,7 +237,7 @@ Notably, several packages are increasingly becoming central for single-cell anal
 **`SingleCellExperiment`** is the fundamental class designed to contain single-cell (RNA-seq) data in `Bioconductor` ecosystem. It is a modified version of the 
 `SummarizedExperiment` object, so most of the getters/setters are shared with this class. 
 
-![](https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day2/.img/2021-05-31-09-38-24.png?raw=true)
+<img src="https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day2/.img/2021-05-31-09-38-24.png?raw=true">
 
 ```{r eval = FALSE, filename = "R"}
 source('~/Share/bin/prepare_Nestorowa.R') # Adapted from Nestorowa et al., Blood 2016 (doi: 10.1182/blood-2016-05-716480)
