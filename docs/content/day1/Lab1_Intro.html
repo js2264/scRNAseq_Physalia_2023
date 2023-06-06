@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.1.189">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="J. Serizay &amp; O. Ashenberg">
-<title>Single-cell RNAseq analysis with R/Bioconductor - 2&nbsp; Lab 1: Familiarizing yourself with the course AWS instance</title>
+<title>Single-cell RNAseq analysis with R/Bioconductor - 3&nbsp; Lab 1: Familiarizing yourself with the course AWS instance</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -90,8 +90,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../content/day1/Lecture2_Bcl2matrix.html" rel="next">
-<link href="../../content/day1/Lecture1_introduction.html" rel="prev">
+<link href="../../content/day1/Lab2_processingreads.html" rel="next">
+<link href="../../content/day1/Lecture2_Bcl2matrix.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -125,7 +125,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lab 1: Familiarizing yourself with the course AWS instance</span>
+<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Lab 1: Familiarizing yourself with the course AWS instance</span>
 </h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
@@ -183,12 +183,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../content/day1/Lab1_Intro.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lab 1: Familiarizing yourself with the course AWS instance</span></a>
+  <a href="../../content/day1/Lecture2_Bcl2matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lecture 2 - From sequencing reads to expression matrices</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../content/day1/Lecture2_Bcl2matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Lecture 2 - From sequencing reads to expression matrices</span></a>
+  <a href="../../content/day1/Lab1_Intro.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Lab 1: Familiarizing yourself with the course AWS instance</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -208,12 +208,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../content/day2/Lab3_Rbioc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Lab 3: Introduction to R/Bioconductor</span></a>
+  <a href="../../content/day2/Lecture3_qualitycontrol.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Lecture 3 - Quality control for scRNA-Seq data</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../content/day2/Lecture3_qualitycontrol.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Lecture 3 - Quality control for scRNA-Seq data</span></a>
+  <a href="../../content/day2/Lab3_Rbioc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Lab 3: Introduction to R/Bioconductor</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -309,23 +309,23 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#connect-to-rstudio-server" id="toc-connect-to-rstudio-server" class="nav-link active" data-scroll-target="#connect-to-rstudio-server"><span class="toc-section-number">2.1</span>  Connect to RStudio Server</a></li>
-  <li><a href="#use-a-aws-terminal-within-rstudio" id="toc-use-a-aws-terminal-within-rstudio" class="nav-link" data-scroll-target="#use-a-aws-terminal-within-rstudio"><span class="toc-section-number">2.2</span>  Use a AWS terminal within RStudio</a></li>
-  <li><a href="#basic-terminal-commands" id="toc-basic-terminal-commands" class="nav-link" data-scroll-target="#basic-terminal-commands"><span class="toc-section-number">2.3</span>  Basic terminal commands</a></li>
+<li><a href="#connect-to-rstudio-server" id="toc-connect-to-rstudio-server" class="nav-link active" data-scroll-target="#connect-to-rstudio-server"><span class="toc-section-number">3.1</span>  Connect to RStudio Server</a></li>
+  <li><a href="#use-a-aws-terminal-within-rstudio" id="toc-use-a-aws-terminal-within-rstudio" class="nav-link" data-scroll-target="#use-a-aws-terminal-within-rstudio"><span class="toc-section-number">3.2</span>  Use a AWS terminal within RStudio</a></li>
+  <li><a href="#basic-terminal-commands" id="toc-basic-terminal-commands" class="nav-link" data-scroll-target="#basic-terminal-commands"><span class="toc-section-number">3.3</span>  Basic terminal commands</a></li>
   <li>
-<a href="#single-cell-rna-seq-datasets" id="toc-single-cell-rna-seq-datasets" class="nav-link" data-scroll-target="#single-cell-rna-seq-datasets"><span class="toc-section-number">2.4</span>  Single-cell RNA-seq datasets</a>
+<a href="#single-cell-rna-seq-datasets" id="toc-single-cell-rna-seq-datasets" class="nav-link" data-scroll-target="#single-cell-rna-seq-datasets"><span class="toc-section-number">3.4</span>  Single-cell RNA-seq datasets</a>
   <ul class="collapse">
-<li><a href="#raw-fastq-reads-from-geo" id="toc-raw-fastq-reads-from-geo" class="nav-link" data-scroll-target="#raw-fastq-reads-from-geo"><span class="toc-section-number">2.4.1</span>  Raw fastq reads from GEO</a></li>
-  <li><a href="#processed-count-matrices" id="toc-processed-count-matrices" class="nav-link" data-scroll-target="#processed-count-matrices"><span class="toc-section-number">2.4.2</span>  Processed count matrices</a></li>
+<li><a href="#raw-fastq-reads-from-geo" id="toc-raw-fastq-reads-from-geo" class="nav-link" data-scroll-target="#raw-fastq-reads-from-geo"><span class="toc-section-number">3.4.1</span>  Raw fastq reads from GEO</a></li>
+  <li><a href="#processed-count-matrices" id="toc-processed-count-matrices" class="nav-link" data-scroll-target="#processed-count-matrices"><span class="toc-section-number">3.4.2</span>  Processed count matrices</a></li>
   </ul>
 </li>
-  <li><a href="#bonus" id="toc-bonus" class="nav-link" data-scroll-target="#bonus"><span class="toc-section-number">2.5</span>  Bonus</a></li>
+  <li><a href="#bonus" id="toc-bonus" class="nav-link" data-scroll-target="#bonus"><span class="toc-section-number">3.5</span>  Bonus</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/edit/main/content/day1/Lab1_Intro.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title d-none d-lg-block">
-<span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lab 1: Familiarizing yourself with the course AWS instance</span>
+<span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Lab 1: Familiarizing yourself with the course AWS instance</span>
 </h1>
 </div>
 
@@ -338,8 +338,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </div>
   
 
-</header><section id="connect-to-rstudio-server" class="level2" data-number="2.1"><h2 data-number="2.1" class="anchored" data-anchor-id="connect-to-rstudio-server">
-<span class="header-section-number">2.1</span> Connect to RStudio Server</h2>
+</header><section id="connect-to-rstudio-server" class="level2" data-number="3.1"><h2 data-number="3.1" class="anchored" data-anchor-id="connect-to-rstudio-server">
+<span class="header-section-number">3.1</span> Connect to RStudio Server</h2>
 <p>Most of single-cell RNA-seq analysis takes place either in <code>python</code> or in <code>R</code>. Here, we focus on how to leverage <code>R</code> to investigate scRNAseq data. <code>RStudio</code> is an <code>IDE</code> (Integrated Development Environment, in other words: a nice graphical interface to run <code>R</code>-related commands).</p>
 <p>For this workshop, we have installed <code>R</code> and <code>RStudio</code> on AWS. We can directly use <code>RStudio</code> (actually, <code>RStudio-server</code> since it is installed on an AWS remote server). Simply open a browser and copy-paste <a href="http://34.216.135.45:8787">the following address</a>:</p>
 <div class="cell">
@@ -375,8 +375,8 @@ Some useful commands in <code>R</code>:
 </div>
 </div>
 </div>
-</section><section id="use-a-aws-terminal-within-rstudio" class="level2" data-number="2.2"><h2 data-number="2.2" class="anchored" data-anchor-id="use-a-aws-terminal-within-rstudio">
-<span class="header-section-number">2.2</span> Use a AWS terminal within RStudio</h2>
+</section><section id="use-a-aws-terminal-within-rstudio" class="level2" data-number="3.2"><h2 data-number="3.2" class="anchored" data-anchor-id="use-a-aws-terminal-within-rstudio">
+<span class="header-section-number">3.2</span> Use a AWS terminal within RStudio</h2>
 <p>A general issue with bioinformatic analyses stems from the fact that nobody works in the same environment:</p>
 <ul>
 <li>Are you working on Mac? Linux? Windows?</li>
@@ -404,8 +404,8 @@ Some useful commands in <code>R</code>:
 <p>From here onwards, be sure you completely understand the difference between <strong>“<code>R console</code>”</strong> and <strong>“<code>terminal</code> (or <code>shell</code>)”</strong>. They are entirely different things, and can be both accessed within <code>RStudio</code>. It is crucial you understand the difference between the two to not get confused for the rest of the course.</p>
 </div>
 </div>
-</section><section id="basic-terminal-commands" class="level2" data-number="2.3"><h2 data-number="2.3" class="anchored" data-anchor-id="basic-terminal-commands">
-<span class="header-section-number">2.3</span> Basic terminal commands</h2>
+</section><section id="basic-terminal-commands" class="level2" data-number="3.3"><h2 data-number="3.3" class="anchored" data-anchor-id="basic-terminal-commands">
+<span class="header-section-number">3.3</span> Basic terminal commands</h2>
 <p>The same <code>bash</code> commands are available in AWS <code>terminal</code>, regardless of whether you access the terminal from <code>RStudio</code> or through <code>ssh</code>.</p>
 <p>One can list files, download files, check help pages, …, just like in <code>R</code>.</p>
 <ul>
@@ -555,15 +555,15 @@ Tip
 To get it on your local computer (to save the lectures and exercises), go to <a href="https://github.com/js2264/scRNAseq_Physalia_2023">the GitHub repo page</a>, click on the green <code>Code</code> button, then <code>Download ZIP</code>. Beware, the download may take a significant time based on your internet connection (several hundreds MB).</p>
 </div>
 </div>
-</section><section id="single-cell-rna-seq-datasets" class="level2" data-number="2.4"><h2 data-number="2.4" class="anchored" data-anchor-id="single-cell-rna-seq-datasets">
-<span class="header-section-number">2.4</span> Single-cell RNA-seq datasets</h2>
+</section><section id="single-cell-rna-seq-datasets" class="level2" data-number="3.4"><h2 data-number="3.4" class="anchored" data-anchor-id="single-cell-rna-seq-datasets">
+<span class="header-section-number">3.4</span> Single-cell RNA-seq datasets</h2>
 <blockquote class="blockquote">
 <p>“This is a course about single-cell RNA-seq analysis, after all, so where is my data?”</p>
 </blockquote>
 <p>Ok, <strong>“your”</strong> data is (most likely) yet to be sequenced! Or maybe you’re interested in digging already existing databases! I mean, who isn’t interested in <a href="https://www.10xgenomics.com/blog/our-13-million-single-cell-dataset-is-ready-to-download">this mind-blowing achievement from 10X Genomics</a>??</p>
 <p><a href="https://data.humancellatlas.org/explore/projects">Human Cell Atlas</a> is probably a good place to start digging, if you are interested in mammal-related studies. For instance, let’s say I am interested in epididymis differentiation. Boom: here is an entry from the HCA focusing on epididymis: <a href="https://data.humancellatlas.org/explore/projects/842605c7-375a-47c5-9e2c-a71c2c00fcad">link to HCA data portal</a>.</p>
-<section id="raw-fastq-reads-from-geo" class="level3" data-number="2.4.1"><h3 data-number="2.4.1" class="anchored" data-anchor-id="raw-fastq-reads-from-geo">
-<span class="header-section-number">2.4.1</span> Raw fastq reads from GEO</h3>
+<section id="raw-fastq-reads-from-geo" class="level3" data-number="3.4.1"><h3 data-number="3.4.1" class="anchored" data-anchor-id="raw-fastq-reads-from-geo">
+<span class="header-section-number">3.4.1</span> Raw fastq reads from GEO</h3>
 <p>Here is the link to the actual paper studying epididymis:<br><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7471510/">An atlas of human proximal epididymis reveals cell-specific functions and distinct roles for CFTR</a>.</p>
 <ul>
 <li><strong>Find and check out the corresponding <code>GEO</code> entries for this study. What type of sequencing data is available?</strong></li>
@@ -667,8 +667,8 @@ Installing <code>conda</code> packages
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="ex">seqkit</span> stat ~/Share/SRR11575369_1.fq.gz</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="processed-count-matrices" class="level3" data-number="2.4.2"><h3 data-number="2.4.2" class="anchored" data-anchor-id="processed-count-matrices">
-<span class="header-section-number">2.4.2</span> Processed count matrices</h3>
+</section><section id="processed-count-matrices" class="level3" data-number="3.4.2"><h3 data-number="3.4.2" class="anchored" data-anchor-id="processed-count-matrices">
+<span class="header-section-number">3.4.2</span> Processed count matrices</h3>
 <p>Many times, researchers will provide a filtered count matrix when they publish scRNAseq experiments (along with mandatory raw <code>fastq</code> data, of course). It’s way lighter than <code>fastq</code> reads, and you can go ahead with downstream analyses a lot quicker. So how do you get these matrices? Human Cell Atlas Consortium provides many processed datasets. For instance, in our case, the <code>Leir et al</code> study is available at the <a href="https://data.humancellatlas.org/explore/projects/842605c7-375a-47c5-9e2c-a71c2c00fcad">following link</a>. GEO also hosts processed files.</p>
 <ul>
 <li><strong>Find GEO-hosted processed files for the <code>Leir et al</code> study. </strong></li>
@@ -680,8 +680,8 @@ Installing <code>conda</code> packages
 <li><strong>How many cells were sequenced? How many genes were counted? </strong></li>
 <li><strong>Is it easy to interpret the count matrix? Why is it in such format? </strong></li>
 <li><strong>Comment on the file sizes between processed count matrix files and raw reads. </strong></li>
-</ul></section></section><section id="bonus" class="level2" data-number="2.5"><h2 data-number="2.5" class="anchored" data-anchor-id="bonus">
-<span class="header-section-number">2.5</span> Bonus</h2>
+</ul></section></section><section id="bonus" class="level2" data-number="3.5"><h2 data-number="3.5" class="anchored" data-anchor-id="bonus">
+<span class="header-section-number">3.5</span> Bonus</h2>
 <p>For those of you who are already familiar with the basics, you can fast-forward through this lab and start working on scRNAseq data directly. The script in <code>bin/prepare_Ernst.R</code> is a template to process a publicly available scRNAseq dataset. You can start exploring it to see if you understsand the different chunks of code and their importance. All the content from this template will eventually be covered in the next labs.</p>
 
 
@@ -783,13 +783,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="../../content/day1/Lecture1_introduction.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Lecture 1 - Introduction to scRNAseq analysis</span></span>
+      <a href="../../content/day1/Lecture2_Bcl2matrix.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lecture 2 - From sequencing reads to expression matrices</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../content/day1/Lecture2_Bcl2matrix.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Lecture 2 - From sequencing reads to expression matrices</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../content/day1/Lab2_processingreads.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lab 2: From .bcl to count matrix</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

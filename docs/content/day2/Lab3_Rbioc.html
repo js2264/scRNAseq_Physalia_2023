@@ -5,7 +5,7 @@
 <meta name="generator" content="quarto-1.1.189">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="J. Serizay &amp; O. Ashenberg">
-<title>Single-cell RNAseq analysis with R/Bioconductor - 5&nbsp; Lab 3: Introduction to R/Bioconductor</title>
+<title>Single-cell RNAseq analysis with R/Bioconductor - 6&nbsp; Lab 3: Introduction to R/Bioconductor</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -90,8 +90,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <script src="../../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../../">
-<link href="../../content/day2/Lecture3_qualitycontrol.html" rel="next">
-<link href="../../content/day1/Lab2_processingreads.html" rel="prev">
+<link href="../../content/day2/Lab4_data_wrangling_scRNAseq.html" rel="next">
+<link href="../../content/day2/Lecture3_qualitycontrol.html" rel="prev">
 <script src="../../site_libs/quarto-html/quarto.js"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -125,7 +125,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top"><nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }"><div class="container-fluid d-flex justify-content-between">
       <h1 class="quarto-secondary-nav-title">
-<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Lab 3: Introduction to R/Bioconductor</span>
+<span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Lab 3: Introduction to R/Bioconductor</span>
 </h1>
       <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
         <i class="bi bi-chevron-right"></i>
@@ -183,12 +183,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../content/day1/Lab1_Intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lab 1: Familiarizing yourself with the course AWS instance</span></a>
+  <a href="../../content/day1/Lecture2_Bcl2matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Lecture 2 - From sequencing reads to expression matrices</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../content/day1/Lecture2_Bcl2matrix.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Lecture 2 - From sequencing reads to expression matrices</span></a>
+  <a href="../../content/day1/Lab1_Intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Lab 1: Familiarizing yourself with the course AWS instance</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -208,12 +208,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../content/day2/Lab3_Rbioc.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Lab 3: Introduction to R/Bioconductor</span></a>
+  <a href="../../content/day2/Lecture3_qualitycontrol.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Lecture 3 - Quality control for scRNA-Seq data</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../../content/day2/Lecture3_qualitycontrol.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Lecture 3 - Quality control for scRNA-Seq data</span></a>
+  <a href="../../content/day2/Lab3_Rbioc.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Lab 3: Introduction to R/Bioconductor</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -309,30 +309,30 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<li><a href="#installing-packages-in-r" id="toc-installing-packages-in-r" class="nav-link active" data-scroll-target="#installing-packages-in-r"><span class="toc-section-number">5.1</span>  Installing packages in <code>R</code></a></li>
+<li><a href="#installing-packages-in-r" id="toc-installing-packages-in-r" class="nav-link active" data-scroll-target="#installing-packages-in-r"><span class="toc-section-number">6.1</span>  Installing packages in <code>R</code></a></li>
   <li>
-<a href="#basic-r-and-bioconductor-classes" id="toc-basic-r-and-bioconductor-classes" class="nav-link" data-scroll-target="#basic-r-and-bioconductor-classes"><span class="toc-section-number">5.2</span>  Basic <code>R</code> and <code>Bioconductor</code> classes</a>
+<a href="#basic-r-and-bioconductor-classes" id="toc-basic-r-and-bioconductor-classes" class="nav-link" data-scroll-target="#basic-r-and-bioconductor-classes"><span class="toc-section-number">6.2</span>  Basic <code>R</code> and <code>Bioconductor</code> classes</a>
   <ul class="collapse">
-<li><a href="#important-r-concepts" id="toc-important-r-concepts" class="nav-link" data-scroll-target="#important-r-concepts"><span class="toc-section-number">5.2.1</span>  Important R concepts:</a></li>
-  <li><a href="#important-bioconductor-concepts" id="toc-important-bioconductor-concepts" class="nav-link" data-scroll-target="#important-bioconductor-concepts"><span class="toc-section-number">5.2.2</span>  Important Bioconductor concepts:</a></li>
+<li><a href="#important-r-concepts" id="toc-important-r-concepts" class="nav-link" data-scroll-target="#important-r-concepts"><span class="toc-section-number">6.2.1</span>  Important R concepts:</a></li>
+  <li><a href="#important-bioconductor-concepts" id="toc-important-bioconductor-concepts" class="nav-link" data-scroll-target="#important-bioconductor-concepts"><span class="toc-section-number">6.2.2</span>  Important Bioconductor concepts:</a></li>
   </ul>
 </li>
   <li>
-<a href="#cran-bioconductor-approaches-to-scrnaseq" id="toc-cran-bioconductor-approaches-to-scrnaseq" class="nav-link" data-scroll-target="#cran-bioconductor-approaches-to-scrnaseq"><span class="toc-section-number">5.3</span>  CRAN &amp; Bioconductor approaches to scRNAseq</a>
+<a href="#cran-bioconductor-approaches-to-scrnaseq" id="toc-cran-bioconductor-approaches-to-scrnaseq" class="nav-link" data-scroll-target="#cran-bioconductor-approaches-to-scrnaseq"><span class="toc-section-number">6.3</span>  CRAN &amp; Bioconductor approaches to scRNAseq</a>
   <ul class="collapse">
-<li><a href="#scrnaseq-in-bioconductor" id="toc-scrnaseq-in-bioconductor" class="nav-link" data-scroll-target="#scrnaseq-in-bioconductor"><span class="toc-section-number">5.3.1</span>  scRNAseq in Bioconductor</a></li>
-  <li><a href="#scrnaseq-in-r" id="toc-scrnaseq-in-r" class="nav-link" data-scroll-target="#scrnaseq-in-r"><span class="toc-section-number">5.3.2</span>  scRNAseq in R</a></li>
+<li><a href="#scrnaseq-in-bioconductor" id="toc-scrnaseq-in-bioconductor" class="nav-link" data-scroll-target="#scrnaseq-in-bioconductor"><span class="toc-section-number">6.3.1</span>  scRNAseq in Bioconductor</a></li>
+  <li><a href="#scrnaseq-in-r" id="toc-scrnaseq-in-r" class="nav-link" data-scroll-target="#scrnaseq-in-r"><span class="toc-section-number">6.3.2</span>  scRNAseq in R</a></li>
   </ul>
 </li>
-  <li><a href="#reading-scrnaseq-data" id="toc-reading-scrnaseq-data" class="nav-link" data-scroll-target="#reading-scrnaseq-data"><span class="toc-section-number">5.4</span>  Reading scRNAseq data</a></li>
-  <li><a href="#bonus" id="toc-bonus" class="nav-link" data-scroll-target="#bonus"><span class="toc-section-number">5.5</span>  Bonus</a></li>
-  <li><a href="#session-info" id="toc-session-info" class="nav-link" data-scroll-target="#session-info"><span class="toc-section-number">5.6</span>  Session info</a></li>
+  <li><a href="#reading-scrnaseq-data" id="toc-reading-scrnaseq-data" class="nav-link" data-scroll-target="#reading-scrnaseq-data"><span class="toc-section-number">6.4</span>  Reading scRNAseq data</a></li>
+  <li><a href="#bonus" id="toc-bonus" class="nav-link" data-scroll-target="#bonus"><span class="toc-section-number">6.5</span>  Bonus</a></li>
+  <li><a href="#session-info" id="toc-session-info" class="nav-link" data-scroll-target="#session-info"><span class="toc-section-number">6.6</span>  Session info</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/edit/main/content/day2/Lab3_Rbioc.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block default"><div class="quarto-title">
 <h1 class="title d-none d-lg-block">
-<span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Lab 3: Introduction to R/Bioconductor</span>
+<span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Lab 3: Introduction to R/Bioconductor</span>
 </h1>
 </div>
 
@@ -348,8 +348,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </header><div class="cell">
 
 </div>
-<section id="installing-packages-in-r" class="level2" data-number="5.1"><h2 data-number="5.1" class="anchored" data-anchor-id="installing-packages-in-r">
-<span class="header-section-number">5.1</span> Installing packages in <code>R</code>
+<section id="installing-packages-in-r" class="level2" data-number="6.1"><h2 data-number="6.1" class="anchored" data-anchor-id="installing-packages-in-r">
+<span class="header-section-number">6.1</span> Installing packages in <code>R</code>
 </h2>
 <blockquote class="blockquote">
 <p>“Hey, I’ve heard so many good things about this piece of software, it’s called ‘slingshot’? Heard of it? I really want to try it out on my dataset!!”</p>
@@ -387,14 +387,14 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ul>
 <li>What is this package designed for?</li>
 <li>What are its main functions? What type of input does it require?</li>
-</ul></section><section id="basic-r-and-bioconductor-classes" class="level2" data-number="5.2"><h2 data-number="5.2" class="anchored" data-anchor-id="basic-r-and-bioconductor-classes">
-<span class="header-section-number">5.2</span> Basic <code>R</code> and <code>Bioconductor</code> classes</h2>
+</ul></section><section id="basic-r-and-bioconductor-classes" class="level2" data-number="6.2"><h2 data-number="6.2" class="anchored" data-anchor-id="basic-r-and-bioconductor-classes">
+<span class="header-section-number">6.2</span> Basic <code>R</code> and <code>Bioconductor</code> classes</h2>
 <p>While <code>CRAN</code> is a repository of general-purpose packages, <code>Bioconductor</code> is the greatest source of analytical tools, data and workflows dedicated to genomic projects in <code>R</code>. <a href="https://www.bioconductor.org/about/">Read more about <code>Bioconductor</code></a> to fully understand how it builds up on top of <code>R</code> general features, especially with the specific classes it introduces.</p>
 <p>The two main concepts behind <code>Bioconductor</code>’s success are the <strong>non-redundant</strong> classes of objects it provides and their <strong>inter-operability</strong>. <a href="https://www.nature.com/articles/nmeth.3252">Huber et al., Nat. Methods 2015</a> summarizes it well.</p>
-<section id="important-r-concepts" class="level3" data-number="5.2.1"><h3 data-number="5.2.1" class="anchored" data-anchor-id="important-r-concepts">
-<span class="header-section-number">5.2.1</span> Important R concepts:</h3>
-<section id="tibble-tables" class="level4" data-number="5.2.1.1"><h4 data-number="5.2.1.1" class="anchored" data-anchor-id="tibble-tables">
-<span class="header-section-number">5.2.1.1</span> <code>tibble</code> tables:</h4>
+<section id="important-r-concepts" class="level3" data-number="6.2.1"><h3 data-number="6.2.1" class="anchored" data-anchor-id="important-r-concepts">
+<span class="header-section-number">6.2.1</span> Important R concepts:</h3>
+<section id="tibble-tables" class="level4" data-number="6.2.1.1"><h4 data-number="6.2.1.1" class="anchored" data-anchor-id="tibble-tables">
+<span class="header-section-number">6.2.1.1</span> <code>tibble</code> tables:</h4>
 <p><code>tibbles</code> are built on the fundamental <code>data.frame</code> objects. They follow “tidy” concepts, all gathered in a common <a href="https://www.tidyverse.org/"><code>tidyverse</code></a>. This set of key concepts help general data investigation and data visualization through a set of associated packages such as <code>ggplot2</code>.</p>
 <div class="cell">
 <div class="code-with-filename">
@@ -424,8 +424,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span><span class="va">genes</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="handling-of-tibbles" class="level4" data-number="5.2.1.2"><h4 data-number="5.2.1.2" class="anchored" data-anchor-id="handling-of-tibbles">
-<span class="header-section-number">5.2.1.2</span> Handling of <code>tibbles</code>:</h4>
+</section><section id="handling-of-tibbles" class="level4" data-number="6.2.1.2"><h4 data-number="6.2.1.2" class="anchored" data-anchor-id="handling-of-tibbles">
+<span class="header-section-number">6.2.1.2</span> Handling of <code>tibbles</code>:</h4>
 <p><code>tibbles</code> can be readily “sliced” (i.e.&nbsp;selecting rows by number/name), “filtered” (i.e.&nbsp;selecting rows by condition) and columns can be “selected”. All these operations are performed using <em>verbs</em> (most of them provided by the <code>dplyr</code> package, part of <code>tidyverse</code>).</p>
 <div class="cell">
 <div class="code-with-filename">
@@ -450,8 +450,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">genes</span>, chr <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">22</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="pipe" class="level4" data-number="5.2.1.3"><h4 data-number="5.2.1.3" class="anchored" data-anchor-id="pipe">
-<span class="header-section-number">5.2.1.3</span> <code>|&gt;</code> pipe:</h4>
+</section><section id="pipe" class="level4" data-number="6.2.1.3"><h4 data-number="6.2.1.3" class="anchored" data-anchor-id="pipe">
+<span class="header-section-number">6.2.1.3</span> <code>|&gt;</code> pipe:</h4>
 <p>Actions on <code>tibbles</code> can be piped as a chain with <code>|&gt;</code>, just like <code>|</code> pipes <code>stdout</code> as the <code>stdin</code> of the next command in <code>bash</code>. In this case, the first argument is always the output of the previous function and is ommited. Because <code>tidyverse</code> functions generally return a modified version of the input, pipping works remarkably well in such context.</p>
 <div class="cell">
 <div class="code-with-filename">
@@ -465,10 +465,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section></section><section id="important-bioconductor-concepts" class="level3" data-number="5.2.2"><h3 data-number="5.2.2" class="anchored" data-anchor-id="important-bioconductor-concepts">
-<span class="header-section-number">5.2.2</span> Important Bioconductor concepts:</h3>
-<section id="summarizedexperiment-class" class="level4" data-number="5.2.2.1"><h4 data-number="5.2.2.1" class="anchored" data-anchor-id="summarizedexperiment-class">
-<span class="header-section-number">5.2.2.1</span> <code>SummarizedExperiment</code> class:</h4>
+</section></section><section id="important-bioconductor-concepts" class="level3" data-number="6.2.2"><h3 data-number="6.2.2" class="anchored" data-anchor-id="important-bioconductor-concepts">
+<span class="header-section-number">6.2.2</span> Important Bioconductor concepts:</h3>
+<section id="summarizedexperiment-class" class="level4" data-number="6.2.2.1"><h4 data-number="6.2.2.1" class="anchored" data-anchor-id="summarizedexperiment-class">
+<span class="header-section-number">6.2.2.1</span> <code>SummarizedExperiment</code> class:</h4>
 <p>The most fundamental class used to hold the content of large-scale quantitative analyses, such as counts of RNA-seq experiments, or high-throughput cytometry experiments or proteomics experiments.</p>
 <p><img src="https://github.com/js2264/scRNAseq_Physalia_2023/blob/main/content/day2/.img/2021-05-31-08-50-45.png"></p>
 <p>Make sure you understand the structure of objects from this class. A dedicated workshop that I would recommend quickly going over is available <a href="https://www.bioconductor.org/help/course-materials/2019/BSS2019/04_Practical_CoreApproachesInBioconductor.html">here</a>. Generally speaking, a <code>SummarizedExperiment</code> object contains matrix-like objects (the <code>assays</code>), with rows representing features (e.g.&nbsp;genes, transcripts, …) and each column representing a sample. Information specific to genes and samples are stored in “parallel” data frames, for example to store gene locations, tissue of expression, biotypes (for genes) or batch, generation date, or machine ID (for samples). On top of that, metadata are also stored in the object (to store description of a project, …).</p>
@@ -520,8 +520,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span><span class="va">untreated_LRG</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="genomicranges-class-a.k.a.-granges" class="level4" data-number="5.2.2.2"><h4 data-number="5.2.2.2" class="anchored" data-anchor-id="genomicranges-class-a.k.a.-granges">
-<span class="header-section-number">5.2.2.2</span> <code>GenomicRanges</code> class (a.k.a. <code>GRanges</code>):</h4>
+</section><section id="genomicranges-class-a.k.a.-granges" class="level4" data-number="6.2.2.2"><h4 data-number="6.2.2.2" class="anchored" data-anchor-id="genomicranges-class-a.k.a.-granges">
+<span class="header-section-number">6.2.2.2</span> <code>GenomicRanges</code> class (a.k.a. <code>GRanges</code>):</h4>
 <p><code>GenomicRanges</code> are a type of <code>IntervalRanges</code>, they are useful to describe genomic intervals. Each entry in a <code>GRanges</code> object has a <code><a href="https://rdrr.io/pkg/GenomeInfoDb/man/seqinfo.html">seqnames()</a></code>, a <code><a href="https://rdrr.io/r/stats/start.html">start()</a></code> and an <code><a href="https://rdrr.io/r/stats/start.html">end()</a></code> coordinates, a <code><a href="https://rdrr.io/pkg/BiocGenerics/man/strand.html">strand()</a></code>, as well as associated metadata (<code><a href="https://rdrr.io/pkg/S4Vectors/man/Vector-class.html">mcols()</a></code>). They can be built from scratch using <code>tibbles</code> converted with <code><a href="https://rdrr.io/pkg/GenomicRanges/man/makeGRangesFromDataFrame.html">makeGRangesFromDataFrame()</a></code>.</p>
 <div class="cell">
 <div class="code-with-filename">
@@ -585,10 +585,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/start.html">start</a></span><span class="op">(</span><span class="va">genes2_manual</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section></section></section><section id="cran-bioconductor-approaches-to-scrnaseq" class="level2" data-number="5.3"><h2 data-number="5.3" class="anchored" data-anchor-id="cran-bioconductor-approaches-to-scrnaseq">
-<span class="header-section-number">5.3</span> CRAN &amp; Bioconductor approaches to scRNAseq</h2>
-<section id="scrnaseq-in-bioconductor" class="level3" data-number="5.3.1"><h3 data-number="5.3.1" class="anchored" data-anchor-id="scrnaseq-in-bioconductor">
-<span class="header-section-number">5.3.1</span> scRNAseq in Bioconductor</h3>
+</section></section></section><section id="cran-bioconductor-approaches-to-scrnaseq" class="level2" data-number="6.3"><h2 data-number="6.3" class="anchored" data-anchor-id="cran-bioconductor-approaches-to-scrnaseq">
+<span class="header-section-number">6.3</span> CRAN &amp; Bioconductor approaches to scRNAseq</h2>
+<section id="scrnaseq-in-bioconductor" class="level3" data-number="6.3.1"><h3 data-number="6.3.1" class="anchored" data-anchor-id="scrnaseq-in-bioconductor">
+<span class="header-section-number">6.3.1</span> scRNAseq in Bioconductor</h3>
 <p>For single-cell RNA-seq projects, <code>Bioconductor</code> has been introducting new classes and standards very rapidly in the past few years. Notably, several packages are increasingly becoming central for single-cell analysis:</p>
 <ul>
 <li><strong><code>SingleCellExperiment</code></strong></li>
@@ -686,8 +686,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 </div>
 <p>We will see more advanced ways of reducing scRNAseq data dimensionality in the coming lectures and labs.</p>
-</section><section id="scrnaseq-in-r" class="level3" data-number="5.3.2"><h3 data-number="5.3.2" class="anchored" data-anchor-id="scrnaseq-in-r">
-<span class="header-section-number">5.3.2</span> scRNAseq in R</h3>
+</section><section id="scrnaseq-in-r" class="level3" data-number="6.3.2"><h3 data-number="6.3.2" class="anchored" data-anchor-id="scrnaseq-in-r">
+<span class="header-section-number">6.3.2</span> scRNAseq in R</h3>
 <p><a href="https://satijalab.org/seurat/articles/get_started.html"><code>Seurat</code></a> is another very popular ecosystem to investigate scRNAseq data. It is primarily developed and maintained by <a href="https://satijalab.org/seurat">the Sajita Lab</a>. It originally begun as a single package aiming at encompassing “all” (most) aspects of scRNAseq analysis. However, it rapidly evolved in a much larger project, and now operates along with other <a href="https://satijalab.org/seurat/articles/extensions.html">“wrappers” and extensions</a>. It also has a <a href="https://github.com/satijalab/seurat/discussions">very extended support</a> from the lab group. All in all, is provides a (somewhat) simple workflow to start investigating scRNAseq data.</p>
 <p>It is important to chose one standard that you feel comfortable with yourself. Which standard provides the most intuitive approach for you? Do you prefer an “all-in-one, plug-n-play” workflow (<code>Seurat</code>-style), or a modular approach (<code>Bioconductor</code>-style)? Which documentation is easier to read for you, a central full-featured website with extensive examples (<code>Seurat</code>-style), or “programmatic”-style vignettes (<code>Bioconductor</code>-style)?</p>
 <p>This course will mostly rely on <code>Bioconductor</code>-based methods, but sometimes use <code>Seurat</code>-based methods.s In the absence of coordination of data structures, the next best solution is to write functions to coerce an object from a certain class to another class (i.e.&nbsp;<code>Seurat</code> to <code>SingleCellExperiment</code>, or vice-versa). Luckily, this is quite straightforward in <code>R</code> for these 2 data classes:</p>
@@ -742,8 +742,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu">Seurat</span><span class="fu">::</span><span class="fu">Embeddings</span><span class="op">(</span>object <span class="op">=</span> <span class="va">sce_seurat</span>, reduction <span class="op">=</span> <span class="st">"diffusion"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section></section><section id="reading-scrnaseq-data" class="level2" data-number="5.4"><h2 data-number="5.4" class="anchored" data-anchor-id="reading-scrnaseq-data">
-<span class="header-section-number">5.4</span> Reading scRNAseq data</h2>
+</section></section><section id="reading-scrnaseq-data" class="level2" data-number="6.4"><h2 data-number="6.4" class="anchored" data-anchor-id="reading-scrnaseq-data">
+<span class="header-section-number">6.4</span> Reading scRNAseq data</h2>
 <ul>
 <li><strong>Try to load the raw <code>10X</code> single-cell RNA-seq data downloaded yesterday (from <code>Lier et al.</code>) into a <code>SingleCellExperiment</code> object using <code>DropletUtils</code> package.</strong></li>
 </ul>
@@ -786,12 +786,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span><span class="fu"><a href="https://rdrr.io/pkg/BiocGenerics/man/table.html">table</a></span><span class="op">(</span><span class="va">organs</span><span class="op">$</span><span class="va">reclustered.fine</span>, <span class="va">organs</span><span class="op">$</span><span class="va">Tissue</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-</section><section id="bonus" class="level2" data-number="5.5"><h2 data-number="5.5" class="anchored" data-anchor-id="bonus">
-<span class="header-section-number">5.5</span> Bonus</h2>
+</section><section id="bonus" class="level2" data-number="6.5"><h2 data-number="6.5" class="anchored" data-anchor-id="bonus">
+<span class="header-section-number">6.5</span> Bonus</h2>
 <p>To compare the two different approaches, try preparing both a <code>SingleCellExperiment</code> or a <code>Seurat</code> object from scratch, using the matrix files generated in the previous lab. Read the documentation of the two related packages to understand how to do this.<br>
 This will be extensively covered in the next lab for everybody.</p>
-</section><section id="session-info" class="level2" data-number="5.6"><h2 data-number="5.6" class="anchored" data-anchor-id="session-info">
-<span class="header-section-number">5.6</span> Session info</h2>
+</section><section id="session-info" class="level2" data-number="6.6"><h2 data-number="6.6" class="anchored" data-anchor-id="session-info">
+<span class="header-section-number">6.6</span> Session info</h2>
 <div class="cell">
 
 </div>
@@ -895,13 +895,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="../../content/day1/Lab2_processingreads.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Lab 2: From .bcl to count matrix</span></span>
+      <a href="../../content/day2/Lecture3_qualitycontrol.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Lecture 3 - Quality control for scRNA-Seq data</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../../content/day2/Lecture3_qualitycontrol.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Lecture 3 - Quality control for scRNA-Seq data</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../../content/day2/Lab4_data_wrangling_scRNAseq.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Lab 4 - Single-cell RNA-seq data wrangling</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

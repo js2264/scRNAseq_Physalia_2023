@@ -24,13 +24,13 @@ book:
     - part: "Day 1"
       chapters:
         - content/day1/Lecture1_introduction.qmd
-        - content/day1/Lab1_Intro.qmd
         - content/day1/Lecture2_Bcl2matrix.qmd
+        - content/day1/Lab1_Intro.qmd
         - content/day1/Lab2_processingreads.qmd
     - part: "Day 2"
       chapters:
-        - content/day2/Lab3_Rbioc.qmd
         - content/day2/Lecture3_qualitycontrol.qmd
+        - content/day2/Lab3_Rbioc.qmd
         - content/day2/Lab4_data_wrangling_scRNAseq.qmd
     - part: "Day 3"
       chapters:
