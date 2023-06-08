@@ -341,7 +341,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   
 
 </header><p>ATAC-seq data may be obtained in isolation using a single-cell ATAC-seq protocol (e.g.&nbsp;<a href="https://support.10xgenomics.com/single-cell-atac">10X scATACseq</a>) or in combination with gene expression data using a single-cell multiome protocole (e.g.&nbsp;<a href="https://www.10xgenomics.com/products/single-cell-multiome-atac-plus-gene-expression">10X multiome</a> and <a href="https://pubmed.ncbi.nlm.nih.gov/33098772/">SHARE-seq</a>).</p>
-<p>Several packages are currently avaialble to process scATAC-seq data in R. These include <code>[Signac](https://satijalab.org/signac/index.html)</code> and <code>[ArchR](https://www.archrproject.com/bookdown/index.html#section)</code>. This lab will closely follow the <a href="https://satijalab.org/signac/articles/pbmc_vignette.html">processing steps</a> outlined in <code>Signac</code>, which interfaces well with <code>Seurat</code> for single-cell analysis.</p>
+<p>Several packages are currently avaialble to process scATAC-seq data in R. These include <a href="https://satijalab.org/signac/index.html">Signac</a> and <a href="https://www.archrproject.com/bookdown/index.html#section">ArchR</a>. This lab will closely follow the <a href="https://satijalab.org/signac/articles/pbmc_vignette.html">processing steps</a> outlined in <code>Signac</code>, which interfaces well with <code>Seurat</code> for single-cell analysis.</p>
 <p>In this lab, we will process a PBMC single-cell ATAC-seq (scATAC-seq) dataset and perform preliminary analysis to assess quality of these data. The data for this lab comes from <a href="https://www.10xgenomics.com/resources/datasets/10-k-peripheral-blood-mononuclear-cells-pbm-cs-from-a-healthy-donor-1-standard-1-0-1">10X Genomics</a>. The dataset contains roughly ~ 10,000 cells.</p>
 <div class="callout-tip callout callout-style-default callout-captioned">
 <div class="callout-header d-flex align-content-center">
@@ -357,9 +357,8 @@ Overarching goals
 <li>Import cells from human PBMC scATACseq dataset</li>
 <li>Perform scATACseq quality controls and checks</li>
 <li>Filter, normalize and plot PBMC scATACseq dataset</li>
-<li>Run chromVAR to identify TF activity in each cell cluster<br>
-</li>
-<li>Compute gene activity scores and check known markers</li>
+<li>Compute gene activity scores, check known markers and annotate scATAC clusters</li>
+<li>Perform differential peak accessibility analysis</li>
 </ol>
 </div>
 </div>

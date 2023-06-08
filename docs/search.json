@@ -375,7 +375,7 @@
     "href": "content/day4/Lab8_atac-seq.html",
     "title": "\n15  Lab 8 - Single-cell ATAC-seq analysis workflow\n",
     "section": "",
-    "text": "ATAC-seq data may be obtained in isolation using a single-cell ATAC-seq protocol (e.g. 10X scATACseq) or in combination with gene expression data using a single-cell multiome protocole (e.g. 10X multiome and SHARE-seq).\nSeveral packages are currently avaialble to process scATAC-seq data in R. These include [Signac](https://satijalab.org/signac/index.html) and [ArchR](https://www.archrproject.com/bookdown/index.html#section). This lab will closely follow the processing steps outlined in Signac, which interfaces well with Seurat for single-cell analysis.\nIn this lab, we will process a PBMC single-cell ATAC-seq (scATAC-seq) dataset and perform preliminary analysis to assess quality of these data. The data for this lab comes from 10X Genomics. The dataset contains roughly ~ 10,000 cells."
+    "text": "ATAC-seq data may be obtained in isolation using a single-cell ATAC-seq protocol (e.g. 10X scATACseq) or in combination with gene expression data using a single-cell multiome protocole (e.g. 10X multiome and SHARE-seq).\nSeveral packages are currently avaialble to process scATAC-seq data in R. These include Signac and ArchR. This lab will closely follow the processing steps outlined in Signac, which interfaces well with Seurat for single-cell analysis.\nIn this lab, we will process a PBMC single-cell ATAC-seq (scATAC-seq) dataset and perform preliminary analysis to assess quality of these data. The data for this lab comes from 10X Genomics. The dataset contains roughly ~ 10,000 cells."
   },
   {
     "objectID": "content/day4/Lab8_atac-seq.html#process-human-pbmc-dataset",

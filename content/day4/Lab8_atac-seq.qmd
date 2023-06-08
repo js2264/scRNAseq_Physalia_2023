@@ -6,7 +6,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 ATAC-seq data may be obtained in isolation using a single-cell ATAC-seq protocol (e.g. [10X scATACseq](https://support.10xgenomics.com/single-cell-atac)) or in combination with gene expression data using a single-cell multiome protocole (e.g. [10X multiome](https://www.10xgenomics.com/products/single-cell-multiome-atac-plus-gene-expression) and [SHARE-seq](https://pubmed.ncbi.nlm.nih.gov/33098772/)). 
 
-Several packages are currently avaialble to process scATAC-seq data in R. These include `[Signac](https://satijalab.org/signac/index.html)` and `[ArchR](https://www.archrproject.com/bookdown/index.html#section)`. This lab will closely follow the [processing steps](https://satijalab.org/signac/articles/pbmc_vignette.html) outlined in `Signac`, which interfaces well with `Seurat` for single-cell analysis. 
+Several packages are currently avaialble to process scATAC-seq data in R. These include [Signac](https://satijalab.org/signac/index.html) and [ArchR](https://www.archrproject.com/bookdown/index.html#section). This lab will closely follow the [processing steps](https://satijalab.org/signac/articles/pbmc_vignette.html) outlined in `Signac`, which interfaces well with `Seurat` for single-cell analysis. 
 
 In this lab, we will process a PBMC single-cell ATAC-seq (scATAC-seq) dataset and perform preliminary analysis to assess quality of these data. The data for this lab comes from [10X Genomics](https://www.10xgenomics.com/resources/datasets/10-k-peripheral-blood-mononuclear-cells-pbm-cs-from-a-healthy-donor-1-standard-1-0-1). 
 The dataset contains roughly ~ 10,000 cells.
@@ -17,8 +17,8 @@ The dataset contains roughly ~ 10,000 cells.
 1. Import cells from human PBMC scATACseq dataset
 2. Perform scATACseq quality controls and checks 
 3. Filter, normalize and plot PBMC scATACseq dataset
-4. Run chromVAR to identify TF activity in each cell cluster  
-5. Compute gene activity scores and check known markers  
+4. Compute gene activity scores, check known markers and annotate scATAC clusters
+5. Perform differential peak accessibility analysis
 
 :::
 
