@@ -320,18 +320,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#dimensionality-reduction-and-clustering" id="toc-dimensionality-reduction-and-clustering" class="nav-link" data-scroll-target="#dimensionality-reduction-and-clustering"><span class="toc-section-number">15.1.6</span>  Dimensionality reduction and clustering</a></li>
   </ul>
 </li>
-  <li>
-<a href="#chromvar-analysis" id="toc-chromvar-analysis" class="nav-link" data-scroll-target="#chromvar-analysis"><span class="toc-section-number">15.2</span>  chromVAR analysis</a>
-  <ul class="collapse">
-<li><a href="#get-a-summarizedexperiment-of-scatacseq-counts-over-peaks" id="toc-get-a-summarizedexperiment-of-scatacseq-counts-over-peaks" class="nav-link" data-scroll-target="#get-a-summarizedexperiment-of-scatacseq-counts-over-peaks"><span class="toc-section-number">15.2.1</span>  Get a SummarizedExperiment of scATACseq counts over peaks</a></li>
-  <li><a href="#add-gc-bias-to-peaks" id="toc-add-gc-bias-to-peaks" class="nav-link" data-scroll-target="#add-gc-bias-to-peaks"><span class="toc-section-number">15.2.2</span>  Add GC bias to peaks</a></li>
-  <li><a href="#map-motifs-over-peaks" id="toc-map-motifs-over-peaks" class="nav-link" data-scroll-target="#map-motifs-over-peaks"><span class="toc-section-number">15.2.3</span>  Map motifs over peaks</a></li>
-  <li><a href="#search-for-motifs-with-high-deviation-of-mapping-compared-to-background" id="toc-search-for-motifs-with-high-deviation-of-mapping-compared-to-background" class="nav-link" data-scroll-target="#search-for-motifs-with-high-deviation-of-mapping-compared-to-background"><span class="toc-section-number">15.2.4</span>  Search for motifs with high deviation of mapping compared to background</a></li>
-  <li><a href="#check-tf-motif-enrichment-in-different-cell-types" id="toc-check-tf-motif-enrichment-in-different-cell-types" class="nav-link" data-scroll-target="#check-tf-motif-enrichment-in-different-cell-types"><span class="toc-section-number">15.2.5</span>  Check TF motif enrichment in different cell types</a></li>
-  </ul>
-</li>
-  <li><a href="#compute-gene-activity-scores" id="toc-compute-gene-activity-scores" class="nav-link" data-scroll-target="#compute-gene-activity-scores"><span class="toc-section-number">15.3</span>  Compute gene activity scores</a></li>
-  <li><a href="#find-differentially-accessible-peaks" id="toc-find-differentially-accessible-peaks" class="nav-link" data-scroll-target="#find-differentially-accessible-peaks"><span class="toc-section-number">15.4</span>  Find differentially accessible peaks</a></li>
+  <li><a href="#compute-gene-activity-scores" id="toc-compute-gene-activity-scores" class="nav-link" data-scroll-target="#compute-gene-activity-scores"><span class="toc-section-number">15.2</span>  Compute gene activity scores</a></li>
+  <li><a href="#find-peaks-differentially-accessible-across-clusters" id="toc-find-peaks-differentially-accessible-across-clusters" class="nav-link" data-scroll-target="#find-peaks-differentially-accessible-across-clusters"><span class="toc-section-number">15.3</span>  Find peaks differentially accessible across clusters</a></li>
   </ul><div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/edit/main/content/day4/Lab8_atac-seq.qmd" class="toc-action">Edit this page</a></p><p><a href="https://github.com/js2264/scRNAseq_Physalia_2023/issues/new" class="toc-action">Report an issue</a></p></div></div></nav>
     </div>
 <!-- main -->
@@ -369,8 +359,7 @@ Overarching goals
 <li>Filter, normalize and plot PBMC scATACseq dataset</li>
 <li>Run chromVAR to identify TF activity in each cell cluster<br>
 </li>
-<li>Compute gene activity scores and check known markers<br>
-</li>
+<li>Compute gene activity scores and check known markers</li>
 </ol>
 </div>
 </div>
@@ -410,7 +399,7 @@ Overarching goals
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">DropletUtils</span><span class="fu">::</span><span class="fu">read10xCounts</span><span class="op">(</span><span class="st">"scATAC/atac_v1_pbmc_10k_filtered_peak_bc_matrix.h5"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-<p>This works because 10X Genomics make sure to distribute files in <code>.h5</code> format that are consistent accross single-cell sequencing mthodologies. However, the <code>SingleCellExperiment</code> obtained with this approach is not the most convenient, as it cannot natively leverage <code>fragments</code> file (see below).</p>
+<p>This works because 10X Genomics make sure to distribute files in <code>.h5</code> format that are consistent accross single-cell sequencing methodologies. However, the <code>SingleCellExperiment</code> obtained with this approach is not the most convenient, as it cannot natively leverage <code>fragments</code> file (see below).</p>
 <p>Instead, we can create a <code>Signac</code> object, a flavour of <code>Seurat</code> objects.</p>
 <ul>
 <li><strong>Import counts matrix and feature annotations using an import function provided by <code>Seurat</code>.</strong></li>
@@ -532,9 +521,9 @@ Overarching goals
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">PBMC</span><span class="op">@</span><span class="va">meta.data</span><span class="op">$</span><span class="va">FRiP</span> <span class="op">&lt;-</span> <span class="va">PBMC</span><span class="op">$</span><span class="va">peak_region_fragments</span> <span class="op">/</span> <span class="va">PBMC</span><span class="op">$</span><span class="va">passed_filters</span></span>
-<span><span class="va">PBMC</span><span class="op">@</span><span class="va">meta.data</span><span class="op">$</span><span class="va">nCount_ATAC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span><span class="op">(</span><span class="fu">GetAssayData</span><span class="op">(</span><span class="va">PBMC</span>, slot <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">PBMC</span><span class="op">@</span><span class="va">meta.data</span><span class="op">$</span><span class="va">nFeature_ATAC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span><span class="op">(</span><span class="fu">GetAssayData</span><span class="op">(</span><span class="va">PBMC</span>, slot <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">PBMC</span><span class="op">$</span><span class="va">FRiP</span> <span class="op">&lt;-</span> <span class="va">PBMC</span><span class="op">$</span><span class="va">peak_region_fragments</span> <span class="op">/</span> <span class="va">PBMC</span><span class="op">$</span><span class="va">passed_filters</span></span>
+<span><span class="va">PBMC</span><span class="op">$</span><span class="va">nCount_ATAC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span><span class="op">(</span><span class="fu">GetAssayData</span><span class="op">(</span><span class="va">PBMC</span>, slot <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">PBMC</span><span class="op">$</span><span class="va">nFeature_ATAC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span><span class="op">(</span><span class="fu">GetAssayData</span><span class="op">(</span><span class="va">PBMC</span>, slot <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">PBMC</span><span class="op">$</span><span class="va">FRiP</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html">quantile</a></span><span class="op">(</span><span class="va">PBMC</span><span class="op">$</span><span class="va">nCount_ATAC</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span>
@@ -582,30 +571,20 @@ Overarching goals
 <span><span class="fu">FragmentHistogram</span><span class="op">(</span>object <span class="op">=</span> <span class="va">PBMC</span>, group.by <span class="op">=</span> <span class="st">'nucleosome_group'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-<p>The new <code>DensityScatter</code> function from <code>Signac</code> can be used to plot the fragment count per peak ~ TSS enrichment, combining both metrics into a single plot.</p>
-<div class="cell">
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>R</strong></pre>
-</div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">DensityScatter</span><span class="op">(</span><span class="va">PBMC</span>, x <span class="op">=</span> <span class="st">'TSS.enrichment'</span>, y <span class="op">=</span> <span class="st">'nucleosome_signal'</span>, log_x <span class="op">=</span> <span class="cn">FALSE</span>, quantiles <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
 </section></section><section id="filter-cells-and-features" class="level3" data-number="15.1.5"><h3 data-number="15.1.5" class="anchored" data-anchor-id="filter-cells-and-features">
 <span class="header-section-number">15.1.5</span> Filter cells and features</h3>
-<p>We do have other pre-computed metrics (e.g.&nbsp;<code>FRIP</code> and <code>depth</code>).</p>
 <ul>
-<li><strong>Check these metrics and filter the <code>Seurat</code> object (cells and features) as deemed appropriate.</strong></li>
+<li><strong>Filter the <code>Seurat</code> object (cells and features) as deemed appropriate.</strong></li>
 </ul>
 <div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Filter data </span></span>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Filter data </span></span>
 <span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">PBMC</span>, subset <span class="op">=</span> <span class="va">nCount_ATAC</span> <span class="op">&gt;</span> <span class="fl">3000</span> <span class="op">&amp;</span> <span class="va">nCount_ATAC</span> <span class="op">&lt;</span> <span class="fl">100000</span><span class="op">)</span> </span>
 <span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">PBMC</span>, subset <span class="op">=</span> <span class="va">nFeature_ATAC</span> <span class="op">&gt;</span> <span class="fl">1000</span> <span class="op">&amp;</span> <span class="va">nFeature_ATAC</span> <span class="op">&lt;</span> <span class="fl">20000</span><span class="op">)</span> </span>
-<span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">PBMC</span>, subset <span class="op">=</span> <span class="va">FRIP</span> <span class="op">&gt;</span> <span class="fl">0.30</span><span class="op">)</span> </span>
+<span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">PBMC</span>, subset <span class="op">=</span> <span class="va">FRiP</span> <span class="op">&gt;</span> <span class="fl">0.30</span><span class="op">)</span> </span>
 <span><span class="co">## - Remove peaks with low coverage</span></span>
 <span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="va">PBMC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu">GetAssayData</span><span class="op">(</span><span class="va">PBMC</span>, slot <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">10</span>, <span class="op">]</span></span>
 <span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="va">PBMC</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu">GetAssayData</span><span class="op">(</span><span class="va">PBMC</span>, slot <span class="op">=</span> <span class="st">"counts"</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">10</span>, <span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -621,15 +600,17 @@ Overarching goals
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Normalize data </span></span>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Normalize data </span></span>
 <span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu">RunTFIDF</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co">## - Reduce dimensionality</span></span>
 <span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu">FindTopFeatures</span><span class="op">(</span><span class="va">PBMC</span>, min.cutoff <span class="op">=</span> <span class="st">'q50'</span><span class="op">)</span> </span>
 <span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu">RunSVD</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> </span>
 <span></span>
-<span><span class="co">## - Label clusters according to the original publication</span></span>
+<span><span class="co">## - Embed in 2D UMAP</span></span>
 <span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu">RunUMAP</span><span class="op">(</span>object <span class="op">=</span> <span class="va">PBMC</span>, reduction <span class="op">=</span> <span class="st">'lsi'</span>, dims <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">30</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## - Cluster cells</span></span>
 <span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu">FindNeighbors</span><span class="op">(</span>object <span class="op">=</span> <span class="va">PBMC</span>, reduction <span class="op">=</span> <span class="st">'lsi'</span>, dims <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="fl">30</span><span class="op">)</span></span>
 <span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu">FindClusters</span><span class="op">(</span>object <span class="op">=</span> <span class="va">PBMC</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, algorithm <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span></span>
@@ -639,137 +620,15 @@ Overarching goals
 </div>
 <ul>
 <li><strong>What can you observe in the <code>UMAP</code> projection of the dataset? Comment on the separation of some cell types into different spatially-resolved clusters.</strong></li>
-</ul></section></section><section id="chromvar-analysis" class="level2" data-number="15.2"><h2 data-number="15.2" class="anchored" data-anchor-id="chromvar-analysis">
-<span class="header-section-number">15.2</span> chromVAR analysis</h2>
-<section id="get-a-summarizedexperiment-of-scatacseq-counts-over-peaks" class="level3" data-number="15.2.1"><h3 data-number="15.2.1" class="anchored" data-anchor-id="get-a-summarizedexperiment-of-scatacseq-counts-over-peaks">
-<span class="header-section-number">15.2.1</span> Get a SummarizedExperiment of scATACseq counts over peaks</h3>
-<p><code>chromVAR</code> works with raw counts stored as a <code>RangedSummarizedExperiment</code>. By now, you should be able to easily extract the raw counts from a specific <code>Seurat</code> assay. Store it in a <code>RangedSummarizedExperiment</code> (~ equivalent to <code>Seurat</code> assay but in <code>Bioconductor</code>).</p>
-<ul>
-<li><strong>What are the dimensions of the <code>RangedSummarizedExperiment</code> generated? What are the features and what are the columns?</strong></li>
-</ul>
-<div class="cell">
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>R</strong></pre>
-</div>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment">SummarizedExperiment</a></span><span class="op">)</span></span>
-<span><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/RangedSummarizedExperiment-class.html">SummarizedExperiment</a></span><span class="op">(</span></span>
-<span>    assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="st">'counts'</span> <span class="op">=</span> <span class="fu">GetAssayData</span><span class="op">(</span><span class="va">PBMC</span>, assay <span class="op">=</span> <span class="st">'ATAC'</span>, slot <span class="op">=</span> <span class="st">'counts'</span><span class="op">)</span><span class="op">)</span>, </span>
-<span>    rowRanges <span class="op">=</span> <span class="fu">GetAssayData</span><span class="op">(</span><span class="va">PBMC</span>, assay <span class="op">=</span> <span class="st">'ATAC'</span>, slot <span class="op">=</span> <span class="st">'ranges'</span><span class="op">)</span>, </span>
-<span>    colData <span class="op">=</span> <span class="va">PBMC</span><span class="op">[[</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">sumExp</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-</section><section id="add-gc-bias-to-peaks" class="level3" data-number="15.2.2"><h3 data-number="15.2.2" class="anchored" data-anchor-id="add-gc-bias-to-peaks">
-<span class="header-section-number">15.2.2</span> Add GC bias to peaks</h3>
-<p>This step is important to correct GC bias associated with each peak.</p>
-<div class="cell">
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>R</strong></pre>
-</div>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sumExp</span> <span class="op">&lt;-</span> <span class="fu">chromVAR</span><span class="fu">::</span><span class="fu">addGCBias</span><span class="op">(</span><span class="va">sumExp</span>, genome <span class="op">=</span> <span class="fu">BSgenome.Hsapiens.UCSC.hg19</span><span class="fu">::</span><span class="va">BSgenome.Hsapiens.UCSC.hg19</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-</section><section id="map-motifs-over-peaks" class="level3" data-number="15.2.3"><h3 data-number="15.2.3" class="anchored" data-anchor-id="map-motifs-over-peaks">
-<span class="header-section-number">15.2.3</span> Map motifs over peaks</h3>
-<p>Using <code>motifmatchr</code> package, one can map a list of motifs (e.g.&nbsp;from JASPAR database) over a <code>RangedSummarizedExperiment</code> (or anything which can be coerced to a <code>GRanges</code>, actually).</p>
-<ul>
-<li><strong>First, you need to import motifs from a public database in <code>R</code>. This can be done (among other ways) with the <code>TFBSTools</code> pacakge.</strong></li>
-</ul>
-<div class="cell">
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>R</strong></pre>
-</div>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Import motifs from JASPAR database</span></span>
-<span><span class="va">motifs</span> <span class="op">&lt;-</span> <span class="fu">TFBSTools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TFBSTools/man/getMatrixSet-methods.html">getMatrixSet</a></span><span class="op">(</span></span>
-<span>    <span class="fu">JASPAR2020</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/JASPAR2020/man/JASPAR2020-class.html">JASPAR2020</a></span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>species <span class="op">=</span> <span class="fl">9606</span>, all_versions <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">motifs</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu">TFBSTools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/TFBSTools/man/XMatrix-class.html">name</a></span><span class="op">(</span><span class="va">motifs</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<ul>
-<li><p><strong>Now map the subset of motifs of interest to the filtered peaks, using <code>motifmatchr::matchMotifs()</code>.</strong></p></li>
-<li><p><strong>Read <code>matchMotifs()</code> documentation and run it on your <code>sumExp</code>.</strong></p></li>
-<li><p><strong>What is the class of the generated object? Its dimensions?</strong></p></li>
-<li><p><strong>What are the features and what are the columns?</strong></p></li>
-</ul>
-<div class="cell">
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>R</strong></pre>
-</div>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Bioconductor/BiocParallel">BiocParallel</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/register.html">register</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/BiocParallel/man/MulticoreParam-class.html">MulticoreParam</a></span><span class="op">(</span>workers <span class="op">=</span> <span class="fl">16</span>, progressbar <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">motif_mappings</span> <span class="op">&lt;-</span> <span class="fu">motifmatchr</span><span class="fu">::</span><span class="fu">matchMotifs</span><span class="op">(</span><span class="va">motifs</span>, <span class="va">sumExp</span>, genome <span class="op">=</span> <span class="fu">BSgenome.Hsapiens.UCSC.hg19</span><span class="fu">::</span><span class="va">BSgenome.Hsapiens.UCSC.hg19</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">motif_mappingss</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">motif_mappings</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<p>Because there are so many motifs and so many peaks, and in interest of time, we will perform <code>chromVAR</code> analysis on a subset of motifs only. You can manually filter the motifs list to motifs that may be relevant in our context (e.g.&nbsp;<code>EOMES</code>, or <code>GATA2</code>, …).</p>
-<div class="cell">
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>R</strong></pre>
-</div>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Filter to interesting motifs to keep analysis relatively quick</span></span>
-<span><span class="co">#       Feel free to select any TF of interest!</span></span>
-<span><span class="va">motif_mappings_sub</span> <span class="op">&lt;-</span> <span class="va">motif_mappings</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'EOMES'</span>, <span class="st">'GATA2'</span>, <span class="st">'IRF8'</span>, <span class="st">'EBF1'</span>, <span class="st">'SPI1'</span>, <span class="st">'TCF3'</span>, <span class="st">'CEBPA'</span><span class="op">)</span><span class="op">]</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-</section><section id="search-for-motifs-with-high-deviation-of-mapping-compared-to-background" class="level3" data-number="15.2.4"><h3 data-number="15.2.4" class="anchored" data-anchor-id="search-for-motifs-with-high-deviation-of-mapping-compared-to-background">
-<span class="header-section-number">15.2.4</span> Search for motifs with high deviation of mapping compared to background</h3>
-<p><code>chromVAR</code>’s <code>computeDeviations()</code> function combines (1) the peak counts / cell (stored here in <code>sumExp</code>) and (2) the TF mapping over each peak (stored here in <code>motif_mappings</code>). to assess the mapping deviation for each TF over each cell compared to other cells.</p>
-<ul>
-<li><strong>Run <code>computeDeviations()</code> on the set of peaks and motifs.</strong></li>
-<li><strong>What is the class of the generated object? Its dimensions?</strong></li>
-<li><strong>What are the features and what are the columns?</strong></li>
-</ul>
-<div class="cell">
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>R</strong></pre>
-</div>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Find background signal</span></span>
-<span><span class="va">bg</span> <span class="op">&lt;-</span> <span class="fu">chromVAR</span><span class="fu">::</span><span class="fu">getBackgroundPeaks</span><span class="op">(</span>object <span class="op">=</span> <span class="va">sumExp</span><span class="op">)</span></span>
-<span><span class="co">## - For each motif, compute its mapping deviation over the filtered peaks</span></span>
-<span><span class="va">motif_deviations</span> <span class="op">&lt;-</span> <span class="fu">chromVAR</span><span class="fu">::</span><span class="fu">computeDeviations</span><span class="op">(</span>object <span class="op">=</span> <span class="va">sumExp</span>, annotations <span class="op">=</span> <span class="va">motif_mappings_sub</span>, background_peaks <span class="op">=</span> <span class="va">bg</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-</section><section id="check-tf-motif-enrichment-in-different-cell-types" class="level3" data-number="15.2.5"><h3 data-number="15.2.5" class="anchored" data-anchor-id="check-tf-motif-enrichment-in-different-cell-types">
-<span class="header-section-number">15.2.5</span> Check TF motif enrichment in different cell types</h3>
-<p>The <code>motif_deviations</code> object can be added as a new assay to the <code>PBMC</code> <code>Seurat</code> object. This way, one can rely on <code>Seurat</code>-based plotting functions to plot cells in their preferred dimensional space, and color them using motif deviation scores computed with <code>chromVAR</code>.</p>
-<div class="cell">
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>R</strong></pre>
-</div>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">PBMC</span><span class="op">[[</span><span class="st">'MOTIF'</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">Seurat</span><span class="fu">::</span><span class="fu">CreateAssayObject</span><span class="op">(</span>counts <span class="op">=</span> <span class="fu">chromVAR</span><span class="fu">::</span><span class="fu">deviationScores</span><span class="op">(</span><span class="va">motif_deviations</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu">DefaultAssay</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'MOTIF'</span></span>
-<span><span class="va">list_p</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">motif</span><span class="op">)</span> <span class="op">{</span></span>
-<span>    <span class="fu">FeaturePlot</span><span class="op">(</span><span class="va">PBMC</span>, features <span class="op">=</span> <span class="va">motif</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu">scale_colour_gradientn</span><span class="op">(</span></span>
-<span>            colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'#190886'</span>, <span class="st">'#6F07F8'</span>, <span class="st">'#F954A5'</span>, <span class="st">'#FF9D66'</span>, <span class="st">'#edf118'</span><span class="op">)</span>,</span>
-<span>            limits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span>, oob <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="va"><a href="https://scales.r-lib.org/reference/oob.html">squish</a></span></span>
-<span>        <span class="op">)</span> <span class="op">+</span> </span>
-<span>        <span class="fu">theme</span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span></span>
-<span><span class="va">list_p</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">list_p</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">DimPlot</span><span class="op">(</span><span class="va">PBMC</span>, group.by <span class="op">=</span> <span class="st">'renamed_clusters'</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span> <span class="op">+</span> <span class="fu">theme</span><span class="op">(</span>aspect.ratio <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">cowplot</span><span class="fu">::</span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html">plot_grid</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">list_p</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-</section></section><section id="compute-gene-activity-scores" class="level2" data-number="15.3"><h2 data-number="15.3" class="anchored" data-anchor-id="compute-gene-activity-scores">
-<span class="header-section-number">15.3</span> Compute gene activity scores</h2>
+</ul></section></section><section id="compute-gene-activity-scores" class="level2" data-number="15.2"><h2 data-number="15.2" class="anchored" data-anchor-id="compute-gene-activity-scores">
+<span class="header-section-number">15.2</span> Compute gene activity scores</h2>
 <p>Signac’s <code>GeneActivity()</code> function require scATACseq fragment information. Since we have them, we can estimate a gene activity score for each gene in the <code>annotations</code>.</p>
 <div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gene.activities</span> <span class="op">&lt;-</span> <span class="fu">GeneActivity</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gene.activities</span> <span class="op">&lt;-</span> <span class="fu">GeneActivity</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 <p>We can now save this new object as an <code>Assay</code> in the <code>PBMC</code> object and normalize it.</p>
@@ -778,7 +637,7 @@ Overarching goals
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">PBMC</span><span class="op">[[</span><span class="st">'RNA'</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">CreateAssayObject</span><span class="op">(</span>counts <span class="op">=</span> <span class="va">gene.activities</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">PBMC</span><span class="op">[[</span><span class="st">'RNA'</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">CreateAssayObject</span><span class="op">(</span>counts <span class="op">=</span> <span class="va">gene.activities</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># - Normalize the new RNA assay, this time with `SCTransform`</span></span>
 <span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu">SCTransform</span><span class="op">(</span></span>
@@ -786,69 +645,56 @@ Overarching goals
 <span>  assay <span class="op">=</span> <span class="st">'RNA'</span>,</span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">PBMC</span></span>
-<span><span class="fu">DefaultAssay</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"SCT"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="va">PBMC</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
-<p>One can now perform “gene differential expression”-like analysis using the <code>SCT</code> assay!</p>
+<p>One can now visualize expression of individual markers across clusters to infer cluster identity.</p>
 <div class="cell">
 <div class="code-with-filename">
 <div class="code-with-filename-file">
 <pre><strong>R</strong></pre>
 </div>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Reduce dimensionality to visualize cells in 2D</span></span>
-<span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu">RunPCA</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">RunUMAP</span><span class="op">(</span>reduction <span class="op">=</span> <span class="st">'pca'</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## - Plot gene expression </span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">FeaturePlot</span><span class="op">(</span><span class="va">PBMC</span>, features <span class="op">=</span> <span class="st">'MS4A1'</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span> <span class="co"># Or NCR1 (NKp46), CD8A, CD14, MS4A1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-<p>Now, we can leverage this to annotate clusters according to known PBMC markers</p>
-<div class="cell">
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>R</strong></pre>
-</div>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co">## - Reduce dimensionality to visualize cells in 2D</span></span>
-<span><span class="va">PBMC</span> <span class="op">&lt;-</span> <span class="fu">RunPCA</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">RunUMAP</span><span class="op">(</span>reduction <span class="op">=</span> <span class="st">'pca'</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">## - Plot gene expression </span></span>
-<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">FeaturePlot</span><span class="op">(</span><span class="va">PBMC</span>, features <span class="op">=</span> <span class="st">'MS4A1'</span>, reduction <span class="op">=</span> <span class="st">"umap"</span><span class="op">)</span> <span class="co"># Or NCR1 (NKp46), CD8A, CD14, MS4A1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</div>
-</section><section id="find-differentially-accessible-peaks" class="level2" data-number="15.4"><h2 data-number="15.4" class="anchored" data-anchor-id="find-differentially-accessible-peaks">
-<span class="header-section-number">15.4</span> Find differentially accessible peaks</h2>
-<div class="cell">
-<div class="code-with-filename">
-<div class="code-with-filename-file">
-<pre><strong>R</strong></pre>
-</div>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># change back to working with peaks instead of gene activities</span></span>
-<span><span class="fu">DefaultAssay</span><span class="op">(</span><span class="va">pbmc</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">'peaks'</span></span>
-<span></span>
-<span><span class="va">da_peaks</span> <span class="op">&lt;-</span> <span class="fu">FindMarkers</span><span class="op">(</span></span>
-<span>  object <span class="op">=</span> <span class="va">pbmc</span>,</span>
-<span>  ident.1 <span class="op">=</span> <span class="st">"CD4 Naive"</span>,</span>
-<span>  ident.2 <span class="op">=</span> <span class="st">"CD14+ Monocytes"</span>,</span>
-<span>  test.use <span class="op">=</span> <span class="st">'LR'</span>,</span>
-<span>  latent.vars <span class="op">=</span> <span class="st">'nCount_peaks'</span></span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">VlnPlot</span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">PBMC</span>,</span>
+<span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">'MS4A1'</span>, <span class="co"># B-cell</span></span>
+<span>    <span class="st">'CD3D'</span>, <span class="co"># T-cell</span></span>
+<span>    <span class="st">'NKG7'</span>, <span class="co"># NK cell</span></span>
+<span>    <span class="st">'TREM1'</span> <span class="co"># Monocytes</span></span>
+<span>  <span class="op">)</span>, </span>
+<span>  assay <span class="op">=</span> <span class="st">"SCT"</span></span>
 <span><span class="op">)</span></span>
-<span></span>
-<span></span>
-<span></span>
-<span><span class="va">plot1</span> <span class="op">&lt;-</span> <span class="fu">VlnPlot</span><span class="op">(</span></span>
-<span>  object <span class="op">=</span> <span class="va">pbmc</span>,</span>
+<span><span class="va">PBMC</span><span class="op">$</span><span class="va">annotation</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
+<span>  <span class="fu">Idents</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span>, <span class="fl">9</span>, <span class="fl">12</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Monocytes"</span>, </span>
+<span>  <span class="fu">Idents</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span>, <span class="fl">7</span>, <span class="fl">10</span><span class="op">)</span> <span class="op">~</span> <span class="st">"T-cells"</span>, </span>
+<span>  <span class="fu">Idents</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">6</span><span class="op">)</span> <span class="op">~</span> <span class="st">"NK-cells"</span>, </span>
+<span>  <span class="fu">Idents</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">8</span>, <span class="fl">11</span><span class="op">)</span> <span class="op">~</span> <span class="st">"B-cells"</span>, </span>
+<span>  <span class="fu">Idents</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">13</span>, <span class="fl">14</span><span class="op">)</span> <span class="op">~</span> <span class="st">"DC"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">DimPlot</span><span class="op">(</span><span class="va">PBMC</span>, group.by <span class="op">=</span> <span class="st">'annotation'</span>, label <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span> <span class="fu">NoLegend</span><span class="op">(</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section><section id="find-peaks-differentially-accessible-across-clusters" class="level2" data-number="15.3"><h2 data-number="15.3" class="anchored" data-anchor-id="find-peaks-differentially-accessible-across-clusters">
+<span class="header-section-number">15.3</span> Find peaks differentially accessible across clusters</h2>
+<div class="cell">
+<div class="code-with-filename">
+<div class="code-with-filename-file">
+<pre><strong>R</strong></pre>
+</div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">Idents</span><span class="op">(</span><span class="va">PBMC</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">PBMC</span><span class="op">$</span><span class="va">annotation</span></span>
+<span><span class="va">da_peaks</span> <span class="op">&lt;-</span> <span class="fu">FindMarkers</span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">PBMC</span>,</span>
+<span>  ident.1 <span class="op">=</span> <span class="st">"Monocytes"</span>,</span>
+<span>  ident.2 <span class="op">=</span> <span class="st">"B-cells"</span>,</span>
+<span>  test.use <span class="op">=</span> <span class="st">'LR'</span>,</span>
+<span>  latent.vars <span class="op">=</span> <span class="st">'nCount_ATAC'</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">&lt;-</span> <span class="fu">VlnPlot</span><span class="op">(</span></span>
+<span>  object <span class="op">=</span> <span class="va">PBMC</span>,</span>
 <span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">da_peaks</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
 <span>  pt.size <span class="op">=</span> <span class="fl">0.1</span>,</span>
-<span>  idents <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"CD4 Naive"</span>,<span class="st">"CD14+ Monocytes"</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">plot2</span> <span class="op">&lt;-</span> <span class="fu">FeaturePlot</span><span class="op">(</span></span>
-<span>  object <span class="op">=</span> <span class="va">pbmc</span>,</span>
-<span>  features <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">da_peaks</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>,</span>
-<span>  pt.size <span class="op">=</span> <span class="fl">0.1</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">plot1</span> <span class="op">|</span> <span class="va">plot2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span>  idents <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Monocytes"</span>,<span class="st">"B-cells"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 

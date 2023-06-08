@@ -12,13 +12,14 @@ In this lab, we will process a PBMC single-cell ATAC-seq (scATAC-seq) dataset an
 The dataset contains roughly ~ 10,000 cells.
 
 ::: {.callout-tip icon='true'}
-## Overarching goals
+### Overarching goals
 
 1. Import cells from human PBMC scATACseq dataset
 2. Perform scATACseq quality controls and checks 
 3. Filter, normalize and plot PBMC scATACseq dataset
 4. Run chromVAR to identify TF activity in each cell cluster  
 5. Compute gene activity scores and check known markers  
+
 :::
 
 ## Process human PBMC dataset
@@ -53,7 +54,7 @@ DropletUtils::read10xCounts("scATAC/atac_v1_pbmc_10k_filtered_peak_bc_matrix.h5"
 ```
 
 This works because 10X Genomics make sure to distribute files in `.h5` format 
-that are consistent accross single-cell sequencing mthodologies. 
+that are consistent accross single-cell sequencing methodologies. 
 However, the `SingleCellExperiment` obtained with this approach is not 
 the most convenient, as it cannot natively leverage `fragments` file (see below). 
 
@@ -152,9 +153,9 @@ The fraction of reads in peaks (FRiP) is a good indicator of how well each
 cell was handled during scATACseq processing. 
 
 ```{r, filename = "R"}
-PBMC@meta.data$FRiP <- PBMC$peak_region_fragments / PBMC$passed_filters
-PBMC@meta.data$nCount_ATAC <- colSums(GetAssayData(PBMC, slot = "counts"))
-PBMC@meta.data$nFeature_ATAC <- colSums(GetAssayData(PBMC, slot = "counts") > 0)
+PBMC$FRiP <- PBMC$peak_region_fragments / PBMC$passed_filters
+PBMC$nCount_ATAC <- colSums(GetAssayData(PBMC, slot = "counts"))
+PBMC$nFeature_ATAC <- colSums(GetAssayData(PBMC, slot = "counts") > 0)
 
 quantile(PBMC$FRiP, seq(0, 1, 0.1))
 quantile(PBMC$nCount_ATAC, seq(0, 1, 0.1))
@@ -194,23 +195,15 @@ PBMC$nucleosome_group <- ifelse(PBMC$nucleosome_signal > 4, 'NS > 4', 'NS < 4')
 FragmentHistogram(object = PBMC, group.by = 'nucleosome_group')
 ```
 
-The new `DensityScatter` function from `Signac` can be used to plot the fragment count per peak ~ TSS enrichment, combining both metrics into a single plot. 
-
-```{r, filename = "R"}
-p <- DensityScatter(PBMC, x = 'TSS.enrichment', y = 'nucleosome_signal', log_x = FALSE, quantiles = TRUE)
-```
-
 ### Filter cells and features 
 
-We do have other pre-computed metrics (e.g. `FRIP` and `depth`). 
-
-- **Check these metrics and filter the `Seurat` object (cells and features) as deemed appropriate.**
+- **Filter the `Seurat` object (cells and features) as deemed appropriate.**
 
 ```{r, filename = "R"}
 ## - Filter data 
 PBMC <- subset(PBMC, subset = nCount_ATAC > 3000 & nCount_ATAC < 100000) 
 PBMC <- subset(PBMC, subset = nFeature_ATAC > 1000 & nFeature_ATAC < 20000) 
-PBMC <- subset(PBMC, subset = FRIP > 0.30) 
+PBMC <- subset(PBMC, subset = FRiP > 0.30) 
 ## - Remove peaks with low coverage
 PBMC <- PBMC[rowSums(GetAssayData(PBMC, slot = "counts")) > 10, ]
 PBMC <- PBMC[rowSums(GetAssayData(PBMC, slot = "counts") > 0) > 10, ]
@@ -228,8 +221,10 @@ PBMC <- RunTFIDF(PBMC)
 PBMC <- FindTopFeatures(PBMC, min.cutoff = 'q50') 
 PBMC <- RunSVD(PBMC) 
 
-## - Label clusters according to the original publication
+## - Embed in 2D UMAP
 PBMC <- RunUMAP(object = PBMC, reduction = 'lsi', dims = 2:30)
+
+## - Cluster cells
 PBMC <- FindNeighbors(object = PBMC, reduction = 'lsi', dims = 2:30)
 PBMC <- FindClusters(object = PBMC, verbose = FALSE, algorithm = 3)
 
@@ -238,113 +233,6 @@ p <- DimPlot(PBMC, label = TRUE) + NoLegend()
 ```
 
 - **What can you observe in the `UMAP` projection of the dataset? Comment on the separation of some cell types into different spatially-resolved clusters.**
-
-## chromVAR analysis
-
-### Get a SummarizedExperiment of scATACseq counts over peaks
-
-`chromVAR` works with raw counts stored as a `RangedSummarizedExperiment`. By now, you should be able to 
-easily extract the raw counts from a specific `Seurat` assay. Store it in a `RangedSummarizedExperiment` 
-(~ equivalent to `Seurat` assay but in `Bioconductor`). 
-
-- **What are the dimensions of the `RangedSummarizedExperiment` generated? What are the features and what are the columns?**
-
-```{r, filename = "R"}
-library(SummarizedExperiment)
-sumExp <- SummarizedExperiment(
-    assays = list('counts' = GetAssayData(PBMC, assay = 'ATAC', slot = 'counts')), 
-    rowRanges = GetAssayData(PBMC, assay = 'ATAC', slot = 'ranges'), 
-    colData = PBMC[[]]
-)
-dim(sumExp)
-```
-
-### Add GC bias to peaks 
-
-This step is important to correct GC bias associated with each peak. 
-
-```{r, filename = "R"}
-sumExp <- chromVAR::addGCBias(sumExp, genome = BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19)
-```
-
-### Map motifs over peaks
-
-Using `motifmatchr` package, one can map a list of motifs (e.g. from JASPAR database)
-over a `RangedSummarizedExperiment` (or anything which can be coerced to a `GRanges`, actually). 
-
-- **First, you need to import motifs from a public database in `R`. This can be done (among other ways) with the `TFBSTools` pacakge.**
-
-```{r, filename = "R"}
-## - Import motifs from JASPAR database
-motifs <- TFBSTools::getMatrixSet(
-    JASPAR2020::JASPAR2020,
-    list(species = 9606, all_versions = FALSE)
-)
-names(motifs) <- TFBSTools::name(motifs)
-```
-
-- **Now map the subset of motifs of interest to the filtered peaks, using `motifmatchr::matchMotifs()`.**
-
-- **Read `matchMotifs()` documentation and run it on your `sumExp`.**
-- **What is the class of the generated object? Its dimensions?**
-- **What are the features and what are the columns?**
-
-```{r, filename = "R"}
-library(BiocParallel)
-register(MulticoreParam(workers = 16, progressbar = TRUE))
-motif_mappings <- motifmatchr::matchMotifs(motifs, sumExp, genome = BSgenome.Hsapiens.UCSC.hg19::BSgenome.Hsapiens.UCSC.hg19)
-class(motif_mappingss)
-dim(motif_mappings)
-```
-
-Because there are so many motifs and so many peaks, and in interest of time, 
-we will perform `chromVAR` analysis on a subset of motifs only. You can manually filter the motifs 
-list to motifs that may be relevant in our context (e.g. `EOMES`, or `GATA2`, ...). 
-
-```{r, filename = "R"}
-## - Filter to interesting motifs to keep analysis relatively quick
-#       Feel free to select any TF of interest!
-motif_mappings_sub <- motif_mappings[, c('EOMES', 'GATA2', 'IRF8', 'EBF1', 'SPI1', 'TCF3', 'CEBPA')]
-```
-
-### Search for motifs with high deviation of mapping compared to background 
-
-`chromVAR`'s `computeDeviations()` function combines (1) the peak counts / cell (stored here in `sumExp`) and 
-(2) the TF mapping over each peak (stored here in `motif_mappings`). 
-to assess the mapping deviation for each TF over each cell compared to other cells. 
-
-- **Run `computeDeviations()` on the set of peaks and motifs.**
-- **What is the class of the generated object? Its dimensions?**
-- **What are the features and what are the columns?**
-
-```{r, filename = "R"}
-## - Find background signal
-bg <- chromVAR::getBackgroundPeaks(object = sumExp)
-## - For each motif, compute its mapping deviation over the filtered peaks
-motif_deviations <- chromVAR::computeDeviations(object = sumExp, annotations = motif_mappings_sub, background_peaks = bg)
-```
-
-### Check TF motif enrichment in different cell types 
-
-The `motif_deviations` object can be added as a new assay to the
-`PBMC` `Seurat` object. This way, one can rely on `Seurat`-based 
-plotting functions to plot cells in their preferred dimensional space, and color 
-them using motif deviation scores computed with `chromVAR`. 
-
-```{r, filename = "R"}
-PBMC[['MOTIF']] <- Seurat::CreateAssayObject(counts = chromVAR::deviationScores(motif_deviations))
-DefaultAssay(PBMC) <- 'MOTIF'
-list_p <- lapply(rownames(PBMC), function(motif) {
-    FeaturePlot(PBMC, features = motif, reduction = "umap") + 
-        scale_colour_gradientn(
-            colors = c('#190886', '#6F07F8', '#F954A5', '#FF9D66', '#edf118'),
-            limits = c(-5, 5), oob = scales::squish
-        ) + 
-        theme(aspect.ratio = 1)
-})
-list_p[[length(list_p) + 1]] <- DimPlot(PBMC, group.by = 'renamed_clusters', reduction = "umap") + theme(aspect.ratio = 1)
-p <- cowplot::plot_grid(plotlist = list_p)
-```
 
 ## Compute gene activity scores
 
@@ -367,58 +255,48 @@ PBMC <- SCTransform(
 )
 
 PBMC
-DefaultAssay(PBMC) <- "SCT"
 ```
 
-One can now perform "gene differential expression"-like analysis using the `SCT` assay!
+One can now visualize expression of individual markers across clusters to infer 
+cluster identity. 
 
 ```{r, filename = "R"}
-## - Reduce dimensionality to visualize cells in 2D
-PBMC <- RunPCA(PBMC) |> RunUMAP(reduction = 'pca', dims = 1:50)
-
-## - Plot gene expression 
-p <- FeaturePlot(PBMC, features = 'MS4A1', reduction = "umap") # Or NCR1 (NKp46), CD8A, CD14, MS4A1
-```
-
-Now, we can leverage this to annotate clusters according to known PBMC markers
-
-```{r, filename = "R"}
-## - Reduce dimensionality to visualize cells in 2D
-PBMC <- RunPCA(PBMC) |> RunUMAP(reduction = 'pca', dims = 1:50)
-
-## - Plot gene expression 
-p <- FeaturePlot(PBMC, features = 'MS4A1', reduction = "umap") # Or NCR1 (NKp46), CD8A, CD14, MS4A1
-```
-
-
-## Find differentially accessible peaks 
-
-```{r, filename = "R"}
-# change back to working with peaks instead of gene activities
-DefaultAssay(pbmc) <- 'peaks'
-
-da_peaks <- FindMarkers(
-  object = pbmc,
-  ident.1 = "CD4 Naive",
-  ident.2 = "CD14+ Monocytes",
-  test.use = 'LR',
-  latent.vars = 'nCount_peaks'
+p <- VlnPlot(
+  object = PBMC,
+  features = c(
+    'MS4A1', # B-cell
+    'CD3D', # T-cell
+    'NKG7', # NK cell
+    'TREM1' # Monocytes
+  ), 
+  assay = "SCT"
 )
+PBMC$annotation <- dplyr::case_when(
+  Idents(PBMC) %in% c(0, 5, 9, 12) ~ "Monocytes", 
+  Idents(PBMC) %in% c(1, 2, 3, 4, 7, 10) ~ "T-cells", 
+  Idents(PBMC) %in% c(6) ~ "NK-cells", 
+  Idents(PBMC) %in% c(8, 11) ~ "B-cells", 
+  Idents(PBMC) %in% c(13, 14) ~ "DC"
+)
+p <- DimPlot(PBMC, group.by = 'annotation', label = TRUE) + NoLegend()
+```
 
+## Find peaks differentially accessible across clusters
 
-
-plot1 <- VlnPlot(
-  object = pbmc,
+```{r, filename = "R"}
+Idents(PBMC) <- PBMC$annotation
+da_peaks <- FindMarkers(
+  object = PBMC,
+  ident.1 = "Monocytes",
+  ident.2 = "B-cells",
+  test.use = 'LR',
+  latent.vars = 'nCount_ATAC'
+)
+p <- VlnPlot(
+  object = PBMC,
   features = rownames(da_peaks)[1],
   pt.size = 0.1,
-  idents = c("CD4 Naive","CD14+ Monocytes")
+  idents = c("Monocytes","B-cells")
 )
-plot2 <- FeaturePlot(
-  object = pbmc,
-  features = rownames(da_peaks)[1],
-  pt.size = 0.1
-)
-
-plot1 | plot2
 ```
 
